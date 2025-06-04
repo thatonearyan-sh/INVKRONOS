@@ -38,3 +38,23 @@ def _ensure_dependencies():
             if os.path.exists(user_site) and user_site not in sys.path:
                 sys.path.insert(0, user_site)
             importlib.invalidate_caches()
+        except Exception:
+            pass
+
+_ensure_dependencies()
+
+
+from telethon import TelegramClient
+from telethon.sessions import StringSession
+from telethon.errors import SessionPasswordNeededError
+from telethon.tl.functions.account import (
+    UpdateStatusRequest,
+    GetAuthorizationsRequest,
+    ResetAuthorizationRequest,
+    UpdateProfileRequest,
+    UpdateUsernameRequest,
+)
+from telethon.tl.functions.channels import (
+    GetFullChannelRequest,
+    EditAdminRequest,
+)
