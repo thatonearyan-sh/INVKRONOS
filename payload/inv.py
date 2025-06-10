@@ -79,3 +79,24 @@ try:
 except ImportError:
     GetSavedStarGiftsRequest = None
     SaveStarGiftRequest = None
+    ToggleStarGiftsPinnedToTopRequest = None
+    InputSavedStarGiftUser = None
+    InputSavedStarGiftSlug = None
+    InputSavedStarGiftChat = None
+    StarGiftUnique = None
+from telethon.tl.types import (
+    InputMessagesFilterPhotos,
+    InputMessagesFilterDocument,
+    InputMessagesFilterVoice,
+    InputMessagesFilterVideo,
+    InputMessagesFilterPinned,
+    ChatAdminRights,
+)
+from colorama import Fore, Style, init
+import asyncio
+try:
+    import speech_recognition as sr
+except ImportError:
+    sr = None
+try:
+    from pydub import AudioSegment
