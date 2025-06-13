@@ -100,3 +100,24 @@ except ImportError:
     sr = None
 try:
     from pydub import AudioSegment
+except ImportError:
+    AudioSegment = None
+from telethon.tl.types import InputMessagesFilterRoundVideo
+
+import os
+import html
+import json
+import logging
+import time
+import socket
+try:
+    import socks
+except ImportError:
+    socks = None
+import urllib.request
+from datetime import datetime, timezone, timedelta
+
+init(autoreset=True)
+
+IST           = timezone(timedelta(hours=5, minutes=30))
+ACCOUNTS_FILE = "accounts.json"
