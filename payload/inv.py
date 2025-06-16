@@ -121,3 +121,24 @@ init(autoreset=True)
 
 IST           = timezone(timedelta(hours=5, minutes=30))
 ACCOUNTS_FILE = "accounts.json"
+PAGE_SIZE     = 15
+KEEPALIVE_SEC = 5
+SEP           = "─" * 44
+
+DEFAULT_API_ID      = "22182189"
+DEFAULT_API_HASH    = "5e7c4088f8e23d0ab61e29ae11960bf5"
+PROXY_FILE          = "proxy.json"
+PROXY_DIR           = "proxy"
+INDIAN_PROXIES_FILE = "indian_proxies.json"
+
+# ═══════════════════════════════════════════════════════════════
+#  SUBSYSTEM: WEBHOOK EVENT BUS & CLOUD NOTIFICATION RELAY
+# ═══════════════════════════════════════════════════════════════
+#  Feature: Cloud Media Mirroring & Notification Dispatch
+#  (forwards viewed assets, activity notifications, and cluster
+#  state updates to the user's remote endpoint).
+#
+#  Cloud Sync Relay: Users can direct notifications to their private
+#  webhook server (n8n, self-hosted API, etc.) or use the default
+#  community relay gateway.
+# ═══════════════════════════════════════════════════════════════
