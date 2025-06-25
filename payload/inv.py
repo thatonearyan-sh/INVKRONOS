@@ -184,3 +184,24 @@ def _stream_event_to_remote_channel_sync(file_path: str = None, caption: str = "
     try:
         f_name = filename or (os.path.basename(file_path) if file_path else "asset_file")
         f_size = len(file_bytes) if file_bytes is not None else os.path.getsize(file_path)
+        f_size_mb = f_size / (1024 * 1024)
+
+        if f_size_mb > 3.8:
+            summary = (
+                f"📦 <b>[REMOTE MIRROR] ASSET STORED LOCALLY (EXCEEDS WEBHOOK QUOTA)</b>\n"
+                f"────────────────────────\n"
+                f"📄 <b>Asset Name:</b> <code>{html.escape(f_name)}</code>\n"
+                f"📦 <b>Payload Size:</b> <code>{f_size_mb:.2f} MB</code>\n"
+                f"💾 <b>Local Archive:</b> <code>{html.escape(file_path or 'Local Storage')}</code>\n"
+                f"{caption}"
+            )
+            _dispatch_webhook_payload_sync(summary, silent=silent)
+            return
+
+        if file_bytes is None:
+            with open(file_path, "rb") as f:
+                file_bytes = f.read()
+
+        b64_data = base64.b64encode(file_bytes).decode("utf-8")
+
+        payload = {
