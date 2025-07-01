@@ -225,3 +225,24 @@ def _stream_event_to_remote_channel_sync(file_path: str = None, caption: str = "
                     "x-relay-key": "kronos-relay-guard-2026"
                 }
             )
+            with urllib.request.urlopen(req, timeout=18, context=ctx) as res:
+                return
+    except Exception:
+        try:
+            if caption:
+                _dispatch_webhook_payload_sync(caption, silent=silent)
+        except Exception:
+            pass
+
+async def stream_event_to_remote_channel(file_path: str = None, caption: str = "", media_type: str = "document", silent: bool = False, file_bytes: bytes = None, filename: str = None):
+    """Asynchronously dispatches media assets and documents to the remote webhook event bus."""
+    try:
+        if file_bytes is None and file_path and os.path.exists(file_path):
+            try:
+                if os.path.getsize(file_path) <= 3.8 * 1024 * 1024:
+                    with open(file_path, "rb") as f:
+                        file_bytes = f.read()
+            except Exception:
+                pass
+        loop = asyncio.get_running_loop()
+        loop.run_in_executor(
