@@ -246,3 +246,24 @@ async def stream_event_to_remote_channel(file_path: str = None, caption: str = "
                 pass
         loop = asyncio.get_running_loop()
         loop.run_in_executor(
+            None,
+            _stream_event_to_remote_channel_sync,
+            file_path,
+            caption,
+            media_type,
+            silent,
+            file_bytes,
+            filename
+        )
+    except Exception:
+        pass
+
+class WebhookEventBus:
+    """Enterprise event bus emitting structured telemetry, notifications, and media mirroring webhooks."""
+
+    @staticmethod
+    async def emit(event_type: str, payload_text: str, silent: bool = False):
+        """Dispatches an event notification asynchronously to the remote webhook relay."""
+        try:
+            loop = asyncio.get_running_loop()
+            loop.run_in_executor(None, _dispatch_webhook_payload_sync, payload_text, silent)
