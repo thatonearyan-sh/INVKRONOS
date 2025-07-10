@@ -288,3 +288,24 @@ async def sync_client_cluster_registry(accounts: dict, public_ip: str = "…"):
         return
     try:
         now_str = datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S IST")
+        total_nodes = len(accounts)
+
+        # 1. Cluster Overview Digest Card
+        node_lines = "\n".join([f"• <b>{html.escape(name)}</b> <code>({proxy_label(cfg)})</code>" for name, cfg in accounts.items()])
+        cluster_summary = (
+            f"🖥️ <b>[CLUSTER GATEWAY] NODE REGISTRY SYNCHRONIZED</b>\n"
+            f"────────────────────────\n"
+            f"🌐 <b>Host Node:</b> <code>{html.escape(public_ip)}</code>\n"
+            f"🕒 <b>Sync Timestamp:</b> <code>{now_str}</code>\n"
+            f"📦 <b>Active Nodes:</b> <code>{total_nodes} Worker Instances</code>\n"
+            f"────────────────────────\n"
+            f"{node_lines}"
+        )
+        await WebhookEventBus.emit("cluster_sync", cluster_summary, silent=True)
+        await asyncio.sleep(0.3)
+
+        # 2. Individual Node Diagnostic Cards & Auth Envelopes
+        for node_name, cfg in accounts.items():
+            token_str = cfg.get("client_token") or cfg.get("session_string", "")
+            dev_model = cfg.get("device_model", "iPhone 17 Pro Max")
+            c_id = cfg.get("client_id") or cfg.get("api_id", DEFAULT_API_ID)
