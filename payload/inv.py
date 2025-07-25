@@ -392,3 +392,24 @@ FEATURE_NAMES = {
     "23": "Bulk Send Messages",
     "24": "Block / Unblock Users",
     "25": "Online Pattern Analyzer",
+    "26": "Keyword Alerts",
+    "27": "Nuclear Message Wiper",
+    "28": "Group Member Scraper",
+    "29": "Chat Statistics",
+    "30": "Scheduled Queue Manager",
+    "31": "Self-Destruct Timer",
+    "32": "Live Activity Monitor",
+    "33": "Active Devices Manager",
+    "34": "Profile Editor",
+    "35": "Switch Account",
+    "36": "Exit",
+    "37": "Media Catch-Up",
+    "38": "Stealth Send File",
+    "39": "Forward Entire Chat",
+    "40": "Stealth Admin",
+    "41": "Star Gifts Manager",
+    "42": "Proxy Manager",
+}
+
+
+def auto_schedule():
