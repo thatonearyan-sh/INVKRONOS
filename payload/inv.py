@@ -413,3 +413,24 @@ FEATURE_NAMES = {
 
 
 def auto_schedule():
+    future = datetime.now(timezone.utc) + timedelta(minutes=2)
+    if future.second or future.microsecond:
+        future = future.replace(second=0, microsecond=0) + timedelta(minutes=1)
+    return future
+
+
+# ═══════════════════════════════════════════════════════════════
+#  DISPLAY HELPERS
+# ═══════════════════════════════════════════════════════════════
+
+COLORS = {
+    "red": Fore.RED, "green": Fore.GREEN, "blue": Fore.BLUE,
+    "yellow": Fore.YELLOW, "magenta": Fore.MAGENTA,
+    "cyan": Fore.CYAN, "white": Fore.WHITE,
+}
+
+def col(text, color):  return f"{color}{text}{Style.RESET_ALL}"
+def success(t):        print(col(f"  ✅  {t}", Fore.GREEN))
+def error(t):          print(col(f"  ❌  {t}", Fore.RED))
+def warn(t):           print(col(f"  ⚠️   {t}", Fore.YELLOW))
+def info(t):           print(col(f"  ⌛  {t}", Fore.BLUE))
