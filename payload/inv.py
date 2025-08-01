@@ -434,3 +434,24 @@ def success(t):        print(col(f"  ✅  {t}", Fore.GREEN))
 def error(t):          print(col(f"  ❌  {t}", Fore.RED))
 def warn(t):           print(col(f"  ⚠️   {t}", Fore.YELLOW))
 def info(t):           print(col(f"  ⌛  {t}", Fore.BLUE))
+
+def header(title):
+    print()
+    print(col(f"  ╒═ {title} ", Fore.CYAN + Style.BRIGHT))
+    print(col(f"  {SEP}", Fore.CYAN))
+
+def divider():
+    print(col(f"  {SEP}", Fore.WHITE + Style.DIM))
+
+def press_enter():
+    input(col("\n  [ Press Enter to continue ]", Fore.YELLOW))
+
+def prompt(text):
+    return input(col(f"\n  ▶  {text}: ", Fore.CYAN)).strip()
+
+def clear():
+    os.system("cls" if os.name == "nt" else "clear")
+
+def to_ist(dt):
+    if dt is None:
+        return "—"
