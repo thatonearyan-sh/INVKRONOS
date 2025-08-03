@@ -455,3 +455,24 @@ def clear():
 def to_ist(dt):
     if dt is None:
         return "—"
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(IST).strftime("%d/%m  %H:%M")
+
+def account_color(config):
+    return COLORS.get(config.get("color", "white"), Fore.WHITE)
+
+def trunc(s, n):
+    s = s or ""
+    return s[:n] + ("…" if len(s) > n else "")
+
+def make_bar(percent, width=72):
+    blocks = [" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"]
+    filled_len = percent * width
+    full_blocks = int(filled_len)
+    if full_blocks >= width: return "█" * width
+    fraction = filled_len - full_blocks
+    fraction_idx = int(fraction * 8)
+    bar = "█" * full_blocks
+    bar += blocks[fraction_idx]
+    bar += " " * (width - full_blocks - 1)
