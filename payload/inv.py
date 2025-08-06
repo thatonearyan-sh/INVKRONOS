@@ -476,3 +476,24 @@ def make_bar(percent, width=72):
     bar = "█" * full_blocks
     bar += blocks[fraction_idx]
     bar += " " * (width - full_blocks - 1)
+    return bar
+
+def again_menu(*options, back_label="Back to main menu"):
+    """
+    Print a standard "what next?" sub-menu and return the user's choice string.
+    Always appends a Back option as the last item.
+    Returns None if user picks Back or enters blank.
+    """
+    print()
+    print(col("  " + "─" * 42, Fore.WHITE + Style.DIM))
+    print(col("  What next?", Fore.CYAN + Style.BRIGHT))
+    for i, label in enumerate(options, 1):
+        print(col(f"  {i}.  {label}", Fore.WHITE))
+    back_n = len(options) + 1
+    print(col(f"  {back_n}.  {back_label}", Fore.WHITE + Style.DIM))
+    raw = prompt("Choose")
+    if not raw or raw == str(back_n):
+        return None
+    try:
+        idx = int(raw) - 1
+        if 0 <= idx < len(options):
