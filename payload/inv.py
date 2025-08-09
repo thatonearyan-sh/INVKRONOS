@@ -497,3 +497,24 @@ def again_menu(*options, back_label="Back to main menu"):
     try:
         idx = int(raw) - 1
         if 0 <= idx < len(options):
+            return options[idx]
+    except ValueError:
+        pass
+    return None
+
+
+# ═══════════════════════════════════════════════════════════════
+#  PAGINATION
+# ═══════════════════════════════════════════════════════════════
+
+def show_page(items, formatter=None, page=0, page_size=PAGE_SIZE):
+    if not items:
+        warn("Nothing to show.")
+        press_enter()
+        return None
+
+    redraw = True
+    while True:
+        if redraw:
+            total_pages = max(1, (len(items) + page_size - 1) // page_size)
+            start  = page * page_size
