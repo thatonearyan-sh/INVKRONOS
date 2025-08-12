@@ -518,3 +518,24 @@ def show_page(items, formatter=None, page=0, page_size=PAGE_SIZE):
         if redraw:
             total_pages = max(1, (len(items) + page_size - 1) // page_size)
             start  = page * page_size
+            slice_ = items[start : start + page_size]
+
+            print()
+            for i, item in enumerate(slice_):
+                idx = start + i
+                if formatter:
+                    print(formatter(idx, item))
+                else:
+                    print(col(f"  {idx:>3}.  {item}", Fore.WHITE))
+
+            print()
+            nav = []
+            if page > 0:               nav.append(col("p=prev", Fore.YELLOW))
+            if page < total_pages - 1: nav.append(col("n=next", Fore.YELLOW))
+            nav.append(col("q=back", Fore.RED))
+            print(col(f"  Page {page+1}/{total_pages}   ", Fore.WHITE + Style.DIM)
+                  + "   ".join(nav))
+            redraw = False
+
+        raw = input(col("\n  → ", Fore.CYAN)).strip().lower()
+
