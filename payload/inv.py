@@ -539,3 +539,23 @@ def show_page(items, formatter=None, page=0, page_size=PAGE_SIZE):
 
         raw = input(col("\n  → ", Fore.CYAN)).strip().lower()
 
+        if raw == "n" and page < total_pages - 1:
+            page  += 1; redraw = True
+        elif raw == "p" and page > 0:
+            page  -= 1; redraw = True
+        elif raw == "q":
+            return None
+        else:
+            try:
+                idx = int(raw)
+                if 0 <= idx < len(items):
+                    return idx
+                error("Number out of range — try again.")
+            except ValueError:
+                error("Enter a number,  p,  n,  or  q")
+
+
+# ═══════════════════════════════════════════════════════════════
+#  ACCOUNT MANAGEMENT
+# ═══════════════════════════════════════════════════════════════
+
