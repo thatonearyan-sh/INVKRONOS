@@ -559,3 +559,24 @@ def show_page(items, formatter=None, page=0, page_size=PAGE_SIZE):
 #  ACCOUNT MANAGEMENT
 # ═══════════════════════════════════════════════════════════════
 
+def load_accounts():
+    if os.path.exists(ACCOUNTS_FILE):
+        try:
+            with open(ACCOUNTS_FILE) as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {}
+
+def save_accounts(accounts):
+    with open(ACCOUNTS_FILE, "w") as f:
+        json.dump(accounts, f, indent=2)
+
+async def add_account():
+    header("ADD NEW ACCOUNT")
+
+    pcfg = load_proxy()
+    if pcfg.get("enabled"):
+        info(f"Proxy active ✓  Login will use:  {proxy_label()}")
+        print()
+    else:
