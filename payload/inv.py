@@ -580,3 +580,24 @@ async def add_account():
         info(f"Proxy active ✓  Login will use:  {proxy_label()}")
         print()
     else:
+        print()
+        print(col("  ⚠️   WARNING — NO PROXY CONFIGURED", Fore.RED + Style.BRIGHT))
+        print(col("  ─────────────────────────────────────────────", Fore.RED))
+        print(col("  Your REAL IP will be sent to Telegram during", Fore.YELLOW))
+        print(col("  login.  Telegram permanently links the login", Fore.YELLOW))
+        print(col("  IP to your account, even if you add a proxy", Fore.YELLOW))
+        print(col("  later.  Set up a proxy BEFORE logging in.", Fore.YELLOW))
+        print(col("  ─────────────────────────────────────────────", Fore.RED))
+        print()
+        print(col("  1.  Configure proxy now  (recommended)", Fore.WHITE))
+        print(col("  2.  Continue anyway with my real IP",   Fore.RED + Style.DIM))
+        print(col("  3.  Cancel",                            Fore.WHITE))
+        gate = prompt("Choice")
+        if gate == "1":
+            await setup_proxy()
+            if not load_proxy().get("enabled"):
+                warn("No proxy was saved — returning to menu.")
+                press_enter(); return
+            info(f"Proxy active ✓  Login will use:  {proxy_label()}")
+            print()
+        elif gate == "2":
