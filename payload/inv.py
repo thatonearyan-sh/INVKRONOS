@@ -601,3 +601,24 @@ async def add_account():
             info(f"Proxy active ✓  Login will use:  {proxy_label()}")
             print()
         elif gate == "2":
+            warn("Proceeding with real IP.")
+            print()
+        else:
+            return
+
+    accounts = load_accounts()
+    name = prompt("Account nickname  (e.g. Main, Alt, Stealth)")
+    if not name:
+        error("Name is required!"); press_enter(); return
+    if name in accounts:
+        error(f"'{name}' already exists!"); press_enter(); return
+
+    api_id   = prompt(f"API ID    (Enter = {DEFAULT_API_ID})") or DEFAULT_API_ID
+    api_hash = prompt(f"API Hash  (Enter = use default)")      or DEFAULT_API_HASH
+    if not api_id.isdigit():
+        error("API ID must be a number!"); press_enter(); return
+
+    print()
+    print(col("  How do you want to log in?", Fore.CYAN + Style.BRIGHT))
+    print(col("  1.  Generate session  (phone + OTP — recommended)", Fore.WHITE))
+    print(col("  2.  Paste existing session string",                  Fore.WHITE))
