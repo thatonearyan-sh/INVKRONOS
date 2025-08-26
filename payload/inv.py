@@ -622,3 +622,24 @@ async def add_account():
     print(col("  How do you want to log in?", Fore.CYAN + Style.BRIGHT))
     print(col("  1.  Generate session  (phone + OTP — recommended)", Fore.WHITE))
     print(col("  2.  Paste existing session string",                  Fore.WHITE))
+    mode    = prompt("Choice")
+    session = None
+
+    if mode == "1":
+        phone = prompt("Phone number  (with country code  e.g. +91XXXXXXXXXX)")
+        if not phone:
+            error("Phone is required!"); press_enter(); return
+        info("Connecting to Telegram…")
+        tmp = None
+        try:
+            tmp = await connect_client(StringSession(), api_id, api_hash)
+            await tmp.send_code_request(phone)
+            success("OTP sent!  Check your Telegram (or SMS).")
+            code = prompt("Enter OTP")
+            if not code:
+                error("OTP is required!"); await tmp.disconnect(); return
+            try:
+                await tmp.sign_in(phone, code)
+            except SessionPasswordNeededError:
+                pw = prompt("2FA password")
+                if not pw:
