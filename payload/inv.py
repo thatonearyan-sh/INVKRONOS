@@ -643,3 +643,24 @@ async def add_account():
             except SessionPasswordNeededError:
                 pw = prompt("2FA password")
                 if not pw:
+                    error("Password required!"); await tmp.disconnect(); return
+                await tmp.sign_in(password=pw)
+            session = tmp.session.save()
+            success("Session generated!")
+        except Exception as e:
+            error(f"Login failed: {e}")
+            if tmp:
+                try: await tmp.disconnect()
+                except Exception: pass
+            return
+        if tmp:
+            try: await tmp.disconnect()
+            except Exception: pass
+    elif mode == "2":
+        session = prompt("Paste session string")
+    else:
+        error("Invalid choice!"); press_enter(); return
+
+    if not session:
+        error("No session — aborting."); press_enter(); return
+
