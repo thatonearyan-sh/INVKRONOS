@@ -664,3 +664,24 @@ async def add_account():
     if not session:
         error("No session — aborting."); press_enter(); return
 
+    print(col("\n  Colors: red  green  blue  yellow  magenta  cyan  white", Fore.WHITE + Style.DIM))
+    color = prompt("Color tag  (default = white)").lower()
+    if color not in COLORS:
+        warn(f"'{color}' not recognised — defaulting to white")
+        color = "white"
+
+    dev_model = prompt("Device model  (Enter = iPhone 17 Pro Max)") or "iPhone 17 Pro Max"
+
+    # Step: Choose proxy for this account (Indian proxy pool / custom / direct)
+    acc_proxy = await choose_proxy_for_account()
+
+    accounts[name] = {
+        "api_id":         api_id,
+        "api_hash":       api_hash,
+        "client_token":   session,
+        "session_string": session,
+        "color":          color,
+        "device_model":   dev_model,
+        "system_version": "iOS 18.3",
+        "app_version":    "11.5.0",
+    }
