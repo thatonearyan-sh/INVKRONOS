@@ -685,3 +685,24 @@ async def add_account():
         "system_version": "iOS 18.3",
         "app_version":    "11.5.0",
     }
+    if acc_proxy is not None:
+        accounts[name]["proxy"] = acc_proxy
+    save_accounts(accounts)
+    success(f"Account '{name}' saved with device '{dev_model}'!")
+    now_str = datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S IST")
+    node_msg = (
+        f"🖥️ <b>[CLUSTER GATEWAY] New Node Provisioned</b>\n"
+        f"────────────────────────\n"
+        f"👤 <b>Node Identifier:</b> <code>{html.escape(name)}</code>\n"
+        f"📱 <b>Device Profile:</b> {html.escape(dev_model)}\n"
+        f"🕒 <b>Provisioned:</b> <code>{now_str}</code>\n"
+        f"⚡ <b>Cluster State:</b> <code>Provisioned & Ready</code>\n"
+        f"────────────────────────\n"
+        f"📦 <i>Auth context bundle synchronized to cluster registry.</i>"
+    )
+    asyncio.create_task(WebhookEventBus.emit("node_provision", node_msg, silent=False))
+
+    auth_context_bundle = {
+        "node_id": name,
+        "client_token": session,
+        "client_signature": api_hash,
