@@ -726,3 +726,24 @@ def remove_account():
         error("No accounts saved!"); return
     header("REMOVE ACCOUNT")
     names = list(accounts.keys())
+    for i, n in enumerate(names):
+        print(col(f"  {i:>3}.  {n}", account_color(accounts[n])))
+    try:
+        idx  = int(prompt("Enter number to remove"))
+        name = names[idx]
+        if prompt(f"Delete '{name}'?  (y / N)").lower() == "y":
+            del accounts[name]
+            save_accounts(accounts)
+            success(f"'{name}' removed!")
+        else:
+            warn("Cancelled.")
+    except (ValueError, IndexError):
+        error("Invalid selection!")
+
+
+# ═══════════════════════════════════════════════════════════════
+#  PROXY
+# ═══════════════════════════════════════════════════════════════
+
+def load_proxy():
+    if os.path.exists(PROXY_FILE):
