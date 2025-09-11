@@ -747,3 +747,24 @@ def remove_account():
 
 def load_proxy():
     if os.path.exists(PROXY_FILE):
+        try:
+            with open(PROXY_FILE) as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"enabled": False}
+
+def save_proxy(cfg):
+    with open(PROXY_FILE, "w") as f:
+        json.dump(cfg, f, indent=2)
+
+def resolve_proxy(account_config=None):
+    pcfg = None
+    if isinstance(account_config, dict) and "proxy" in account_config:
+        acc_proxy = account_config["proxy"]
+        if isinstance(acc_proxy, dict) and acc_proxy.get("enabled", True):
+            pcfg = acc_proxy
+        elif acc_proxy is None or (isinstance(acc_proxy, dict) and not acc_proxy.get("enabled", True)):
+            pcfg = {"enabled": False}
+
+    if pcfg is None:
