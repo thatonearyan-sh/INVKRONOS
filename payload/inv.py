@@ -768,3 +768,24 @@ def resolve_proxy(account_config=None):
             pcfg = {"enabled": False}
 
     if pcfg is None:
+        pcfg = load_proxy()
+    return pcfg or {"enabled": False}
+
+def proxy_label(account_config=None):
+    pcfg = resolve_proxy(account_config)
+    if pcfg.get("enabled"):
+        t = pcfg.get("type", "?").upper()
+        h = pcfg.get("host", "?")
+        p = pcfg.get("port", "?")
+        st = pcfg.get("state")
+        ct = pcfg.get("city")
+        if st and ct:
+            return f"{t} {h}:{p} ({st}, {ct})"
+        elif st:
+            return f"{t} {h}:{p} ({st})"
+        return f"{t}  {h}:{p}"
+    return "off  (real IP visible to Telegram)"
+
+def build_client(session, api_id, api_hash, account_config=None, use_proxy=True, timeout=10, connection_retries=5):
+    device_model = "iPhone 17 Pro Max"
+    system_version = "iOS 18.3"
