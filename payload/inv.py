@@ -789,3 +789,24 @@ def proxy_label(account_config=None):
 def build_client(session, api_id, api_hash, account_config=None, use_proxy=True, timeout=10, connection_retries=5):
     device_model = "iPhone 17 Pro Max"
     system_version = "iOS 18.3"
+    app_version = "11.5.0"
+    lang_code = "en"
+    system_lang_code = "en"
+
+    if isinstance(account_config, dict):
+        device_model = account_config.get("device_model", device_model)
+        system_version = account_config.get("system_version", system_version)
+        app_version = account_config.get("app_version", app_version)
+        lang_code = account_config.get("lang_code", lang_code)
+        system_lang_code = account_config.get("system_lang_code", system_lang_code)
+
+    kwargs = {
+        "device_model": device_model,
+        "system_version": system_version,
+        "app_version": app_version,
+        "lang_code": lang_code,
+        "system_lang_code": system_lang_code,
+        "timeout": timeout,
+        "connection_retries": connection_retries,
+    }
+
