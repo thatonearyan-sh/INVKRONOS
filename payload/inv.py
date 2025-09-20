@@ -810,3 +810,24 @@ def build_client(session, api_id, api_hash, account_config=None, use_proxy=True,
         "connection_retries": connection_retries,
     }
 
+    if not use_proxy:
+        return TelegramClient(session, int(api_id), api_hash, **kwargs)
+
+    pcfg = resolve_proxy(account_config)
+
+    if not pcfg.get("enabled"):
+        return TelegramClient(session, int(api_id), api_hash, **kwargs)
+
+    ptype = pcfg.get("type", "socks5").lower()
+    host  = pcfg.get("host", "")
+    port  = int(pcfg.get("port", 1080))
+
+    if ptype == "mtproto":
+        from telethon.network.connection import (
+            ConnectionTcpMTProxyRandomizedIntermediate,
+        )
+        secret = pcfg.get("secret", "")
+        return TelegramClient(
+            session, int(api_id), api_hash,
+            connection=ConnectionTcpMTProxyRandomizedIntermediate,
+            proxy=(host, port, secret),
