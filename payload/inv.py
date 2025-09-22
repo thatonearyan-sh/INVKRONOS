@@ -831,3 +831,24 @@ def build_client(session, api_id, api_hash, account_config=None, use_proxy=True,
             session, int(api_id), api_hash,
             connection=ConnectionTcpMTProxyRandomizedIntermediate,
             proxy=(host, port, secret),
+            **kwargs,
+        )
+    else:
+        import socks as _socks
+        stype = {
+            "socks5": _socks.SOCKS5,
+            "socks4": _socks.SOCKS4,
+            "http":   _socks.HTTP,
+        }.get(ptype, _socks.SOCKS5)
+        user = pcfg.get("username") or None
+        pw   = pcfg.get("password") or None
+        proxy_tuple = (stype, host, port, True, user, pw) if user else (stype, host, port)
+        return TelegramClient(session, int(api_id), api_hash, proxy=proxy_tuple, **kwargs)
+
+async def connect_client(session, api_id, api_hash, account_config=None, proxy_timeout=6):
+    """
+    Connects to Telegram with automatic fallback:
+    Attempts connection through proxy first (if configured). If proxy
+    fails or times out, it automatically falls back to a direct connection
+    so that the account connects smoothly.
+    """
