@@ -852,3 +852,24 @@ async def connect_client(session, api_id, api_hash, account_config=None, proxy_t
     fails or times out, it automatically falls back to a direct connection
     so that the account connects smoothly.
     """
+    pcfg = resolve_proxy(account_config)
+    has_proxy = bool(pcfg.get("enabled"))
+
+    if not has_proxy:
+        client = build_client(
+            session, api_id, api_hash,
+            account_config=account_config,
+            use_proxy=False,
+        )
+        await client.connect()
+        client._proxy_fallback = False
+        return client
+
+    ptype = pcfg.get("type", "proxy").upper()
+    phost = pcfg.get("host", "")
+    pport = pcfg.get("port", "")
+    pdesc = f"{ptype} {phost}:{pport}"
+
+    info(f"Attempting connection via proxy ({pdesc})…")
+
+    tl_logger = logging.getLogger("telethon")
