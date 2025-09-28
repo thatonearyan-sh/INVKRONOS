@@ -873,3 +873,24 @@ async def connect_client(session, api_id, api_hash, account_config=None, proxy_t
     info(f"Attempting connection via proxy ({pdesc})…")
 
     tl_logger = logging.getLogger("telethon")
+    prev_level = tl_logger.level
+    client = None
+    proxy_success = False
+
+    try:
+        tl_logger.setLevel(logging.CRITICAL)
+        client = build_client(
+            session,
+            api_id,
+            api_hash,
+            account_config=account_config,
+            use_proxy=True,
+            timeout=proxy_timeout,
+            connection_retries=1,
+        )
+        await asyncio.wait_for(client.connect(), timeout=proxy_timeout + 3)
+        proxy_success = True
+    except Exception as e:
+        err_str = str(e).strip() or type(e).__name__
+        warn(f"Proxy timed out / unreachable ({pdesc}) — {err_str}")
+        if client:
