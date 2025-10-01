@@ -894,3 +894,23 @@ async def connect_client(session, api_id, api_hash, account_config=None, proxy_t
         err_str = str(e).strip() or type(e).__name__
         warn(f"Proxy timed out / unreachable ({pdesc}) — {err_str}")
         if client:
+            try:
+                await client.disconnect()
+            except Exception:
+                pass
+            client = None
+    finally:
+        tl_logger.setLevel(prev_level)
+
+    if proxy_success and client:
+        client._proxy_fallback = False
+        success(f"Proxy connection established ({pdesc}) ✓")
+        return client
+
+    warn("⚡ Falling back to direct connection so connection succeeds…")
+    direct_client = build_client(
+        session,
+        api_id,
+        api_hash,
+        account_config=account_config,
+        use_proxy=False,
