@@ -914,3 +914,24 @@ async def connect_client(session, api_id, api_hash, account_config=None, proxy_t
         api_hash,
         account_config=account_config,
         use_proxy=False,
+    )
+    await direct_client.connect()
+    direct_client._proxy_fallback = True
+    success("Direct connection established ✓")
+    return direct_client
+
+def list_proxy_countries():
+    if not os.path.exists(PROXY_DIR):
+        os.makedirs(PROXY_DIR, exist_ok=True)
+    files = [f for f in os.listdir(PROXY_DIR) if f.endswith(".json")]
+    countries = []
+    for fname in sorted(files):
+        fpath = os.path.join(PROXY_DIR, fname)
+        try:
+            with open(fpath) as f:
+                data = json.load(f)
+                if isinstance(data, list) and data:
+                    cname = data[0].get("country") or fname[:-5].replace("_", " ").title()
+                    active_cnt = sum(1 for p in data if p.get("status") == "active")
+                    countries.append({
+                        "country": cname,
