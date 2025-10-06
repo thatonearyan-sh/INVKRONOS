@@ -935,3 +935,24 @@ def list_proxy_countries():
                     active_cnt = sum(1 for p in data if p.get("status") == "active")
                     countries.append({
                         "country": cname,
+                        "file": fpath,
+                        "filename": fname,
+                        "count": len(data),
+                        "active_count": active_cnt
+                    })
+        except Exception:
+            pass
+    countries.sort(key=lambda x: (0 if "india" in x["country"].lower() else 1, x["country"]))
+    return countries
+
+def load_country_proxies(filepath):
+    if os.path.exists(filepath):
+        try:
+            with open(filepath) as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    return data
+        except Exception:
+            pass
+    return []
+
