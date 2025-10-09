@@ -956,3 +956,24 @@ def load_country_proxies(filepath):
             pass
     return []
 
+def save_country_proxies(filepath, proxies):
+    try:
+        with open(filepath, "w") as f:
+            json.dump(proxies, f, indent=2)
+    except Exception:
+        pass
+
+def test_proxy_sync(p, timeout=2.0):
+    host = p.get("host")
+    port = int(p.get("port", 1080))
+    ptype = p.get("type", "socks5").lower()
+    stype = socks.SOCKS5 if ptype == "socks5" else (socks.SOCKS4 if ptype == "socks4" else socks.HTTP)
+    t0 = time.time()
+    try:
+        s = socks.socksocket()
+        s.set_proxy(stype, host, port)
+        s.settimeout(timeout)
+        s.connect(("149.154.167.51", 443))
+        lat = int((time.time() - t0) * 1000)
+        s.close()
+        return True, lat
