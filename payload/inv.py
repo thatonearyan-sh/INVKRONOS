@@ -977,3 +977,24 @@ def test_proxy_sync(p, timeout=2.0):
         lat = int((time.time() - t0) * 1000)
         s.close()
         return True, lat
+    except Exception:
+        try:
+            s2 = socket.socket()
+            s2.settimeout(1.2)
+            s2.connect((host, port))
+            lat = int((time.time() - t0) * 1000)
+            s2.close()
+            return True, lat
+        except Exception:
+            return False, None
+
+async def benchmark_proxies_list(proxies, label=""):
+    loop = asyncio.get_running_loop()
+    import concurrent.futures
+
+    def _worker():
+        with concurrent.futures.ThreadPoolExecutor(max_workers=50) as ex:
+            return list(ex.map(test_proxy_sync, proxies))
+
+    results = await loop.run_in_executor(None, _worker)
+    active_count = 0
