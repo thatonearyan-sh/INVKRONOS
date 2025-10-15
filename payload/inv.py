@@ -998,3 +998,24 @@ async def benchmark_proxies_list(proxies, label=""):
 
     results = await loop.run_in_executor(None, _worker)
     active_count = 0
+    for p, (alive, lat) in zip(proxies, results):
+        if alive:
+            p["status"] = "active"
+            p["latency_ms"] = lat
+            active_count += 1
+        else:
+            p["status"] = "offline"
+            p["latency_ms"] = 9999
+
+    proxies.sort(key=lambda x: (0 if x.get("status") == "active" else 1, x.get("latency_ms", 9999)))
+    return proxies, active_count
+
+async def benchmark_all_country_proxies():
+    clear()
+    header("PROXY BENCHMARK  —  VERIFY ALL PROXIES")
+    countries = list_proxy_countries()
+    if not countries:
+        warn(f"No proxy files found in '{PROXY_DIR}/' folder!")
+        return
+
+    info(f"Scanning {len(countries)} country pool(s). Verifying active/dead status…\n")
