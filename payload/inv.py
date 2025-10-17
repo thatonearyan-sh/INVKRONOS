@@ -1019,3 +1019,24 @@ async def benchmark_all_country_proxies():
         return
 
     info(f"Scanning {len(countries)} country pool(s). Verifying active/dead status…\n")
+
+    for c in countries:
+        fpath = c["file"]
+        cname = c["country"]
+        proxies = load_country_proxies(fpath)
+        if not proxies:
+            continue
+
+        info(f"Testing {len(proxies)} proxies for {cname} in parallel…")
+        updated_proxies, active_cnt = await benchmark_proxies_list(proxies, cname)
+        save_country_proxies(fpath, updated_proxies)
+
+        from collections import Counter
+        active_states = Counter(p.get("state", "Other") for p in updated_proxies if p.get("status") == "active")
+        success(f"✓ {cname}: {active_cnt}/{len(proxies)} ACTIVE proxies verified (saved to {fpath})")
+        if active_states:
+            st_str = ", ".join(f"{st} ({cnt})" for st, cnt in active_states.most_common(5))
+            print(col(f"    Top states: {st_str}", Fore.WHITE + Style.DIM))
+        print()
+
+    success("All proxy pools have been upgraded with current active/dead statuses!")
