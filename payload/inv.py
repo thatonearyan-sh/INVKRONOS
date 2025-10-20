@@ -1040,3 +1040,24 @@ async def benchmark_all_country_proxies():
         print()
 
     success("All proxy pools have been upgraded with current active/dead statuses!")
+
+def prompt_custom_proxy():
+    print()
+    print(col("  1. SOCKS5   2. SOCKS4   3. HTTP", Fore.WHITE))
+    proto_c = prompt("Proxy Type (1/2/3)")
+    proto = {"1": "socks5", "2": "socks4", "3": "http"}.get(proto_c, "socks5")
+    host = prompt("Host (IP or domain)")
+    if not host:
+        warn("Host required — defaulting to direct connection."); return {"enabled": False}
+    port_s = prompt("Port")
+    if not port_s.isdigit():
+        warn("Port must be numeric — defaulting to direct connection."); return {"enabled": False}
+    user = prompt("Username (Enter to skip)")
+    pw = prompt("Password (Enter to skip)") if user else ""
+    custom_p = {
+        "enabled": True,
+        "type": proto,
+        "host": host,
+        "port": int(port_s),
+        "state": "Custom",
+        "city": "Manual",
