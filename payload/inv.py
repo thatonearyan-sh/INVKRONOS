@@ -1061,3 +1061,23 @@ def prompt_custom_proxy():
         "port": int(port_s),
         "state": "Custom",
         "city": "Manual",
+    }
+    if user: custom_p["username"] = user
+    if pw: custom_p["password"] = pw
+    success(f"Custom {proto.upper()} proxy configured!")
+    return custom_p
+
+async def choose_proxy_for_account():
+    clear()
+    header("PROXY CONFIGURATION FOR THIS ACCOUNT")
+    print(col("  Do you want to use a proxy for this account?\n", Fore.CYAN + Style.BRIGHT))
+    print(col("  1.  Yes — Select a Proxy  (Country ➔ State ➔ Active Proxies)", Fore.GREEN + Style.BRIGHT))
+    print(col("  2.  No  — Connect Directly  (Real IP / No Proxy)", Fore.WHITE))
+    print(col("  3.  ✍️   Enter Custom Proxy Manually", Fore.WHITE))
+    print(col("  4.  🌐  Inherit Global Proxy Setting (from proxy.json)", Fore.WHITE))
+    print()
+    ch = prompt("Choice (1-4)").strip()
+
+    if ch == "2":
+        info("Direct connection selected (No proxy for this account).")
+        return {"enabled": False}
