@@ -1081,3 +1081,24 @@ async def choose_proxy_for_account():
     if ch == "2":
         info("Direct connection selected (No proxy for this account).")
         return {"enabled": False}
+    elif ch == "3":
+        return prompt_custom_proxy()
+    elif ch == "4":
+        info("Using global proxy setting.")
+        return None
+    elif ch != "1":
+        info("Defaulting to direct connection.")
+        return {"enabled": False}
+
+    countries = list_proxy_countries()
+    if not countries:
+        warn(f"No proxy files found in '{PROXY_DIR}/' directory.")
+        return None
+
+    # Step A: Choose Country
+    chosen_country_info = None
+    while True:
+        clear()
+        header("STEP 1: SELECT PROXY COUNTRY")
+        print(col("  Available Countries:\n", Fore.CYAN))
+        for i, c in enumerate(countries):
