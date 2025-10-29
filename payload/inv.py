@@ -1102,3 +1102,24 @@ async def choose_proxy_for_account():
         header("STEP 1: SELECT PROXY COUNTRY")
         print(col("  Available Countries:\n", Fore.CYAN))
         for i, c in enumerate(countries):
+            act = c.get("active_count", 0)
+            tot = c.get("count", 0)
+            cname = c.get("country", "")
+            print(f"  [{col(f'{i+1:>2}', Fore.CYAN)}]  {col(f'{cname:<24}', Fore.WHITE)} {col(f'({act} active / {tot} total)', Fore.GREEN if act > 0 else Fore.YELLOW)}")
+        print()
+        print(col("  [ 0 ]  Skip proxy (Direct connection)", Fore.WHITE + Style.DIM))
+        c_choice = prompt(f"Select Country (1-{len(countries)}, 0 to skip)").strip()
+
+        if c_choice == "0":
+            return {"enabled": False}
+        try:
+            c_idx = int(c_choice)
+            if 1 <= c_idx <= len(countries):
+                chosen_country_info = countries[c_idx - 1]
+                break
+            else:
+                error("Invalid selection!"); press_enter()
+        except ValueError:
+            error("Invalid input!"); press_enter()
+
+    # Step B: Choose State (filter for active proxies, exclude Bihar)
