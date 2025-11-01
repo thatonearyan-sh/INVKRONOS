@@ -1123,3 +1123,24 @@ async def choose_proxy_for_account():
             error("Invalid input!"); press_enter()
 
     # Step B: Choose State (filter for active proxies, exclude Bihar)
+    country_file = chosen_country_info["file"]
+    cname = chosen_country_info["country"]
+    proxies = load_country_proxies(country_file)
+
+    if "india" in cname.lower():
+        proxies = [p for p in proxies if p.get("state", "").lower() != "bihar" and p.get("city", "").lower() != "bhagalpur"]
+
+    # Filter for ONLY ACTIVE proxies
+    active_proxies = [p for p in proxies if p.get("status") == "active"]
+
+    if not active_proxies:
+        warn(f"No proxies currently marked active in {cname}!")
+        print(col("  Would you like to auto-test all proxies in this country now? (y/n)", Fore.YELLOW))
+        if prompt("Choice").lower() == "y":
+            proxies, act_cnt = await benchmark_proxies_list(proxies, cname)
+            save_country_proxies(country_file, proxies)
+            active_proxies = [p for p in proxies if p.get("status") == "active"]
+
+    if not active_proxies:
+        error(f"No active proxies available for {cname} at this moment.")
+        press_enter()
