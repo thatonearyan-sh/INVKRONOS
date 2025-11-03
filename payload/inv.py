@@ -1144,3 +1144,24 @@ async def choose_proxy_for_account():
     if not active_proxies:
         error(f"No active proxies available for {cname} at this moment.")
         press_enter()
+        return {"enabled": False}
+
+    from collections import defaultdict
+    state_map = defaultdict(list)
+    for p in active_proxies:
+        st = p.get("state") or "Other"
+        state_map[st].append(p)
+
+    states = sorted(state_map.keys(), key=lambda s: (-len(state_map[s]), s))
+
+    chosen_state = None
+    while True:
+        clear()
+        header(f"STEP 2: SELECT STATE  —  {cname.upper()}")
+        print(col(f"  Available States in {cname} with Active Proxies:\n", Fore.CYAN))
+        for i, st in enumerate(states):
+            cnt = len(state_map[st])
+            print(f"  [{col(f'{i+1:>2}', Fore.CYAN)}]  {col(f'{st:<26}', Fore.WHITE)} {col(f'({cnt} active proxies)', Fore.GREEN)}")
+        print()
+        print(col("  [ T ]  ⚡ Benchmark / Re-test All Proxies in this Country", Fore.YELLOW + Style.BRIGHT))
+        print(col("  [ B ]  Back to Country Selection", Fore.WHITE + Style.DIM))
