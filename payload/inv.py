@@ -1165,3 +1165,24 @@ async def choose_proxy_for_account():
         print()
         print(col("  [ T ]  ⚡ Benchmark / Re-test All Proxies in this Country", Fore.YELLOW + Style.BRIGHT))
         print(col("  [ B ]  Back to Country Selection", Fore.WHITE + Style.DIM))
+        print(col("  [ 0 ]  Skip proxy (Direct connection)", Fore.WHITE + Style.DIM))
+
+        s_choice = prompt(f"Select State (1-{len(states)}, T to test, B for back)").strip().lower()
+        if s_choice == "0":
+            return {"enabled": False}
+        if s_choice == "b":
+            return await choose_proxy_for_account()
+        if s_choice == "t":
+            proxies, act_cnt = await benchmark_proxies_list(proxies, cname)
+            save_country_proxies(country_file, proxies)
+            active_proxies = [p for p in proxies if p.get("status") == "active"]
+            state_map = defaultdict(list)
+            for p in active_proxies:
+                state_map[p.get("state") or "Other"].append(p)
+            states = sorted(state_map.keys(), key=lambda s: (-len(state_map[s]), s))
+            success(f"Benchmark finished! {act_cnt} proxies are ACTIVE.")
+            press_enter()
+            continue
+
+        try:
+            s_idx = int(s_choice)
