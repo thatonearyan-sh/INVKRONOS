@@ -1186,3 +1186,24 @@ async def choose_proxy_for_account():
 
         try:
             s_idx = int(s_choice)
+            if 1 <= s_idx <= len(states):
+                chosen_state = states[s_idx - 1]
+                break
+            else:
+                error("Invalid selection!"); press_enter()
+        except ValueError:
+            error("Invalid input!"); press_enter()
+
+    # Step C: Select Specific Active Proxy within chosen State
+    state_proxies = state_map[chosen_state]
+
+    while True:
+        clear()
+        header(f"STEP 3: ACTIVE PROXIES IN {chosen_state.upper()} ({cname})")
+        print(col(f"  Showing ONLY ACTIVE verified proxies in {chosen_state}:\n", Fore.CYAN))
+
+        display_limit = min(len(state_proxies), 25)
+        for i in range(display_limit):
+            p = state_proxies[i]
+            idx_str = f"{i + 1:>2}"
+            ct = p.get("city", "")
