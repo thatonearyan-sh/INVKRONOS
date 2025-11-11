@@ -1207,3 +1207,24 @@ async def choose_proxy_for_account():
             p = state_proxies[i]
             idx_str = f"{i + 1:>2}"
             ct = p.get("city", "")
+            ptype = p.get("type", "socks5").upper()
+            host_port = f"{p.get('host')}:{p.get('port')}"
+            lat = p.get("latency_ms", "?")
+            lat_str = f"{lat}ms" if isinstance(lat, int) and lat < 9000 else "OK"
+
+            line = f"  [{col(idx_str, Fore.CYAN)}]  {col(f'{ct:<16}', Fore.WHITE)} {col(f'{ptype:<6}', Fore.YELLOW)} {col(f'{host_port:<22}', Fore.CYAN)} {col(f'⚡ {lat_str:<8}', Fore.GREEN)} {col('ACTIVE ✓', Fore.GREEN)}"
+            print(line)
+
+        if len(state_proxies) > display_limit:
+            print(col(f"\n  … and {len(state_proxies) - display_limit} more active proxies in this state.", Fore.WHITE + Style.DIM))
+
+        print()
+        print(col("  [ T ]  ⚡ Re-test Proxies in this State", Fore.YELLOW + Style.BRIGHT))
+        print(col("  [ B ]  Back to State selection", Fore.WHITE + Style.DIM))
+
+        p_choice = prompt(f"Select proxy (1-{display_limit}, T to test, B for back)").strip().lower()
+
+        if p_choice == "b":
+            return await choose_proxy_for_account()
+        elif p_choice == "t":
+            state_proxies, act = await benchmark_proxies_list(state_proxies, f"{chosen_state}, {cname}")
