@@ -1228,3 +1228,23 @@ async def choose_proxy_for_account():
             return await choose_proxy_for_account()
         elif p_choice == "t":
             state_proxies, act = await benchmark_proxies_list(state_proxies, f"{chosen_state}, {cname}")
+            state_proxies = [p for p in state_proxies if p.get("status") == "active"]
+            state_map[chosen_state] = state_proxies
+            success("Tested state proxies!")
+            press_enter()
+            continue
+        else:
+            try:
+                num = int(p_choice)
+                if 1 <= num <= display_limit:
+                    sel = state_proxies[num - 1]
+                    p_info = {
+                        "enabled": True,
+                        "type": sel.get("type", "socks5"),
+                        "host": sel.get("host"),
+                        "port": int(sel.get("port")),
+                        "state": chosen_state,
+                        "city": sel.get("city", ""),
+                        "country": cname
+                    }
+                    success(f"Proxy selected: [{chosen_state}, {sel.get('city')}] {sel.get('type').upper()} {sel.get('host')}:{sel.get('port')}")
