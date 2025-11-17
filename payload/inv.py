@@ -1248,3 +1248,24 @@ async def choose_proxy_for_account():
                         "country": cname
                     }
                     success(f"Proxy selected: [{chosen_state}, {sel.get('city')}] {sel.get('type').upper()} {sel.get('host')}:{sel.get('port')}")
+                    return p_info
+                else:
+                    error(f"Invalid option! Pick 1 to {display_limit}"); press_enter()
+            except ValueError:
+                error("Invalid input!"); press_enter()
+
+async def _reconnect_account_client(account_name, config, client):
+    info("Reconnecting client with new proxy settings…")
+    try:
+        await go_offline(client)
+        await client.disconnect()
+    except Exception:
+        pass
+    try:
+        new_client = await connect_client(
+            StringSession(config.get("client_token") or config.get("session_string", "")),
+            config["api_id"],
+            config["api_hash"],
+            account_config=config,
+        )
+        success("Client reconnected successfully ✓")
