@@ -1269,3 +1269,24 @@ async def _reconnect_account_client(account_name, config, client):
             account_config=config,
         )
         success("Client reconnected successfully ✓")
+        return new_client
+    except Exception as e:
+        error(f"Reconnection error: {e}")
+        return client
+
+async def feat_manage_account_proxy(account_name, config, all_accounts, client=None):
+    clear()
+    header(f"PROXY MANAGER  —  ACCOUNT: {account_name}")
+    current_lbl = proxy_label(config)
+    print(col(f"  Current Account: {account_name}", Fore.WHITE + Style.BRIGHT))
+    print(col(f"  Active Proxy:    {current_lbl}\n", Fore.CYAN + Style.BRIGHT))
+
+    print(col("  1.  ⚡ Change Proxy  (Country ➔ State ➔ Active Proxies)", Fore.GREEN + Style.BRIGHT))
+    print(col("  2.  🚫 Disable Proxy  (Switch to Direct Connection / Real IP)", Fore.YELLOW + Style.BRIGHT))
+    print(col("  3.  🔄 Test Live Speed of Current Proxy", Fore.WHITE))
+    print(col("  4.  ✍️   Enter Custom Proxy Manually", Fore.WHITE))
+    print(col("  5.  🌐  Inherit Global Proxy Setting (from proxy.json)", Fore.WHITE))
+    print(col("  6.  Back", Fore.WHITE + Style.DIM))
+    print()
+    ch = prompt("Choose option (1-6)").strip()
+
