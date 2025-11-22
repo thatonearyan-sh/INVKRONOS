@@ -1290,3 +1290,24 @@ async def feat_manage_account_proxy(account_name, config, all_accounts, client=N
     print()
     ch = prompt("Choose option (1-6)").strip()
 
+    reconnected_client = None
+
+    if ch == "1":
+        new_proxy = await choose_proxy_for_account()
+        if new_proxy is not None:
+            all_accounts[account_name]["proxy"] = new_proxy
+            config["proxy"] = new_proxy
+            save_accounts(all_accounts)
+            success(f"Proxy updated for '{account_name}' to: {proxy_label(config)}")
+            if client:
+                reconnected_client = await _reconnect_account_client(account_name, config, client)
+        press_enter()
+
+    elif ch == "2":
+        all_accounts[account_name]["proxy"] = {"enabled": False}
+        config["proxy"] = {"enabled": False}
+        save_accounts(all_accounts)
+        warn(f"Proxy disabled for '{account_name}'! Account will now connect directly.")
+        if client:
+            reconnected_client = await _reconnect_account_client(account_name, config, client)
+        press_enter()
