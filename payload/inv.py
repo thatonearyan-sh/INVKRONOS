@@ -1311,3 +1311,24 @@ async def feat_manage_account_proxy(account_name, config, all_accounts, client=N
         if client:
             reconnected_client = await _reconnect_account_client(account_name, config, client)
         press_enter()
+
+    elif ch == "3":
+        pcfg = resolve_proxy(config)
+        if not pcfg.get("enabled"):
+            info("Account is currently using Direct Connection (No proxy to test).")
+        else:
+            info(f"Pinging {pcfg.get('type','').upper()}://{pcfg.get('host')}:{pcfg.get('port')} to Telegram DC4…")
+            loop = asyncio.get_running_loop()
+            alive, lat = await loop.run_in_executor(None, test_proxy_sync, pcfg)
+            if alive:
+                success(f"Proxy is ACTIVE! Live latency: {lat}ms ✓")
+            else:
+                error("Proxy connection TIMED OUT or is OFFLINE! ✗")
+        press_enter()
+
+    elif ch == "4":
+        custom_p = prompt_custom_proxy()
+        if custom_p:
+            all_accounts[account_name]["proxy"] = custom_p
+            config["proxy"] = custom_p
+            save_accounts(all_accounts)
