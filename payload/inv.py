@@ -1332,3 +1332,24 @@ async def feat_manage_account_proxy(account_name, config, all_accounts, client=N
             all_accounts[account_name]["proxy"] = custom_p
             config["proxy"] = custom_p
             save_accounts(all_accounts)
+            success(f"Custom proxy saved for '{account_name}': {proxy_label(config)}")
+            if client:
+                reconnected_client = await _reconnect_account_client(account_name, config, client)
+        press_enter()
+
+    elif ch == "5":
+        if "proxy" in all_accounts[account_name]:
+            del all_accounts[account_name]["proxy"]
+        if "proxy" in config:
+            del config["proxy"]
+        save_accounts(all_accounts)
+        success(f"'{account_name}' will now inherit the global proxy setting: {proxy_label(config)}")
+        if client:
+            reconnected_client = await _reconnect_account_client(account_name, config, client)
+        press_enter()
+
+    return reconnected_client
+
+async def setup_proxy():
+    clear()
+    header("PROXY  /  STEALTH ROUTING")
