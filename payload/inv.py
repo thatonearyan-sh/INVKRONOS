@@ -1353,3 +1353,24 @@ async def feat_manage_account_proxy(account_name, config, all_accounts, client=N
 async def setup_proxy():
     clear()
     header("PROXY  /  STEALTH ROUTING")
+    pcfg = load_proxy()
+    if pcfg.get("enabled"):
+        info(f"Active global proxy:  {proxy_label()}")
+    else:
+        warn("No proxy set — Telegram sees your real IP!")
+
+    print()
+    print(col("  1.  SOCKS5    (most VPN apps / SSH tunnels)", Fore.WHITE))
+    print(col("  2.  SOCKS4",                                  Fore.WHITE))
+    print(col("  3.  HTTP proxy",                              Fore.WHITE))
+    print(col("  4.  MTProto   (Telegram native — no PySocks)", Fore.WHITE))
+    print(col("  5.  ⚡ Select Global Proxy from Pool (Country ➔ State ➔ Active)", Fore.GREEN + Style.BRIGHT))
+    print(col("  6.  🔄 Benchmark All Proxies (Verify Active/Dead)", Fore.YELLOW + Style.BRIGHT))
+    print(col("  7.  👥 Manage / Disable Proxy for a Specific Account", Fore.CYAN + Style.BRIGHT))
+    print(col("  8.  Disable global proxy",                    Fore.RED + Style.DIM))
+    print(col("  9.  Back",                                    Fore.WHITE + Style.DIM))
+    choice = prompt("Choose")
+
+    if choice in ("1", "2", "3"):
+        ptype  = {"1": "socks5", "2": "socks4", "3": "http"}[choice]
+        host   = prompt("Host  (IP or domain)")
