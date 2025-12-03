@@ -1374,3 +1374,24 @@ async def setup_proxy():
     if choice in ("1", "2", "3"):
         ptype  = {"1": "socks5", "2": "socks4", "3": "http"}[choice]
         host   = prompt("Host  (IP or domain)")
+        if not host:
+            error("Host is required!"); press_enter(); return
+        port_s = prompt("Port")
+        if not port_s.isdigit():
+            error("Port must be a number!"); press_enter(); return
+        user = prompt("Username  (Enter to skip)")
+        pw   = prompt("Password  (Enter to skip)") if user else ""
+        save_proxy({"enabled": True, "type": ptype, "host": host,
+                    "port": int(port_s), "username": user, "password": pw})
+        success(f"{ptype.upper()} proxy saved!")
+        press_enter()
+    elif choice == "4":
+        host   = prompt("MTProto host")
+        if not host:
+            error("Host is required!"); press_enter(); return
+        port_s = prompt("Port")
+        if not port_s.isdigit():
+            error("Port must be a number!"); press_enter(); return
+        secret = prompt("Secret  (hex string, starts with  dd…)")
+        if not secret:
+            error("Secret is required!"); press_enter(); return
