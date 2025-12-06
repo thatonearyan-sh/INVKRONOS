@@ -1395,3 +1395,23 @@ async def setup_proxy():
         secret = prompt("Secret  (hex string, starts with  dd…)")
         if not secret:
             error("Secret is required!"); press_enter(); return
+        save_proxy({"enabled": True, "type": "mtproto", "host": host,
+                    "port": int(port_s), "secret": secret})
+        success("MTProto proxy saved!")
+        press_enter()
+    elif choice == "5":
+        chosen = await choose_proxy_for_account()
+        if chosen and chosen.get("enabled"):
+            save_proxy(chosen)
+            success(f"Global proxy set to {proxy_label(chosen)}!")
+        press_enter()
+    elif choice == "6":
+        await benchmark_all_country_proxies()
+        press_enter()
+    elif choice == "7":
+        accs = load_accounts()
+        if not accs:
+            warn("No accounts saved yet!"); press_enter()
+        else:
+            names = list(accs.keys())
+            clear()
