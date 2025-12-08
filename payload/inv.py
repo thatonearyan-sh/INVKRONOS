@@ -1415,3 +1415,24 @@ async def setup_proxy():
         else:
             names = list(accs.keys())
             clear()
+            header("SELECT ACCOUNT TO MANAGE PROXY")
+            print()
+            for i, n in enumerate(names):
+                print(col(f"  {i:>2}.  {n:<14} [{proxy_label(accs[n])}]", Fore.WHITE))
+            print()
+            pick_acc = prompt(f"Select account (0-{len(names)-1})").strip()
+            if pick_acc.isdigit() and 0 <= int(pick_acc) < len(names):
+                target_name = names[int(pick_acc)]
+                await feat_manage_account_proxy(target_name, accs[target_name], accs)
+            else:
+                error("Invalid selection!"); press_enter()
+    elif choice == "8":
+        save_proxy({"enabled": False})
+        warn("Proxy disabled — your real IP is now visible to Telegram.")
+        press_enter()
+    elif choice == "9":
+        return
+
+
+# ═══════════════════════════════════════════════════════════════
+#  STEALTH CORE
