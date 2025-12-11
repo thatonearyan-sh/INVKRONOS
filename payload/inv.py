@@ -1436,3 +1436,24 @@ async def setup_proxy():
 
 # ═══════════════════════════════════════════════════════════════
 #  STEALTH CORE
+# ═══════════════════════════════════════════════════════════════
+
+async def get_public_ip():
+    loop = asyncio.get_running_loop()
+    try:
+        ip = await loop.run_in_executor(
+            None,
+            lambda: urllib.request.urlopen(
+                "https://api.ipify.org", timeout=4
+            ).read().decode()
+        )
+        return ip.strip()
+    except Exception:
+        return "unavailable"
+
+async def go_offline(client):
+    try:
+        await client(UpdateStatusRequest(offline=True))
+    except Exception:
+        pass
+
