@@ -1457,3 +1457,24 @@ async def go_offline(client):
     except Exception:
         pass
 
+async def keepalive_loop(client):
+    while True:
+        await go_offline(client)
+        await asyncio.sleep(KEEPALIVE_SEC)
+
+
+# ═══════════════════════════════════════════════════════════════
+#  DIALOG HELPERS
+# ═══════════════════════════════════════════════════════════════
+
+async def fetch_dialogs(client, limit=100):
+    return await client.get_dialogs(limit=limit)
+
+def dialog_fmt(accent):
+    def _fmt(idx, d):
+        unread  = col(f" [{d.unread_count}]", Fore.RED) if d.unread_count else ""
+        preview = ""
+        if d.message and d.message.text:
+            preview = col("   " + trunc(d.message.text.replace("\n", " "), 38),
+                          Style.DIM + Fore.WHITE)
+        return f"  {col(f'{idx:>3}', accent)}.  {col(d.name or 'Unknown', Fore.WHITE)}{unread}{preview}"
