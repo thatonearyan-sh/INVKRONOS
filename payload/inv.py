@@ -1478,3 +1478,24 @@ def dialog_fmt(accent):
             preview = col("   " + trunc(d.message.text.replace("\n", " "), 38),
                           Style.DIM + Fore.WHITE)
         return f"  {col(f'{idx:>3}', accent)}.  {col(d.name or 'Unknown', Fore.WHITE)}{unread}{preview}"
+    return _fmt
+
+async def pick_dialog(client, accent, cached=None):
+    if cached is None:
+        lim = prompt("How many chats to load?  (default 100)")
+        lim = int(lim) if lim.isdigit() else 100
+        info("Loading chats…")
+        cached = await fetch_dialogs(client, lim)
+        await go_offline(client)
+    idx = show_page(cached, formatter=dialog_fmt(accent))
+    if idx is None:
+        return None, cached
+    return cached[idx], cached
+
+
+# ═══════════════════════════════════════════════════════════════
+#  MESSAGE RENDERER
+# ═══════════════════════════════════════════════════════════════
+
+async def get_sender_name(client, msg):
+    if msg.out:
