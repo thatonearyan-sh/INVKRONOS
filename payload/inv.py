@@ -1499,3 +1499,24 @@ async def pick_dialog(client, accent, cached=None):
 
 async def get_sender_name(client, msg):
     if msg.out:
+        return col("📤 You", Fore.GREEN)
+    try:
+        s = await msg.get_sender()
+        if s:
+            full = f"{getattr(s,'first_name','') or ''} {getattr(s,'last_name','') or ''}".strip()
+            full = full or getattr(s, "title", "Unknown")
+            return col(f"📥 {full}", Fore.BLUE)
+    except Exception:
+        pass
+    return col("📥 Unknown", Fore.BLUE)
+
+async def render_msg(client, msg):
+    sndr = await get_sender_name(client, msg)
+    date = to_ist(msg.date)
+
+    if msg.reply_to_msg_id:
+        reply_txt = "unknown"
+        try:
+            r_msg = await msg.get_reply_message()
+            if r_msg:
+                if r_msg.text:
