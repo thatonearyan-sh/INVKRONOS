@@ -1520,3 +1520,24 @@ async def render_msg(client, msg):
             r_msg = await msg.get_reply_message()
             if r_msg:
                 if r_msg.text:
+                    reply_txt = r_msg.text.replace("\n", " ").strip()[:40]
+                    if len(r_msg.text) > 40: reply_txt += "..."
+                elif getattr(r_msg, 'media', None):
+                    media_type = type(r_msg.media).__name__.replace('MessageMedia', '')
+                    reply_txt = f"[{media_type}]"
+        except Exception:
+            pass
+        print(col(f"    ↩  [replied to: {reply_txt}]", Style.DIM + Fore.CYAN))
+    elif msg.reply_to:
+        print(col("    ↩  [reply]", Style.DIM + Fore.CYAN))
+    print(col(f"  [{date}]  {sndr}:", Style.BRIGHT + Fore.WHITE))
+
+    if msg.fwd_from:
+        try:
+            orig = msg.fwd_from.from_name
+            if not orig and msg.fwd_from.from_id:
+                ent  = await client.get_entity(msg.fwd_from.from_id)
+                orig = getattr(ent, "first_name", None) or getattr(ent, "title", None)
+            orig = orig or "Unknown"
+            print(col(f"    🔄 Fwd from {orig}  [{to_ist(msg.fwd_from.date)}]", Fore.MAGENTA))
+        except Exception:
