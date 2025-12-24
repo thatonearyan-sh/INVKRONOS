@@ -1541,3 +1541,24 @@ async def render_msg(client, msg):
             orig = orig or "Unknown"
             print(col(f"    🔄 Fwd from {orig}  [{to_ist(msg.fwd_from.date)}]", Fore.MAGENTA))
         except Exception:
+            pass
+
+    if msg.text:
+        for line in msg.text.split("\n"):
+            print(f"    {line}")
+
+    if msg.media:
+        icons = {
+            "MessageMediaPhoto":    "🖼️   Photo",
+            "MessageMediaDocument": "📎  File",
+            "MessageMediaPoll":     "📊  Poll",
+            "MessageMediaWebPage":  "🌐  Link preview",
+            "MessageMediaGeo":      "📍  Location",
+            "MessageMediaContact":  "👤  Contact",
+            "MessageMediaVenue":    "🏛️   Venue",
+        }
+        label = icons.get(type(msg.media).__name__, f"📦  {type(msg.media).__name__}")
+        print(col(f"    {label}", Fore.YELLOW))
+
+        if hasattr(msg.media, "poll"):
+            poll    = msg.media.poll
