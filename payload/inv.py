@@ -1562,3 +1562,24 @@ async def render_msg(client, msg):
 
         if hasattr(msg.media, "poll"):
             poll    = msg.media.poll
+            results = msg.media.results
+            q_text  = poll.question.text if hasattr(poll.question, "text") else str(poll.question)
+            print(col(f"    Q: {q_text}", Fore.WHITE))
+            if results and results.results:
+                for ans, res in zip(poll.answers, results.results):
+                    voters = res.voters or 0
+                    bar    = "█" * min(voters, 20)
+                    a_text = ans.text.text if hasattr(ans.text, "text") else str(ans.text)
+                    print(col(f"      {a_text}: {voters}  {bar}", Fore.CYAN))
+
+        if msg.message:
+            print(col(f"    Caption: {msg.message}", Style.DIM))
+
+    if msg.reactions:
+        try:
+            parts = [
+                f"{getattr(r.reaction,'emoticon','?')}×{r.count}"
+                for r in msg.reactions.results
+            ]
+            if parts:
+                print(col(f"    {' '.join(parts)}", Fore.YELLOW))
