@@ -1583,3 +1583,23 @@ async def render_msg(client, msg):
             ]
             if parts:
                 print(col(f"    {' '.join(parts)}", Fore.YELLOW))
+        except Exception:
+            pass
+    print()
+
+
+# ═══════════════════════════════════════════════════════════════
+#  FEATURES — READ
+# ═══════════════════════════════════════════════════════════════
+
+async def feat_list(client, accent):
+    """1. List All Chats — stays open, reload or pick new limit."""
+    dialogs = None
+    while True:
+        clear()
+        header("ALL CHATS")
+        lim     = prompt("How many chats?  (default 100)")
+        lim     = int(lim) if lim.isdigit() else 100
+        info("Loading…")
+        dialogs = await fetch_dialogs(client, lim)
+        await go_offline(client)
