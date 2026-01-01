@@ -1603,3 +1603,24 @@ async def feat_list(client, accent):
         info("Loading…")
         dialogs = await fetch_dialogs(client, lim)
         await go_offline(client)
+
+        total_unread = sum(d.unread_count for d in dialogs if d.unread_count)
+        if total_unread:
+            warn(f"{total_unread} unread  across  "
+                 f"{sum(1 for d in dialogs if d.unread_count)} chats")
+
+        show_page(dialogs, formatter=dialog_fmt(accent))
+
+        nxt = again_menu("Reload with different limit")
+        if nxt is None:
+            return
+
+
+async def feat_read(client, accent):
+    """2. Read Messages — loop: read same chat again or pick another."""
+    selected = None
+    dialogs  = None
+    while True:
+        clear()
+        header("READ MESSAGES")
+        if selected is None:
