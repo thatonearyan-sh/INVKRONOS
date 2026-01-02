@@ -1624,3 +1624,24 @@ async def feat_read(client, accent):
         clear()
         header("READ MESSAGES")
         if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
+                return
+
+        n = prompt(f"How many messages from  [{selected.name}]?  (default 30)")
+        n = int(n) if n.isdigit() else 30
+
+        info("Loading messages…")
+        msgs = await client.get_messages(selected.entity, limit=n)
+        await go_offline(client)
+
+        clear()
+        header(f"💬  {selected.name}")
+        print()
+        for m in reversed(msgs):
+            await render_msg(client, m)
+            divider()
+        await go_offline(client)
+
+        nxt = again_menu(
+            f"Read more from  [{selected.name}]",
