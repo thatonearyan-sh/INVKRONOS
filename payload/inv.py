@@ -1645,3 +1645,24 @@ async def feat_read(client, accent):
 
         nxt = again_menu(
             f"Read more from  [{selected.name}]",
+            "Pick a different chat",
+        )
+        if nxt is None:
+            return
+        elif "different" in nxt:
+            selected = None
+
+
+async def feat_search_chat(client, accent):
+    """3. Search Within Chat — stay in same chat or switch."""
+    selected = None
+    dialogs  = None
+    while True:
+        clear()
+        header("SEARCH WITHIN CHAT")
+        if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
+                return
+
+        q = prompt(f"Keyword to search in  [{selected.name}]")
