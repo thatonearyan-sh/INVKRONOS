@@ -1666,3 +1666,24 @@ async def feat_search_chat(client, accent):
                 return
 
         q = prompt(f"Keyword to search in  [{selected.name}]")
+        if not q:
+            error("Keyword cannot be empty!"); press_enter(); continue
+
+        info(f"Searching '{q}' in {selected.name}…")
+        msgs = await client.get_messages(selected.entity, search=q, limit=50)
+        await go_offline(client)
+
+        if not msgs:
+            error("No results found!"); press_enter()
+        else:
+            clear()
+            header(f"🔍  '{q}'  in  {selected.name}")
+            print()
+            for m in reversed(msgs):
+                await render_msg(client, m)
+                divider()
+            await go_offline(client)
+
+        nxt = again_menu(
+            f"Search new keyword in  [{selected.name}]",
+            "Search in a different chat",
