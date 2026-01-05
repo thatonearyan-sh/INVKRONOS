@@ -1687,3 +1687,24 @@ async def feat_search_chat(client, accent):
         nxt = again_menu(
             f"Search new keyword in  [{selected.name}]",
             "Search in a different chat",
+        )
+        if nxt is None:
+            return
+        elif "different" in nxt:
+            selected = None
+
+
+async def feat_search_global(client):
+    """4. Global Search — loop: search another keyword."""
+    while True:
+        clear()
+        header("GLOBAL SEARCH")
+        q = prompt("Keyword to search across ALL chats")
+        if not q:
+            error("Keyword cannot be empty!"); press_enter(); continue
+
+        info("Searching across all chats…")
+        msgs = await client.get_messages(None, search=q, limit=50)
+        await go_offline(client)
+
+        if not msgs:
