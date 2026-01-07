@@ -1708,3 +1708,24 @@ async def feat_search_global(client):
         await go_offline(client)
 
         if not msgs:
+            error("No results found!"); press_enter()
+        else:
+            clear()
+            header(f"🔍  Global — '{q}'  ({len(msgs)} results)")
+            print()
+            for m in msgs:
+                try:
+                    chat      = await m.get_chat()
+                    chat_name = getattr(chat, "title", None) or getattr(chat, "first_name", "?")
+                    print(col(f"  📌 [{chat_name}]", Fore.MAGENTA))
+                except Exception:
+                    pass
+                await render_msg(client, m)
+                divider()
+            await go_offline(client)
+
+        nxt = again_menu("Search a new keyword")
+        if nxt is None:
+            return
+
+
