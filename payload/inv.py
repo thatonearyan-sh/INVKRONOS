@@ -1729,3 +1729,24 @@ async def feat_search_global(client):
             return
 
 
+async def feat_search_date(client, accent):
+    """5. Search by Date Range — loop: new range same chat or different chat."""
+    selected = None
+    dialogs  = None
+    while True:
+        clear()
+        header("SEARCH BY DATE RANGE  (IST)")
+        if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
+                return
+
+        from_s = prompt("From   DD/MM/YYYY")
+        to_s   = prompt("To     DD/MM/YYYY")
+        try:
+            from_dt = datetime.strptime(from_s, "%d/%m/%Y").replace(tzinfo=IST).astimezone(timezone.utc)
+            to_dt   = datetime.strptime(to_s,   "%d/%m/%Y").replace(tzinfo=IST).astimezone(timezone.utc)
+        except ValueError:
+            error("Invalid date — use DD/MM/YYYY"); press_enter(); continue
+
+        info("Loading messages in range…")
