@@ -1750,3 +1750,23 @@ async def feat_search_date(client, accent):
             error("Invalid date — use DD/MM/YYYY"); press_enter(); continue
 
         info("Loading messages in range…")
+        msgs = []
+        async for m in client.iter_messages(
+            selected.entity, offset_date=to_dt, reverse=False, limit=500
+        ):
+            m_dt = m.date if m.date.tzinfo else m.date.replace(tzinfo=timezone.utc)
+            if m_dt < from_dt:
+                break
+            msgs.append(m)
+        await go_offline(client)
+
+        if not msgs:
+            error("No messages in that date range!"); press_enter()
+        else:
+            clear()
+            header(f"📅  {selected.name}   {from_s} → {to_s}  ({len(msgs)} msgs)")
+            print()
+            for m in reversed(msgs[:100]):
+                await render_msg(client, m)
+                divider()
+            await go_offline(client)
