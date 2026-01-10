@@ -1770,3 +1770,24 @@ async def feat_search_date(client, accent):
                 await render_msg(client, m)
                 divider()
             await go_offline(client)
+
+        nxt = again_menu(
+            f"New date range in  [{selected.name}]",
+            "Pick a different chat",
+        )
+        if nxt is None:
+            return
+        elif "different" in nxt:
+            selected = None
+
+
+MEDIA_TYPES = [
+    ("1", "Photos",    InputMessagesFilterPhotos()),
+    ("2", "Documents", InputMessagesFilterDocument()),
+    ("3", "Voice",     InputMessagesFilterVoice()),
+    ("4", "Videos",    InputMessagesFilterVideo()),
+]
+
+async def feat_search_media(client, accent):
+    """6. Search by Media Type — loop: different type or different chat."""
+    selected = None
