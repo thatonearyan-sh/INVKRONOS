@@ -1791,3 +1791,24 @@ MEDIA_TYPES = [
 async def feat_search_media(client, accent):
     """6. Search by Media Type — loop: different type or different chat."""
     selected = None
+    dialogs  = None
+    while True:
+        clear()
+        header("SEARCH BY MEDIA TYPE")
+        if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
+                return
+
+        print()
+        print(col(f"  Chat:  [{selected.name}]", Fore.CYAN))
+        print()
+        for t in MEDIA_TYPES:
+            print(col(f"  {t[0]}.  {t[1]}", Fore.WHITE))
+        choice = prompt("Choose type")
+        entry  = next((t for t in MEDIA_TYPES if t[0] == choice), None)
+        if not entry:
+            error("Invalid choice — enter 1 to 4"); press_enter(); continue
+
+        info(f"Loading {entry[1]} in {selected.name}…")
+        msgs = await client.get_messages(selected.entity, filter=entry[2], limit=50)
