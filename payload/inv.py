@@ -1812,3 +1812,24 @@ async def feat_search_media(client, accent):
 
         info(f"Loading {entry[1]} in {selected.name}…")
         msgs = await client.get_messages(selected.entity, filter=entry[2], limit=50)
+        await go_offline(client)
+
+        if not msgs:
+            error("No media found!"); press_enter()
+        else:
+            clear()
+            header(f"🎞   {selected.name}  —  {entry[1]}  ({len(msgs)} items)")
+            print()
+            for m in reversed(msgs):
+                await render_msg(client, m)
+                divider()
+            await go_offline(client)
+
+        nxt = again_menu(
+            f"Different media type in  [{selected.name}]",
+            "Pick a different chat",
+        )
+        if nxt is None:
+            return
+        elif "different" in nxt:
+            selected = None
