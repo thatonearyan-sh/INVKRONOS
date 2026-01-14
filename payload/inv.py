@@ -1833,3 +1833,24 @@ async def feat_search_media(client, accent):
             return
         elif "different" in nxt:
             selected = None
+
+
+async def feat_pinned(client, accent):
+    """7. Pinned Messages — loop: view another chat."""
+    while True:
+        clear()
+        header("PINNED MESSAGES")
+        selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
+        info("Loading pinned messages…")
+        try:
+            msgs = await client.get_messages(
+                selected.entity, filter=InputMessagesFilterPinned(), limit=20
+            )
+        except Exception:
+            msgs = []
+        await go_offline(client)
+
+        if not msgs:
