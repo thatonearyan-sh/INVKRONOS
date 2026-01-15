@@ -1854,3 +1854,24 @@ async def feat_pinned(client, accent):
         await go_offline(client)
 
         if not msgs:
+            error("No pinned messages found!"); press_enter()
+        else:
+            clear()
+            header(f"📌  Pinned  —  {selected.name}  ({len(msgs)} pinned)")
+            print()
+            for m in msgs:
+                await render_msg(client, m)
+                divider()
+            await go_offline(client)
+
+        nxt = again_menu("View pinned in another chat")
+        if nxt is None:
+            return
+
+
+async def feat_chat_info(client, accent):
+    """8. Chat / Group Info — loop: view another."""
+    while True:
+        clear()
+        header("CHAT / GROUP INFO")
+        selected, _ = await pick_dialog(client, accent)
