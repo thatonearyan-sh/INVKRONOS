@@ -1875,3 +1875,24 @@ async def feat_chat_info(client, accent):
         clear()
         header("CHAT / GROUP INFO")
         selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
+        entity = selected.entity
+        clear()
+        header(f"ℹ️   {selected.name}")
+
+        try:
+            if hasattr(entity, "megagroup") or hasattr(entity, "broadcast"):
+                full      = await client(GetFullChannelRequest(entity))
+                chat      = full.chats[0]
+                full_chat = full.full_chat
+                rows = [
+                    ("Title",    chat.title),
+                    ("Username", f"@{getattr(chat,'username','N/A') or 'N/A'}"),
+                    ("Members",  getattr(full_chat, "participants_count", "N/A")),
+                    ("Type",     "Channel" if getattr(chat, "broadcast", False) else "Group"),
+                    ("About",    trunc(getattr(full_chat, "about", "—") or "—", 80)),
+                ]
+                if getattr(full_chat, "invite_link", None):
+                    rows.append(("Invite", full_chat.invite_link))
