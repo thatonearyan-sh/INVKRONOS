@@ -1896,3 +1896,24 @@ async def feat_chat_info(client, accent):
                 ]
                 if getattr(full_chat, "invite_link", None):
                     rows.append(("Invite", full_chat.invite_link))
+            else:
+                full      = await client(GetFullUserRequest(entity))
+                user      = full.users[0]
+                full_user = full.full_user
+                name = f"{getattr(user,'first_name','') or ''} {getattr(user,'last_name','') or ''}".strip()
+                rows = [
+                    ("Name",     name),
+                    ("Username", f"@{getattr(user,'username','N/A') or 'N/A'}"),
+                    ("Phone",    getattr(user, "phone", "N/A") or "N/A"),
+                    ("Bio",      trunc(getattr(full_user, "about", "—") or "—", 80)),
+                    ("Verified", str(getattr(user, "verified", False))),
+                ]
+
+            await go_offline(client)
+            print()
+            label_w = max(len(r[0]) for r in rows) + 2
+            for label, value in rows:
+                print(f"  {col(label.ljust(label_w), Fore.CYAN)} {value}")
+
+        except Exception as e:
+            error(f"Could not fetch info: {e}")
