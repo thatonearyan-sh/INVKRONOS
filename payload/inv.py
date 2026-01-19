@@ -1917,3 +1917,23 @@ async def feat_chat_info(client, accent):
 
         except Exception as e:
             error(f"Could not fetch info: {e}")
+
+        await go_offline(client)
+
+        nxt = again_menu("View info for another chat / user")
+        if nxt is None:
+            return
+
+
+async def feat_mutual(client):
+    """9. Mutual Groups — loop: check another user."""
+    while True:
+        clear()
+        header("MUTUAL GROUPS")
+        username = prompt("@username  /  +phone  /  user ID")
+        if not username:
+            return
+        try:
+            target = await client.get_entity(username)
+            result = await client(GetCommonChatsRequest(user_id=target, max_id=0, limit=100))
+            await go_offline(client)
