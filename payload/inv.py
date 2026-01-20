@@ -1937,3 +1937,24 @@ async def feat_mutual(client):
             target = await client.get_entity(username)
             result = await client(GetCommonChatsRequest(user_id=target, max_id=0, limit=100))
             await go_offline(client)
+            if not result.chats:
+                error("No mutual groups found!")
+            else:
+                success(f"{len(result.chats)} mutual group(s):")
+                for g in result.chats:
+                    print(col(f"    • {g.title}", Fore.WHITE))
+        except Exception as e:
+            error(f"Error: {e}")
+        await go_offline(client)
+
+        nxt = again_menu("Check mutual groups for another user")
+        if nxt is None:
+            return
+
+
+# ═══════════════════════════════════════════════════════════════
+#  FEATURES — SEND
+# ═══════════════════════════════════════════════════════════════
+
+async def feat_send(client, accent):
+    """10. Send Message — loop: send to same chat again or pick another."""
