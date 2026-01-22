@@ -1958,3 +1958,24 @@ async def feat_mutual(client):
 
 async def feat_send(client, accent):
     """10. Send Message — loop: send to same chat again or pick another."""
+    selected = None
+    dialogs  = None
+    while True:
+        clear()
+        header("SEND MESSAGE  👻")
+        if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
+                return
+
+        print(col(f"\n  To:  [{selected.name}]", Fore.CYAN + Style.BRIGHT))
+        text = prompt("Message text  (blank = cancel this send)")
+        if not text:
+            warn("Send cancelled.")
+        else:
+            send_at     = auto_schedule()
+            send_at_ist = send_at.astimezone(IST).strftime("%H:%M")
+            try:
+                await go_offline(client)
+                await client.send_message(selected.entity, text, schedule=send_at)
+                await go_offline(client)
