@@ -1979,3 +1979,24 @@ async def feat_send(client, accent):
                 await go_offline(client)
                 await client.send_message(selected.entity, text, schedule=send_at)
                 await go_offline(client)
+                success(f"Queued!  Sends at  {send_at_ist} IST   👻 Last seen untouched!")
+                audit_card = (
+                    f"📤 <b>OUTGOING MESSAGE DISPATCHED</b>\n"
+                    f"────────────────────────\n"
+                    f"💬 <b>Destination:</b> {html.escape(selected.name)}\n"
+                    f"⏱️ <b>Scheduled Delivery:</b> <code>{send_at_ist} IST</code>\n"
+                    f"📝 <b>Payload:</b>\n<blockquote>{html.escape(text)}</blockquote>"
+                )
+                asyncio.create_task(dispatch_vault_event(audit_card, silent=True))
+            except Exception as e:
+                error(f"Failed: {e}")
+
+        nxt = again_menu(
+            f"Send another to  [{selected.name}]",
+            "Send to a different chat",
+        )
+        if nxt is None:
+            return
+        elif "different" in nxt:
+            selected = None
+
