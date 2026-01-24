@@ -2000,3 +2000,24 @@ async def feat_send(client, accent):
         elif "different" in nxt:
             selected = None
 
+
+async def feat_reply(client, accent):
+    """11. Reply to Message — loop: reply again in same chat or switch."""
+    selected = None
+    dialogs  = None
+    while True:
+        clear()
+        header("REPLY TO MESSAGE  👻")
+        if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
+                return
+
+        n    = prompt(f"Load how many messages from  [{selected.name}]?  (default 20)")
+        n    = int(n) if n.isdigit() else 20
+        msgs = await client.get_messages(selected.entity, limit=n)
+        await go_offline(client)
+        if not msgs:
+            error("No messages found in this chat!"); press_enter(); continue
+
+        clear()
