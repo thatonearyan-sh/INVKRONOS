@@ -2021,3 +2021,24 @@ async def feat_reply(client, accent):
             error("No messages found in this chat!"); press_enter(); continue
 
         clear()
+        header(f"💬  {selected.name}  —  pick message to reply")
+        mlist = list(reversed(msgs))
+        for i, m in enumerate(mlist):
+            sndr = "You" if m.out else selected.name
+            txt  = trunc(m.text or "[media]", 60)
+            print(col(f"  {i:>3}.  [{to_ist(m.date)}]  {sndr}:", Fore.WHITE)
+                  + col(f"  {txt}", Style.DIM))
+
+        try:
+            target = mlist[int(prompt("Reply to message number"))]
+        except (ValueError, IndexError):
+            error("Invalid number!"); press_enter(); continue
+
+        print(col("\n  What do you want to reply with?", Fore.CYAN))
+        print(col("  1. Text Only", Fore.WHITE))
+        print(col("  2. File / Folder Only", Fore.WHITE))
+        print(col("  3. Combined (Text + File)", Fore.WHITE))
+        
+        s_choice = prompt("Choose an option")
+        if s_choice not in ["1", "2", "3"]:
+            warn("Cancelled.")
