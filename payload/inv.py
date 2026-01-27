@@ -2042,3 +2042,24 @@ async def feat_reply(client, accent):
         s_choice = prompt("Choose an option")
         if s_choice not in ["1", "2", "3"]:
             warn("Cancelled.")
+            continue
+            
+        reply_text = None
+        if s_choice in ["1", "3"]:
+            reply_text = prompt("Your reply text")
+            if not reply_text and s_choice == "1":
+                warn("Cancelled.")
+                continue
+                
+        paths = []
+        if s_choice in ["2", "3"]:
+            print(col("  Type or drag-and-drop file paths. Type 'done' when finished.", Fore.CYAN))
+            while True:
+                raw_path = prompt("Absolute File Path (or 'done')")
+                if not raw_path: 
+                    break
+                if raw_path.strip().lower() == 'done':
+                    break
+                    
+                path = raw_path.strip().strip('\'"').replace("\\ ", " ")
+                if not os.path.exists(path):
