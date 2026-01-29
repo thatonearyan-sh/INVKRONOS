@@ -2084,3 +2084,23 @@ async def feat_reply(client, accent):
             continue
             
         print()
+        print(col("  Choose schedule time:", Fore.CYAN))
+        print(col("  1. +2 mins from now (Instant Stealth)", Fore.WHITE))
+        print(col("  2. Custom Schedule Time (HH:MM)", Fore.WHITE))
+        time_choice = prompt("Select 1 or 2")
+        
+        dt_utc = None
+        if time_choice == "2":
+            for attempt in range(3):
+                t_input = prompt("Send at time HH:MM (IST)")
+                if not t_input.strip():
+                    if attempt < 2:
+                        warn("Time cannot be blank! Please provide a time.")
+                    continue
+                    
+                try:
+                    now_ist = datetime.now(IST)
+                    t_ist = datetime.strptime(t_input.strip(), "%H:%M").replace(year=now_ist.year, month=now_ist.month, day=now_ist.day, tzinfo=IST)
+                    if t_ist < now_ist:
+                        t_ist += timedelta(days=1)
+                    dt_utc = t_ist.astimezone(timezone.utc)
