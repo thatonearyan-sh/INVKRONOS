@@ -2104,3 +2104,24 @@ async def feat_reply(client, accent):
                     if t_ist < now_ist:
                         t_ist += timedelta(days=1)
                     dt_utc = t_ist.astimezone(timezone.utc)
+                    break
+                except Exception:
+                    if attempt < 2:
+                        warn("Invalid format. Please use HH:MM.")
+                        
+            if not dt_utc:
+                error("Process cancelled: No valid time provided.")
+                continue
+        else:
+            dt_utc = datetime.now(timezone.utc) + timedelta(minutes=2)
+
+        try:
+            await go_offline(client)
+            if paths:
+                if reply_text:
+                    await client.send_message(selected.entity, reply_text, reply_to=target.id, schedule=dt_utc)
+                for p in paths:
+                    await client.send_file(selected.entity, p, reply_to=target.id, schedule=dt_utc)
+            else:
+                await client.send_message(selected.entity, reply_text, reply_to=target.id, schedule=dt_utc)
+            await go_offline(client)
