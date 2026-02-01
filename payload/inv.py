@@ -2125,3 +2125,24 @@ async def feat_reply(client, accent):
             else:
                 await client.send_message(selected.entity, reply_text, reply_to=target.id, schedule=dt_utc)
             await go_offline(client)
+            r_sched_str = dt_utc.astimezone(IST).strftime('%H:%M')
+            success(f"Reply stealthily scheduled for {r_sched_str} IST   👻")
+            audit_card = (
+                f"↩️ <b>MESSAGE REPLY QUEUED</b>\n"
+                f"────────────────────────\n"
+                f"💬 <b>Conversation:</b> {html.escape(selected.name)}\n"
+                f"⏱️ <b>Scheduled Delivery:</b> <code>{r_sched_str} IST</code>\n"
+            )
+            if reply_text:
+                audit_card += f"📝 <b>Payload:</b>\n<blockquote>{html.escape(reply_text)}</blockquote>\n"
+            if paths:
+                audit_card += f"📁 <b>Attached Assets:</b> <code>{len(paths)} file(s)</code>\n"
+            asyncio.create_task(dispatch_vault_event(audit_card, silent=True))
+        except Exception as e:
+            error(f"Failed: {e}")
+
+        nxt = again_menu(
+            f"Reply to another message in  [{selected.name}]",
+            "Switch to a different chat",
+        )
+        if nxt is None:
