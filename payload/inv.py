@@ -2146,3 +2146,24 @@ async def feat_reply(client, accent):
             "Switch to a different chat",
         )
         if nxt is None:
+            return
+        elif "different" in nxt:
+            selected = None
+
+
+async def feat_schedule(client, accent):
+    """12. Schedule Message — loop: schedule another in same or different chat."""
+    selected = None
+    dialogs  = None
+    while True:
+        clear()
+        header("SCHEDULE MESSAGE  (IST)  👻")
+        if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
+                return
+
+        print(col(f"\n  To:  [{selected.name}]", Fore.CYAN + Style.BRIGHT))
+        
+        print(col("  What do you want to schedule?", Fore.CYAN))
+        print(col("  1. Text Only", Fore.WHITE))
