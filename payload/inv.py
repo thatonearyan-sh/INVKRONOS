@@ -2167,3 +2167,24 @@ async def feat_schedule(client, accent):
         
         print(col("  What do you want to schedule?", Fore.CYAN))
         print(col("  1. Text Only", Fore.WHITE))
+        print(col("  2. File / Folder Only", Fore.WHITE))
+        print(col("  3. Combined (Text + File)", Fore.WHITE))
+        
+        s_choice = prompt("Choose an option")
+        if s_choice not in ["1", "2", "3"]:
+            warn("Cancelled.")
+            continue
+            
+        text = None
+        if s_choice in ["1", "3"]:
+            text = prompt("Message text")
+            if not text and s_choice == "1":
+                warn("Cancelled.")
+                continue
+                
+        paths = []
+        if s_choice in ["2", "3"]:
+            print(col("  Type or drag-and-drop file paths. Type 'done' when finished.", Fore.CYAN))
+            while True:
+                raw_path = prompt("Absolute File Path (or 'done')")
+                if not raw_path: 
