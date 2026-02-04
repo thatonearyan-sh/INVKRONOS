@@ -2188,3 +2188,24 @@ async def feat_schedule(client, accent):
             while True:
                 raw_path = prompt("Absolute File Path (or 'done')")
                 if not raw_path: 
+                    break
+                if raw_path.strip().lower() == 'done':
+                    break
+                    
+                path = raw_path.strip().strip('\'"').replace("\\ ", " ")
+                if not os.path.exists(path):
+                    error(f"Path not found: {path}")
+                    continue
+                    
+                if os.path.isdir(path):
+                    info("Directory detected. Extracting files...")
+                    added = 0
+                    for root, _, files in os.walk(path):
+                        for f in files:
+                            if not f.startswith('.'):
+                                paths.append(os.path.join(root, f))
+                                added += 1
+                    success(f"Added {added} files from directory  ({len(paths)} total)")
+                else:
+                    paths.append(path)
+                    success(f"Added: {os.path.basename(path)}  ({len(paths)} total)")
