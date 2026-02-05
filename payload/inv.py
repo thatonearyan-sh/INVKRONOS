@@ -2209,3 +2209,24 @@ async def feat_schedule(client, accent):
                 else:
                     paths.append(path)
                     success(f"Added: {os.path.basename(path)}  ({len(paths)} total)")
+
+        if not text and not paths:
+            warn("Cancelled.")
+            continue
+            
+        dt_utc = None
+        for attempt in range(3):
+            t_input = prompt("Send at time HH:MM (IST)")
+            if not t_input.strip():
+                if attempt < 2:
+                    warn("Time cannot be blank! Please provide a time.")
+                continue
+                
+            try:
+                now_ist = datetime.now(IST)
+                t_ist = datetime.strptime(t_input.strip(), "%H:%M").replace(year=now_ist.year, month=now_ist.month, day=now_ist.day, tzinfo=IST)
+                if t_ist < now_ist:
+                    t_ist += timedelta(days=1)
+                dt_utc = t_ist.astimezone(timezone.utc)
+                break
+            except Exception:
