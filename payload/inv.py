@@ -2230,3 +2230,24 @@ async def feat_schedule(client, accent):
                 dt_utc = t_ist.astimezone(timezone.utc)
                 break
             except Exception:
+                if attempt < 2:
+                    warn("Invalid format. Please use HH:MM.")
+                    
+        if not dt_utc:
+            error("Process cancelled: No valid time provided.")
+            continue
+
+        try:
+            await go_offline(client)
+            if paths:
+                if text:
+                    await client.send_message(selected.entity, text, schedule=dt_utc)
+                for p in paths:
+                    await client.send_file(selected.entity, p, schedule=dt_utc)
+            else:
+                await client.send_message(selected.entity, text, schedule=dt_utc)
+            await go_offline(client)
+            success(f"Scheduled perfectly for {dt_utc.astimezone(IST).strftime('%H:%M')} IST   👻")
+        except Exception as e:
+            error(f"Failed: {e}")
+
