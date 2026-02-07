@@ -2251,3 +2251,23 @@ async def feat_schedule(client, accent):
         except Exception as e:
             error(f"Failed: {e}")
 
+        nxt = again_menu(
+            f"Schedule another for  [{selected.name}]",
+            "Schedule for a different chat",
+        )
+        if nxt is None:
+            return
+        elif "different" in nxt:
+            selected = None
+
+
+async def feat_delete(client, accent):
+    """13. Delete Message — loop: delete another from same or different chat."""
+    selected = None
+    dialogs  = None
+    while True:
+        clear()
+        header("DELETE MESSAGE")
+        if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
