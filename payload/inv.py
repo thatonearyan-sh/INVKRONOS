@@ -2271,3 +2271,24 @@ async def feat_delete(client, accent):
         if selected is None:
             selected, dialogs = await pick_dialog(client, accent)
             if not selected:
+                return
+
+        n    = prompt(f"Load how many messages from  [{selected.name}]?  (default 20)")
+        n    = int(n) if n.isdigit() else 20
+        msgs = await client.get_messages(selected.entity, limit=n)
+        await go_offline(client)
+        if not msgs:
+            error("No messages found!"); press_enter(); continue
+
+        clear()
+        header(f"🗑️   {selected.name}  —  pick message to delete")
+        mlist = list(reversed(msgs))
+        for i, m in enumerate(mlist):
+            sndr = "You" if m.out else selected.name
+            txt  = trunc(m.text or "[media]", 60)
+            print(col(f"  {i:>3}.  [{to_ist(m.date)}]  {sndr}:", Fore.WHITE)
+                  + col(f"  {txt}", Style.DIM))
+
+        try:
+            idx    = int(prompt("Delete message number  (blank = cancel)"))
+            target = mlist[idx]
