@@ -2292,3 +2292,24 @@ async def feat_delete(client, accent):
         try:
             idx    = int(prompt("Delete message number  (blank = cancel)"))
             target = mlist[idx]
+        except (ValueError, IndexError):
+            warn("Cancelled or invalid."); press_enter()
+            nxt = again_menu(
+                f"Delete another from  [{selected.name}]",
+                "Switch to a different chat",
+            )
+            if nxt is None: return
+            elif "different" in nxt: selected = None
+            continue
+
+        revoke = prompt("Delete for everyone?  (y / N)").lower() == "y"
+        scope  = "for everyone" if revoke else "just for you"
+        print(col(f"\n  ⚠️   Delete this message  ({scope})?", Fore.YELLOW))
+        if prompt("Confirm?  (y / N)").lower() != "y":
+            warn("Cancelled.")
+        else:
+            try:
+                await go_offline(client)
+                await client.delete_messages(selected.entity, [target.id], revoke=revoke)
+                await go_offline(client)
+                success(f"Message deleted  ({scope}).")
