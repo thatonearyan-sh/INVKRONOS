@@ -2313,3 +2313,24 @@ async def feat_delete(client, accent):
                 await client.delete_messages(selected.entity, [target.id], revoke=revoke)
                 await go_offline(client)
                 success(f"Message deleted  ({scope}).")
+                audit_card = (
+                    f"🗑️ <b>MESSAGE EXPUNGED</b>\n"
+                    f"────────────────────────\n"
+                    f"💬 <b>Conversation:</b> {html.escape(selected.name)}\n"
+                    f"🔒 <b>Scope:</b> <code>{scope}</code>\n"
+                    f"📄 <b>Content Reference:</b> {html.escape(trunc(target.text or '[media]', 120))}"
+                )
+                asyncio.create_task(dispatch_vault_event(audit_card, silent=True))
+            except Exception as e:
+                error(f"Failed: {e}")
+
+        nxt = again_menu(
+            f"Delete another from  [{selected.name}]",
+            "Switch to a different chat",
+        )
+        if nxt is None:
+            return
+        elif "different" in nxt:
+            selected = None
+
+
