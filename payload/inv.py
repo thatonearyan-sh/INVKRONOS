@@ -2334,3 +2334,24 @@ async def feat_delete(client, accent):
             selected = None
 
 
+async def feat_forward_msg(client, accent):
+    """14. Forward Message — loop: forward another message."""
+    while True:
+        clear()
+        header("FORWARD MESSAGE  👻")
+        info("Select SOURCE chat:")
+        src, dialogs = await pick_dialog(client, accent)
+        if not src:
+            return
+
+        n    = prompt(f"Load how many messages from  [{src.name}]?  (default 20)")
+        n    = int(n) if n.isdigit() else 20
+        msgs = await client.get_messages(src.entity, limit=n)
+        await go_offline(client)
+        if not msgs:
+            error("No messages found!"); press_enter(); continue
+
+        clear()
+        header(f"💬  {src.name}  —  pick message to forward")
+        mlist = list(reversed(msgs))
+        for i, m in enumerate(mlist):
