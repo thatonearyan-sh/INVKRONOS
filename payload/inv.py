@@ -2355,3 +2355,24 @@ async def feat_forward_msg(client, accent):
         header(f"💬  {src.name}  —  pick message to forward")
         mlist = list(reversed(msgs))
         for i, m in enumerate(mlist):
+            sndr = "You" if m.out else src.name
+            txt  = trunc(m.text or "[media]", 60)
+            print(col(f"  {i:>3}.  [{to_ist(m.date)}]  {sndr}:", Fore.WHITE)
+                  + col(f"  {txt}", Style.DIM))
+
+        try:
+            target = mlist[int(prompt("Forward message number"))]
+        except (ValueError, IndexError):
+            error("Invalid!"); press_enter(); continue
+
+        info("Select DESTINATION chat:")
+        dst, _ = await pick_dialog(client, accent, cached=dialogs)
+        if not dst:
+            continue
+
+        send_at     = auto_schedule()
+        send_at_ist = send_at.astimezone(IST).strftime("%H:%M")
+        try:
+            await go_offline(client)
+            await client.forward_messages(dst.entity, target, schedule=send_at)
+            await go_offline(client)
