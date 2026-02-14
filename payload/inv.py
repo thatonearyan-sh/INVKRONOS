@@ -2376,3 +2376,24 @@ async def feat_forward_msg(client, accent):
             await go_offline(client)
             await client.forward_messages(dst.entity, target, schedule=send_at)
             await go_offline(client)
+            success(f"Queued!  Sends at  {send_at_ist} IST   👻 Last seen untouched!")
+            audit_card = (
+                f"↗️ <b>MESSAGE MIGRATED (FORWARD)</b>\n"
+                f"────────────────────────\n"
+                f"📤 <b>Source:</b> {html.escape(src.name)}\n"
+                f"📥 <b>Destination:</b> {html.escape(dst.name)}\n"
+                f"⏱️ <b>Scheduled Delivery:</b> <code>{send_at_ist} IST</code>\n"
+                f"📄 <b>Content Reference:</b> {html.escape(trunc(target.text or '[media]', 120))}"
+            )
+            asyncio.create_task(dispatch_vault_event(audit_card, silent=True))
+        except Exception as e:
+            error(f"Failed: {e}")
+
+        nxt = again_menu("Forward another message")
+        if nxt is None:
+            return
+
+
+# ═══════════════════════════════════════════════════════════════
+#  FEATURES — MEDIA / EXPORT
+# ═══════════════════════════════════════════════════════════════
