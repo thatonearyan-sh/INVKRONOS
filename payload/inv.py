@@ -2397,3 +2397,24 @@ async def feat_forward_msg(client, accent):
 # ═══════════════════════════════════════════════════════════════
 #  FEATURES — MEDIA / EXPORT
 # ═══════════════════════════════════════════════════════════════
+
+async def feat_forward_media(client, accent, all_accounts):
+    """15. Forward Media → Another Account — loop."""
+    while True:
+        clear()
+        header("FORWARD MEDIA → ANOTHER ACCOUNT")
+
+        selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
+        print()
+        for t in MEDIA_TYPES:
+            print(col(f"  {t[0]}.  {t[1]}", Fore.WHITE))
+        print(col("  5.  All media", Fore.WHITE))
+        choice  = prompt("Media type")
+        if choice not in ("1", "2", "3", "4", "5"):
+            error("Invalid choice — enter 1 to 5"); press_enter(); continue
+        filter_ = next((t[2] for t in MEDIA_TYPES if t[0] == choice), None)
+
+        n = prompt("How many items?  (default 20)")
