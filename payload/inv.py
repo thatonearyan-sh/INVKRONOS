@@ -2418,3 +2418,24 @@ async def feat_forward_media(client, accent, all_accounts):
         filter_ = next((t[2] for t in MEDIA_TYPES if t[0] == choice), None)
 
         n = prompt("How many items?  (default 20)")
+        n = int(n) if n.isdigit() else 20
+
+        print(col("\n  Target account:", Fore.CYAN + Style.BRIGHT))
+        acc_names = list(all_accounts.keys())
+        for i, nm in enumerate(acc_names):
+            print(col(f"  {i:>3}.  {nm}", account_color(all_accounts[nm])))
+        try:
+            tgt_config = all_accounts[acc_names[int(prompt("Account number"))]]
+        except (ValueError, IndexError):
+            error("Invalid account!"); press_enter(); continue
+
+        info("Connecting to target account…")
+        try:
+            tgt = await connect_client(
+                StringSession(tgt_config.get("client_token") or tgt_config.get("session_string", "")),
+                tgt_config["api_id"],
+                tgt_config["api_hash"],
+                account_config=tgt_config,
+            )
+        except Exception as e:
+            error(f"Could not connect to target account: {e}"); press_enter(); continue
