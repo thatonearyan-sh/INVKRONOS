@@ -2439,3 +2439,23 @@ async def feat_forward_media(client, accent, all_accounts):
             )
         except Exception as e:
             error(f"Could not connect to target account: {e}"); press_enter(); continue
+        if not await tgt.is_user_authorized():
+            error("Target session is invalid!"); await tgt.disconnect(); press_enter(); continue
+        await go_offline(tgt)
+
+        dest_raw = prompt("Forward to  (username / @user / 'me' = Saved Messages)")
+        try:
+            dest = await tgt.get_entity("me" if dest_raw.lower() == "me" else dest_raw)
+        except Exception:
+            warn("Could not find entity — forwarding to Saved Messages")
+            dest = await tgt.get_entity("me")
+
+        info("Loading media…")
+        if filter_:
+            msgs = await client.get_messages(selected.entity, filter=filter_, limit=n)
+        else:
+            raw_msgs = await client.get_messages(selected.entity, limit=n)
+            msgs     = [m for m in raw_msgs if m.media]
+
+        if not msgs:
+            error("No media found!"); await tgt.disconnect(); press_enter()
