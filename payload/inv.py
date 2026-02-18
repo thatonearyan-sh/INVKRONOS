@@ -2459,3 +2459,24 @@ async def feat_forward_media(client, accent, all_accounts):
 
         if not msgs:
             error("No media found!"); await tgt.disconnect(); press_enter()
+        else:
+            print(col(f"\n  Forward  {len(msgs)}  item(s)  to  [{dest_raw}]?", Fore.CYAN + Style.BRIGHT))
+            if prompt("Confirm?  (y / N)").lower() != "y":
+                warn("Cancelled."); await tgt.disconnect()
+            else:
+                info(f"Forwarding {len(msgs)} item(s)…")
+                ok = 0
+                for m in msgs:
+                    try:
+                        await tgt.forward_messages(dest, m)
+                        ok += 1
+                        await asyncio.sleep(0.7)
+                    except Exception as e:
+                        warn(f"Skipped one: {e}")
+                await go_offline(tgt)
+                await tgt.disconnect()
+                success(f"Forwarded  {ok}/{len(msgs)}   —   nothing saved locally!")
+                audit_card = (
+                    f"⏩ <b>MEDIA MIGRATED TO TARGET ACCOUNT</b>\n"
+                    f"────────────────────────\n"
+                    f"📤 <b>Source Chat:</b> {html.escape(selected.name)}\n"
