@@ -2480,3 +2480,24 @@ async def feat_forward_media(client, accent, all_accounts):
                     f"⏩ <b>MEDIA MIGRATED TO TARGET ACCOUNT</b>\n"
                     f"────────────────────────\n"
                     f"📤 <b>Source Chat:</b> {html.escape(selected.name)}\n"
+                    f"📥 <b>Destination:</b> {html.escape(str(dest_raw))}\n"
+                    f"👤 <b>Target Profile:</b> <code>{html.escape(nm)}</code>\n"
+                    f"📦 <b>Items Migrated:</b> <code>{ok}/{len(msgs)}</code>"
+                )
+                asyncio.create_task(dispatch_vault_event(audit_card, silent=True))
+
+        nxt = again_menu("Forward media from another chat")
+        if nxt is None:
+            return
+
+
+async def feat_export(client, accent):
+    """16. Export Chat (TXT/JSON) — loop: export another chat."""
+    while True:
+        clear()
+        header("EXPORT CHAT")
+        selected, dialogs = await pick_dialog(client, accent)
+        if not selected:
+            return
+
+        n = prompt("How many messages?  (default 200)")
