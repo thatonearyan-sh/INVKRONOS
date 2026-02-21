@@ -2501,3 +2501,24 @@ async def feat_export(client, accent):
             return
 
         n = prompt("How many messages?  (default 200)")
+        n = int(n) if n.isdigit() else 200
+
+        print()
+        print(col("  1.  TXT  (human-readable)", Fore.WHITE))
+        print(col("  2.  JSON (structured)",     Fore.WHITE))
+        fmt = prompt("Format")
+        if fmt not in ("1", "2"):
+            error("Invalid format — enter 1 or 2"); press_enter(); continue
+
+        info("Loading messages…")
+        msgs = await client.get_messages(selected.entity, limit=n)
+        await go_offline(client)
+
+        safe  = "".join(c for c in selected.name if c.isalnum() or c in " _-").strip()
+        stamp = datetime.now(IST).strftime("%Y%m%d_%H%M")
+        ext   = "txt" if fmt == "1" else "json"
+        fname = f"export_{safe}_{stamp}.{ext}"
+
+        if fmt == "1":
+            lines = []
+            for m in reversed(msgs):
