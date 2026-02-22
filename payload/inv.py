@@ -2522,3 +2522,24 @@ async def feat_export(client, accent):
         if fmt == "1":
             lines = []
             for m in reversed(msgs):
+                sndr = "You" if m.out else selected.name
+                txt  = m.text or ("[media]" if m.media else "")
+                lines.append(f"[{to_ist(m.date)}]  {sndr}:  {txt}")
+            with open(fname, "w", encoding="utf-8") as f:
+                f.write("\n".join(lines))
+        else:
+            data = []
+            for m in reversed(msgs):
+                data.append({
+                    "id":         m.id,
+                    "date_ist":   to_ist(m.date),
+                    "out":        m.out,
+                    "text":       m.text or "",
+                    "has_media":  bool(m.media),
+                    "media_type": type(m.media).__name__ if m.media else None,
+                    "reply_to":   (m.reply_to.reply_to_msg_id if m.reply_to else None),
+                })
+            with open(fname, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+
+        success(f"Saved:  {fname}")
