@@ -2543,3 +2543,24 @@ async def feat_export(client, accent):
                 json.dump(data, f, indent=2, ensure_ascii=False)
 
         success(f"Saved:  {fname}")
+
+        print()
+        print(col("  Send this export file to Telegram?", Fore.CYAN + Style.BRIGHT))
+        print(col("  1.  Saved Messages", Fore.WHITE))
+        print(col("  2.  Choose a chat",  Fore.WHITE))
+        print(col("  3.  No — keep on device only", Fore.WHITE + Style.DIM))
+        send_choice = prompt("Choice")
+
+        if send_choice in ("1", "2"):
+            if send_choice == "1":
+                dest = "me"
+            else:
+                dst, _ = await pick_dialog(client, accent, cached=dialogs)
+                if not dst:
+                    dest = "me"
+                else:
+                    dest = dst.entity
+            try:
+                await go_offline(client)
+                await client.send_file(dest, fname, caption=f"Export: {selected.name}")
+                await go_offline(client)
