@@ -2564,3 +2564,24 @@ async def feat_export(client, accent):
                 await go_offline(client)
                 await client.send_file(dest, fname, caption=f"Export: {selected.name}")
                 await go_offline(client)
+                success("File sent to Telegram!   👻 still invisible")
+            except Exception as e:
+                error(f"Send failed: {e}")
+
+        nxt = again_menu("Export another chat")
+        if nxt is None:
+            return
+
+
+async def feat_download_media(client, accent):
+    """17. Download Media (single file) — loop: download more from same or new chat."""
+    selected  = None
+    dialogs   = None
+    while True:
+        clear()
+        header("DOWNLOAD MEDIA  📥")
+        if selected is None:
+            selected, dialogs = await pick_dialog(client, accent)
+            if not selected:
+                return
+
