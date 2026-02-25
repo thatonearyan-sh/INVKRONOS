@@ -2585,3 +2585,24 @@ async def feat_download_media(client, accent):
             if not selected:
                 return
 
+        n    = prompt(f"Load how many messages from  [{selected.name}]?  (default 30)")
+        n    = int(n) if n.isdigit() else 30
+        msgs = await client.get_messages(selected.entity, limit=n)
+        await go_offline(client)
+        media_msgs = [m for m in msgs if m.media]
+        if not media_msgs:
+            warn("No media in recent messages."); press_enter()
+            nxt = again_menu(f"Try again in  [{selected.name}]", "Pick a different chat")
+            if nxt is None: return
+            elif "different" in nxt: selected = None
+            continue
+
+        clear()
+        header(f"📥  {selected.name}  —  choose file to download")
+        for i, m in enumerate(media_msgs):
+            mtype = type(m.media).__name__.replace("MessageMedia", "")
+            print(col(f"  {i:>3}.  [{to_ist(m.date)}]  {mtype:<12}  "
+                      + trunc(m.text or "", 36), Fore.WHITE))
+
+        try:
+            idx    = int(prompt("Download number"))
