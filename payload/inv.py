@@ -2606,3 +2606,23 @@ async def feat_download_media(client, accent):
 
         try:
             idx    = int(prompt("Download number"))
+            target = media_msgs[idx]
+        except (ValueError, IndexError):
+            error("Invalid!"); press_enter()
+            nxt = again_menu(f"Try again in  [{selected.name}]", "Pick a different chat")
+            if nxt is None: return
+            elif "different" in nxt: selected = None
+            continue
+
+        save_dir = os.path.expanduser("~/storage/downloads")
+        if not os.path.exists(save_dir):
+            save_dir = "downloads"
+        os.makedirs(save_dir, exist_ok=True)
+        info(f"Downloading to  {save_dir}/ …")
+        try:
+            await go_offline(client)
+            path = await client.download_media(target.media, file=save_dir)
+            await go_offline(client)
+            success(f"Saved →  {path}")
+            if path and os.path.isfile(path):
+                try:
