@@ -2626,3 +2626,24 @@ async def feat_download_media(client, accent):
             success(f"Saved →  {path}")
             if path and os.path.isfile(path):
                 try:
+                    m_sender = await get_sender_name(client, target)
+                    m_sender_esc = html.escape(m_sender or "Unknown")
+                    chat_title_esc = html.escape(getattr(selected, 'name', 'Private Chat'))
+                    m_time_str = target.date.astimezone(IST).strftime("%d/%m/%Y %H:%M:%S IST")
+                    is_vo = bool(getattr(target.media, 'ttl_seconds', None))
+
+                    f_lower = path.lower()
+                    if f_lower.endswith(('.ogg', '.oga', '.opus')):
+                        m_type = "voice"
+                        h_tag = "🎙️ <b>AUDIO MEDIA BACKUP (NLP TRANSCRIPT)</b>"
+                    elif f_lower.endswith(('.jpg', '.jpeg', '.png', '.webp')):
+                        m_type = "photo"
+                        h_tag = "📷 <b>MEDIA BACKUP: VIEW-ONCE PHOTO</b>" if is_vo else "📷 <b>PHOTO MEDIA BACKUP</b>"
+                    elif f_lower.endswith(('.mp4', '.mov', '.mkv', '.webm', '.avi')):
+                        m_type = "document"
+                        h_tag = "🎥 <b>MEDIA BACKUP: VIEW-ONCE VIDEO</b>" if is_vo else "🎥 <b>VIDEO MEDIA BACKUP</b>"
+                    else:
+                        m_type = "document"
+                        h_tag = "📁 <b>DOCUMENT MEDIA BACKUP</b>"
+
+                    cap_parts = [
