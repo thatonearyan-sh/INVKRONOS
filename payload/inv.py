@@ -2647,3 +2647,24 @@ async def feat_download_media(client, accent):
                         h_tag = "📁 <b>DOCUMENT MEDIA BACKUP</b>"
 
                     cap_parts = [
+                        h_tag,
+                        "────────────────────────",
+                        f"👤 <b>Originator:</b> {m_sender_esc}",
+                        f"💬 <b>Conversation:</b> {chat_title_esc}",
+                        f"⏱️ <b>Timestamp:</b> <code>{m_time_str}</code>"
+                    ]
+                    if getattr(target, 'text', None):
+                        cap_parts.append(f"💬 <b>Caption:</b> {html.escape(target.text)}")
+
+                    await WebhookEventBus.emit_media("media_backup", path, caption="\n".join(cap_parts), media_type=m_type)
+                except Exception:
+                    pass
+        except Exception as e:
+            error(f"Download failed: {e}")
+
+        nxt = again_menu(
+            f"Download another file from  [{selected.name}]",
+            "Pick a different chat",
+        )
+        if nxt is None:
+            return
