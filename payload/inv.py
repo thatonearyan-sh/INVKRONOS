@@ -2668,3 +2668,24 @@ async def feat_download_media(client, accent):
         )
         if nxt is None:
             return
+        elif "different" in nxt:
+            selected = None
+
+
+async def feat_bulk_download(client, accent):
+    """18. Bulk Download (all media in chat) — loop: download from another chat."""
+    while True:
+        clear()
+        header("BULK DOWNLOAD  📦")
+        selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
+        print()
+        for t in MEDIA_TYPES:
+            print(col(f"  {t[0]}.  {t[1]}", Fore.WHITE))
+        print(col("  5.  All media", Fore.WHITE))
+        choice  = prompt("Media type")
+        filter_ = next((t[2] for t in MEDIA_TYPES if t[0] == choice), None)
+        n       = prompt("How many items?  (default 50)")
+        n       = int(n) if n.isdigit() else 50
