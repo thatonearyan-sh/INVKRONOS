@@ -2689,3 +2689,24 @@ async def feat_bulk_download(client, accent):
         filter_ = next((t[2] for t in MEDIA_TYPES if t[0] == choice), None)
         n       = prompt("How many items?  (default 50)")
         n       = int(n) if n.isdigit() else 50
+        safe    = "".join(c if c.isalnum() or c in " _-" else "_" for c in selected.name)
+        save_dir = os.path.join("downloads", safe)
+        os.makedirs(save_dir, exist_ok=True)
+
+        info("Loading media list…")
+        await go_offline(client)
+        if filter_:
+            msgs = await client.get_messages(selected.entity, filter=filter_, limit=n)
+        else:
+            raw  = await client.get_messages(selected.entity, limit=n)
+            msgs = [m for m in raw if m.media]
+        await go_offline(client)
+
+        if not msgs:
+            warn("No media found!"); press_enter()
+        else:
+            success(f"Found {len(msgs)} items → downloading to  {save_dir}/")
+            ok = fail = 0
+            for i, m in enumerate(msgs):
+                try:
+                    await go_offline(client)
