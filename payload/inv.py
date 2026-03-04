@@ -2710,3 +2710,24 @@ async def feat_bulk_download(client, accent):
             for i, m in enumerate(msgs):
                 try:
                     await go_offline(client)
+                    path = await client.download_media(m.media, file=save_dir)
+                    ok  += 1
+                    print(col(f"  [{i+1}/{len(msgs)}]  ✓  {os.path.basename(str(path))}", Fore.GREEN))
+                except Exception as e:
+                    fail += 1
+                    print(col(f"  [{i+1}/{len(msgs)}]  ✗  {e}", Fore.RED))
+            print()
+            success(f"Done!  {ok} saved  ·  {fail} failed  ·  Folder: {save_dir}/")
+
+        nxt = again_menu("Bulk download from another chat")
+        if nxt is None:
+            return
+
+
+# ═══════════════════════════════════════════════════════════════
+#  UNIFIED INBOX
+# ═══════════════════════════════════════════════════════════════
+
+async def unified_inbox(all_accounts):
+    clear()
+    header("UNIFIED INBOX  —  ALL ACCOUNTS")
