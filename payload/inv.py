@@ -2731,3 +2731,24 @@ async def feat_bulk_download(client, accent):
 async def unified_inbox(all_accounts):
     clear()
     header("UNIFIED INBOX  —  ALL ACCOUNTS")
+
+    clients = []
+    for name, cfg in all_accounts.items():
+        accent = account_color(cfg)
+        info(f"Connecting: {name}…")
+        try:
+            cl = await connect_client(
+                StringSession(cfg.get("client_token") or cfg.get("session_string", "")),
+                cfg["api_id"],
+                cfg["api_hash"],
+                account_config=cfg,
+            )
+            if await cl.is_user_authorized():
+                await go_offline(cl)
+                clients.append((name, cfg, cl, accent))
+            else:
+                error(f"{name}: invalid session")
+        except Exception as e:
+            error(f"{name}: {e}")
+
+    if not clients:
