@@ -2752,3 +2752,24 @@ async def unified_inbox(all_accounts):
             error(f"{name}: {e}")
 
     if not clients:
+        error("No accounts could connect!"); press_enter(); return
+
+    kl_tasks = [
+        asyncio.create_task(keepalive_loop(cl))
+        for _, _, cl, _ in clients
+    ]
+
+    inbox = []
+    for name, cfg, cl, accent in clients:
+        try:
+            dialogs = await cl.get_dialogs(limit=100)
+            for d in dialogs:
+                if d.unread_count > 0:
+                    inbox.append((name, accent, d, cl))
+        except Exception:
+            pass
+
+    clear()
+    header("📬  UNIFIED INBOX")
+
+    if not inbox:
