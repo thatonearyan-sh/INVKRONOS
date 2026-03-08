@@ -2773,3 +2773,23 @@ async def unified_inbox(all_accounts):
     header("📬  UNIFIED INBOX")
 
     if not inbox:
+        success("No unread messages across any account!")
+    else:
+        total = sum(d.unread_count for _, _, d, _ in inbox)
+        print(col(f"\n  {total} unread  across  {len(inbox)} chats\n",
+                  Fore.YELLOW + Style.BRIGHT))
+        for acc_name, accent, d, _ in inbox:
+            tag     = col(f"[{acc_name}]", accent)
+            unread  = col(f"[{d.unread_count}]", Fore.RED)
+            preview = ""
+            if d.message and d.message.text:
+                preview = col("   " + trunc(d.message.text.replace("\n", " "), 38),
+                              Style.DIM)
+            print(f"  {tag}  {col(d.name, Fore.WHITE)}  {unread}{preview}")
+
+        print()
+        if prompt("Open a chat?  (y / N)").lower() == "y":
+            def ifmt(i, item):
+                _, accent, d, _ = item
+                tag    = col(f"[{item[0]}]", accent)
+                unread = col(f"[{d.unread_count}]", Fore.RED)
