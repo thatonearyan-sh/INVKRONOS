@@ -2793,3 +2793,24 @@ async def unified_inbox(all_accounts):
                 _, accent, d, _ = item
                 tag    = col(f"[{item[0]}]", accent)
                 unread = col(f"[{d.unread_count}]", Fore.RED)
+                return f"  {col(f'{i:>3}', accent)}.  {tag}  {col(d.name, Fore.WHITE)}  {unread}"
+
+            idx = show_page(inbox, formatter=ifmt)
+            if idx is not None:
+                acc_name, accent, d, cl = inbox[idx]
+                clear()
+                header(f"💬  [{acc_name}]  {d.name}")
+                print()
+                msgs = await cl.get_messages(d.entity, limit=30)
+                await go_offline(cl)
+                for m in reversed(msgs):
+                    await render_msg(cl, m)
+                    divider()
+                await go_offline(cl)
+                press_enter()
+
+    for task in kl_tasks:
+        task.cancel()
+        try:   await task
+        except asyncio.CancelledError: pass
+
