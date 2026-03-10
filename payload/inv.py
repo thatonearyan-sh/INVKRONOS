@@ -2814,3 +2814,24 @@ async def unified_inbox(all_accounts):
         try:   await task
         except asyncio.CancelledError: pass
 
+    for _, _, cl, _ in clients:
+        try:
+            await go_offline(cl)
+            await cl.disconnect()
+        except Exception:
+            pass
+
+
+# ═══════════════════════════════════════════════════════════════
+#  FEATURES — STEALTH INTEL
+# ═══════════════════════════════════════════════════════════════
+
+async def feat_profile(client, accent):
+    """19. Profile Stalker — loop: stalk another user."""
+    while True:
+        clear()
+        header("PROFILE STALKER  👁️")
+        query = prompt("@username / +phone / user ID  (blank = back)")
+        if not query:
+            return
+        await go_offline(client)
