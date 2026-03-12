@@ -2835,3 +2835,24 @@ async def feat_profile(client, accent):
         if not query:
             return
         await go_offline(client)
+        try:
+            entity = await client.get_entity(query)
+            full   = await client(GetFullUserRequest(entity))
+            u      = full.users[0]
+            name   = (u.first_name or "") + (" " + u.last_name if u.last_name else "")
+            uname  = "@" + u.username if u.username else "—"
+            phone  = u.phone or "hidden"
+            bio    = full.full_user.about or "—"
+            st     = u.status
+            stn    = type(st).__name__
+            if   stn == "UserStatusOnline":    last = "🟢  ONLINE RIGHT NOW"
+            elif stn == "UserStatusRecently":  last = "recently online"
+            elif stn == "UserStatusLastWeek":  last = "within last week"
+            elif stn == "UserStatusLastMonth": last = "within last month"
+            elif hasattr(st, "was_online"):    last = to_ist(st.was_online)
+            else:                              last = "long time ago / hidden"
+            await go_offline(client)
+            clear()
+            header(f"👁️  PROFILE  —  {name}")
+            print(col(f"  Full name   :  {name}",    Fore.WHITE))
+            print(col(f"  Username    :  {uname}",   Fore.CYAN))
