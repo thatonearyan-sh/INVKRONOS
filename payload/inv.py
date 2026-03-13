@@ -2856,3 +2856,24 @@ async def feat_profile(client, accent):
             header(f"👁️  PROFILE  —  {name}")
             print(col(f"  Full name   :  {name}",    Fore.WHITE))
             print(col(f"  Username    :  {uname}",   Fore.CYAN))
+            print(col(f"  Phone       :  {phone}",   Fore.WHITE))
+            print(col(f"  User ID     :  {u.id}",    Fore.WHITE + Style.DIM))
+            print(col(f"  Bio         :  {bio}",     Fore.WHITE))
+            print(col(f"  Last seen   :  {last}",    Fore.YELLOW))
+            print(col(f"  Bot         :  {'Yes' if u.bot else 'No'}",       Fore.WHITE + Style.DIM))
+            print(col(f"  Verified    :  {'Yes' if u.verified else 'No'}",  Fore.WHITE + Style.DIM))
+            print(col(f"  Scam flag   :  {'⚠️  YES' if u.scam else 'No'}",
+                      Fore.RED + Style.BRIGHT if u.scam else Fore.WHITE + Style.DIM))
+        except Exception as e:
+            error(f"Could not fetch profile: {e}")
+        await go_offline(client)
+
+        nxt = again_menu("Stalk another user")
+        if nxt is None:
+            return
+
+
+async def feat_online_watch(client, accent):
+    """20. Online Watcher — live monitor when a contact goes online (timed)."""
+    clear()
+    header("ONLINE WATCHER  🔔")
