@@ -2877,3 +2877,24 @@ async def feat_online_watch(client, accent):
     """20. Online Watcher — live monitor when a contact goes online (timed)."""
     clear()
     header("ONLINE WATCHER  🔔")
+    query = prompt("@username or +phone to watch  (blank = back)")
+    if not query:
+        return
+    await go_offline(client)
+    try:
+        entity = await client.get_entity(query)
+    except Exception as e:
+        error(f"Not found: {e}"); press_enter(); return
+
+    mins_s = prompt("Watch for how many minutes?  (default 5)")
+    mins   = int(mins_s) if mins_s.isdigit() else 5
+    name   = getattr(entity, "first_name", None) or getattr(entity, "title", str(query))
+    clear()
+    header(f"👁️  Watching  {name}  for {mins} min")
+    info("Checking every 10 s.  Ctrl+C to stop early.")
+    print()
+    loop       = asyncio.get_running_loop()
+    end        = loop.time() + mins * 60
+    last_known = None
+    checks     = 0
+    try:
