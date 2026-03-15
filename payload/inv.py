@@ -2898,3 +2898,24 @@ async def feat_online_watch(client, accent):
     last_known = None
     checks     = 0
     try:
+        while loop.time() < end:
+            await go_offline(client)
+            try:
+                u   = await client.get_entity(entity.id)
+                stn = type(u.status).__name__
+                cur = ("online"   if stn == "UserStatusOnline"
+                       else "offline" if stn == "UserStatusOffline"
+                       else "recently")
+                now = datetime.now(IST).strftime("%H:%M:%S")
+                checks += 1
+                if cur != last_known:
+                    if cur == "online":
+                        print(col(f"  [{now}]  🟢  {name} is ONLINE!", Fore.GREEN + Style.BRIGHT))
+                    elif cur == "offline" and last_known == "online":
+                        wt = to_ist(u.status.was_online) if hasattr(u.status, "was_online") else now
+                        print(col(f"  [{now}]  ⚫  {name} went OFFLINE  (was online at {wt})", Fore.RED))
+                    else:
+                        print(col(f"  [{now}]  ●  {name} → {cur}", Fore.WHITE + Style.DIM))
+                    last_known = cur
+                else:
+                    icon = "🟢" if cur == "online" else "⚫"
