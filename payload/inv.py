@@ -2919,3 +2919,24 @@ async def feat_online_watch(client, accent):
                     last_known = cur
                 else:
                     icon = "🟢" if cur == "online" else "⚫"
+                    print(col(f"  [{now}]  {icon}  still {cur}", Style.DIM), end="\r")
+            except Exception:
+                pass
+            await asyncio.sleep(10)
+    except KeyboardInterrupt:
+        pass
+    print()
+    success(f"Watch ended.  {checks} checks.  👻 You stayed invisible.")
+    await go_offline(client)
+    press_enter()
+
+
+async def feat_find_user(client, accent):
+    """21. Find User — loop: find another."""
+    while True:
+        clear()
+        header("FIND USER  🔎")
+        query = prompt("@username  /  +phone  /  user ID  (blank = back)")
+        if not query:
+            return
+        await go_offline(client)
