@@ -2940,3 +2940,23 @@ async def feat_find_user(client, accent):
         if not query:
             return
         await go_offline(client)
+        try:
+            entity = await client.get_entity(query)
+            try:
+                full  = await client(GetFullUserRequest(entity))
+                u     = full.users[0]
+                name  = (u.first_name or "") + (" " + u.last_name if u.last_name else "")
+                uname = "@" + u.username if u.username else "—"
+                phone = u.phone or "hidden"
+                bio   = full.full_user.about or "—"
+                st    = u.status
+            except Exception:
+                u     = entity
+                name  = (getattr(u, "first_name", "") or getattr(u, "title", str(query)))
+                uname = ("@" + u.username) if getattr(u, "username", None) else "—"
+                phone = getattr(u, "phone", "hidden") or "hidden"
+                bio   = "—"
+                st    = getattr(u, "status", None)
+            stn  = type(st).__name__ if st else "None"
+            if   stn == "UserStatusOnline":    last = "🟢  ONLINE RIGHT NOW"
+            elif stn == "UserStatusRecently":  last = "recently online"
