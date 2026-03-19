@@ -2960,3 +2960,24 @@ async def feat_find_user(client, accent):
             stn  = type(st).__name__ if st else "None"
             if   stn == "UserStatusOnline":    last = "🟢  ONLINE RIGHT NOW"
             elif stn == "UserStatusRecently":  last = "recently online"
+            elif stn == "UserStatusLastWeek":  last = "within last week"
+            elif stn == "UserStatusLastMonth": last = "within last month"
+            elif hasattr(st, "was_online"):    last = to_ist(st.was_online)
+            else:                              last = "hidden / long time ago"
+            await go_offline(client)
+            clear()
+            header(f"🔎  FOUND  —  {name}")
+            print(col(f"  Full name   :  {name}",          Fore.WHITE))
+            print(col(f"  Username    :  {uname}",         Fore.CYAN))
+            print(col(f"  Phone       :  {phone}",         Fore.WHITE))
+            print(col(f"  User ID     :  {entity.id}",     Fore.WHITE + Style.DIM))
+            print(col(f"  Bio         :  {bio}",           Fore.WHITE))
+            print(col(f"  Last seen   :  {last}",          Fore.YELLOW))
+            print(col(f"  Bot         :  {'Yes' if getattr(u,'bot',False) else 'No'}",
+                      Fore.WHITE + Style.DIM))
+            print(col(f"  Verified    :  {'Yes' if getattr(u,'verified',False) else 'No'}",
+                      Fore.WHITE + Style.DIM))
+        except Exception as e:
+            error(f"Could not find user: {e}")
+        await go_offline(client)
+
