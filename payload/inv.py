@@ -2981,3 +2981,24 @@ async def feat_find_user(client, accent):
             error(f"Could not find user: {e}")
         await go_offline(client)
 
+        nxt = again_menu("Find another user")
+        if nxt is None:
+            return
+
+
+async def feat_auto_reply(client, accent):
+    """22. Auto-Reply Bot (timed keyword bot — runs for N minutes)."""
+    clear()
+    header("AUTO-REPLY BOT  🤖")
+    warn("Rules apply for this session only.  Leave keyword blank when done.")
+    print(col("  Format:  keyword → reply text\n", Fore.WHITE + Style.DIM))
+    rules = []
+    while True:
+        kw = prompt("Keyword  (blank = stop adding rules)")
+        if not kw:
+            break
+        rt = prompt(f"Reply when someone says '{kw}'")
+        if rt:
+            rules.append((kw.lower(), rt))
+            success(f"Rule saved:  '{kw}' → '{trunc(rt, 40)}'")
+    if not rules:
