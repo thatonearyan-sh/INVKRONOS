@@ -3002,3 +3002,24 @@ async def feat_auto_reply(client, accent):
             rules.append((kw.lower(), rt))
             success(f"Rule saved:  '{kw}' → '{trunc(rt, 40)}'")
     if not rules:
+        warn("No rules set."); press_enter(); return
+
+    mins_s = prompt("Run bot for how many minutes?  (default 10)")
+    mins   = int(mins_s) if mins_s.isdigit() else 10
+    clear()
+    header("🤖  AUTO-REPLY  RUNNING")
+    info(f"{len(rules)} rule(s) active for {mins} min.  Ctrl+C to stop.")
+    print()
+    loop  = asyncio.get_running_loop()
+    end   = loop.time() + mins * 60
+    seen  = set()
+    try:
+        while loop.time() < end:
+            await go_offline(client)
+            try:
+                dialogs = await client.get_dialogs(limit=50)
+                for d in dialogs:
+                    if d.unread_count == 0:
+                        continue
+                    msgs = await client.get_messages(d.entity, limit=5)
+                    await go_offline(client)
