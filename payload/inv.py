@@ -3023,3 +3023,24 @@ async def feat_auto_reply(client, accent):
                         continue
                     msgs = await client.get_messages(d.entity, limit=5)
                     await go_offline(client)
+                    for m in msgs:
+                        if m.out or (d.id, m.id) in seen:
+                            continue
+                        txt = (m.text or "").lower()
+                        for kw, rt in rules:
+                            if kw in txt:
+                                seen.add((d.id, m.id))
+                                send_at     = auto_schedule()
+                                send_at_ist = send_at.astimezone(IST).strftime("%H:%M")
+                                await go_offline(client)
+                                await client.send_message(d.entity, rt,
+                                                          reply_to=m.id, schedule=send_at)
+                                await go_offline(client)
+                                now = datetime.now(IST).strftime("%H:%M:%S")
+                                print(col(f"  [{now}]  '{kw}' in [{d.name}]"
+                                          f" → queued reply at {send_at_ist} IST", Fore.GREEN))
+                                break
+            except Exception:
+                pass
+            await asyncio.sleep(15)
+    except KeyboardInterrupt:
