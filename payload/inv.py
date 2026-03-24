@@ -3044,3 +3044,24 @@ async def feat_auto_reply(client, accent):
                 pass
             await asyncio.sleep(15)
     except KeyboardInterrupt:
+        pass
+    print()
+    success(f"Bot stopped.  {len(seen)} replies queued.  👻 Last seen untouched.")
+    await go_offline(client)
+    press_enter()
+
+
+async def feat_bulk_send(client, accent):
+    """23. Bulk Send — loop: send another batch."""
+    while True:
+        clear()
+        header("BULK SEND  📢")
+        text = prompt("Message to send  (same to all recipients — blank = back)")
+        if not text:
+            return
+
+        info("Loading contacts…")
+        await go_offline(client)
+        dialogs  = await client.get_dialogs(limit=100)
+        await go_offline(client)
+        contacts = [d for d in dialogs
