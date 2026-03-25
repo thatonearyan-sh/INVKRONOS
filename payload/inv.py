@@ -3065,3 +3065,24 @@ async def feat_bulk_send(client, accent):
         dialogs  = await client.get_dialogs(limit=100)
         await go_offline(client)
         contacts = [d for d in dialogs
+                    if not getattr(d.entity, "megagroup", False)
+                    and not getattr(d.entity, "broadcast", False)]
+        clear()
+        header("BULK SEND  —  pick recipients")
+        print(col("  Enter numbers one by one.  Blank when done.\n", Fore.WHITE + Style.DIM))
+        for i, d in enumerate(contacts):
+            print(col(f"  {i:>3}.  {d.name}", Fore.WHITE))
+
+        recipients = []
+        seen_ids   = set()
+        while True:
+            raw = prompt("Add recipient number  (blank = done)")
+            if not raw:
+                break
+            try:
+                d = contacts[int(raw)]
+                if d.id not in seen_ids:
+                    recipients.append(d); seen_ids.add(d.id)
+                    success(f"Added: {d.name}")
+            except (ValueError, IndexError):
+                error("Invalid number")
