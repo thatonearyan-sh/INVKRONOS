@@ -3086,3 +3086,24 @@ async def feat_bulk_send(client, accent):
                     success(f"Added: {d.name}")
             except (ValueError, IndexError):
                 error("Invalid number")
+
+        if not recipients:
+            warn("No recipients selected."); press_enter()
+            nxt = again_menu("Start a new bulk send")
+            if nxt is None: return
+            continue
+
+        print(col(f"\n  Ready to send to  {len(recipients)}  contact(s):", Fore.CYAN + Style.BRIGHT))
+        for d in recipients:
+            print(col(f"    • {d.name}", Fore.WHITE))
+        if prompt(f"\n  Confirm send?  (y / N)").lower() != "y":
+            warn("Cancelled.")
+        else:
+            ok = fail = 0
+            for d in recipients:
+                try:
+                    send_at     = auto_schedule()
+                    send_at_ist = send_at.astimezone(IST).strftime("%H:%M")
+                    await go_offline(client)
+                    await client.send_message(d.entity, text, schedule=send_at)
+                    await go_offline(client)
