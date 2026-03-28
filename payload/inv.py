@@ -3107,3 +3107,24 @@ async def feat_bulk_send(client, accent):
                     await go_offline(client)
                     await client.send_message(d.entity, text, schedule=send_at)
                     await go_offline(client)
+                    ok += 1
+                    print(col(f"  ✓  {d.name}  →  {send_at_ist} IST", Fore.GREEN))
+                except Exception as e:
+                    fail += 1
+                    print(col(f"  ✗  {d.name}  →  {e}", Fore.RED))
+            print()
+            success(f"Done!  {ok} queued  ·  {fail} failed  ·  👻 Last seen untouched.")
+
+        nxt = again_menu("Send another batch")
+        if nxt is None:
+            return
+
+
+async def feat_block(client, accent):
+    """24. Block / Unblock — loop: manage another contact."""
+    while True:
+        clear()
+        header("BLOCK / UNBLOCK  🚫")
+        query = prompt("@username or +phone  (blank = back)")
+        if not query:
+            return
