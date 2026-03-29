@@ -3128,3 +3128,23 @@ async def feat_block(client, accent):
         query = prompt("@username or +phone  (blank = back)")
         if not query:
             return
+        await go_offline(client)
+        try:
+            entity = await client.get_entity(query)
+        except Exception as e:
+            error(f"Not found: {e}"); press_enter(); continue
+
+        name = (getattr(entity, "first_name", None) or
+                getattr(entity, "title", str(query)))
+        try:
+            blocked     = await client(GetBlockedRequest(offset=0, limit=100))
+            blocked_ids = {u.id for u in getattr(blocked, "users", [])}
+            is_blocked  = entity.id in blocked_ids
+        except Exception:
+            is_blocked = False
+
+        label = col("🔴 BLOCKED", Fore.RED) if is_blocked else col("🟢 not blocked", Fore.GREEN)
+        print(col(f"\n  {name}  is currently  ", Fore.WHITE) + label)
+        print()
+        print(col("  1.  Block this contact",   Fore.RED))
+        print(col("  2.  Unblock this contact", Fore.GREEN))
