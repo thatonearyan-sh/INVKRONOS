@@ -3148,3 +3148,24 @@ async def feat_block(client, accent):
         print()
         print(col("  1.  Block this contact",   Fore.RED))
         print(col("  2.  Unblock this contact", Fore.GREEN))
+        print(col("  3.  Check another contact", Fore.WHITE + Style.DIM))
+        print(col("  4.  Back to main menu",    Fore.WHITE + Style.DIM))
+        choice = prompt("Choose")
+
+        try:
+            await go_offline(client)
+            if choice == "1":
+                if prompt(f"Block  {name}?  (y / N)").lower() != "y":
+                    warn("Cancelled.")
+                else:
+                    await client(BlockRequest(id=entity))
+                    await go_offline(client)
+                    success(f"{name}  →  BLOCKED.  They can no longer message you.")
+            elif choice == "2":
+                if prompt(f"Unblock  {name}?  (y / N)").lower() != "y":
+                    warn("Cancelled.")
+                else:
+                    await client(UnblockRequest(id=entity))
+                    await go_offline(client)
+                    success(f"{name}  →  UNBLOCKED.  They can message you again.")
+            elif choice == "3":
