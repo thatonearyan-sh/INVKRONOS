@@ -3169,3 +3169,24 @@ async def feat_block(client, accent):
                     await go_offline(client)
                     success(f"{name}  →  UNBLOCKED.  They can message you again.")
             elif choice == "3":
+                continue
+            elif choice == "4":
+                return
+            else:
+                warn("Cancelled.")
+        except Exception as e:
+            error(f"Failed: {e}")
+
+        press_enter()
+
+
+# ═══════════════════════════════════════════════════════════════
+#  FEATURES — EXTREME / DEEP INTEL
+# ═══════════════════════════════════════════════════════════════
+
+async def feat_pattern_analyze(client, accent):
+    """25. Online Pattern Analyzer (timed spy report)."""
+    clear()
+    header("ONLINE PATTERN ANALYZER  📊")
+    query = prompt("@username or +phone to analyze  (blank = back)")
+    if not query:
