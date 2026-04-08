@@ -3190,3 +3190,24 @@ async def feat_pattern_analyze(client, accent):
     header("ONLINE PATTERN ANALYZER  📊")
     query = prompt("@username or +phone to analyze  (blank = back)")
     if not query:
+        return
+    await go_offline(client)
+    try:
+        entity = await client.get_entity(query)
+    except Exception as e:
+        error(f"Not found: {e}"); press_enter(); return
+
+    mins_s   = prompt("Analyze for how many minutes?  (default 30)")
+    mins     = int(mins_s) if mins_s.isdigit() else 30
+    name     = getattr(entity, "first_name", None) or getattr(entity, "title", str(query))
+    clear()
+    header(f"📊  Analyzing  {name}  for {mins} min")
+    info("Checking every 10 s.  Ctrl+C to stop early and generate report.")
+    print()
+    sessions     = []
+    online_start = None
+    loop = asyncio.get_running_loop()
+    end  = loop.time() + mins * 60
+    try:
+        while loop.time() < end:
+            await go_offline(client)
