@@ -3211,3 +3211,24 @@ async def feat_pattern_analyze(client, accent):
     try:
         while loop.time() < end:
             await go_offline(client)
+            try:
+                u   = await client.get_entity(entity.id)
+                stn = type(u.status).__name__
+                now = datetime.now(IST)
+                ts  = now.strftime("%H:%M:%S")
+                if stn == "UserStatusOnline":
+                    if online_start is None:
+                        online_start = now
+                        print(col(f"  [{ts}]  🟢  {name} ONLINE", Fore.GREEN + Style.BRIGHT))
+                    else:
+                        print(col(f"  [{ts}]  🟢  still online…", Style.DIM), end="\r")
+                else:
+                    if online_start is not None:
+                        dur = int((now - online_start).total_seconds())
+                        sessions.append((online_start, now, dur))
+                        print(col(f"\n  [{ts}]  ⚫  offline  ({dur//60}m {dur%60}s session)", Fore.RED))
+                        online_start = None
+                    else:
+                        print(col(f"  [{ts}]  ⚫  offline", Style.DIM), end="\r")
+            except Exception:
+                pass
