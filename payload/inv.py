@@ -3232,3 +3232,24 @@ async def feat_pattern_analyze(client, accent):
                         print(col(f"  [{ts}]  ⚫  offline", Style.DIM), end="\r")
             except Exception:
                 pass
+            await asyncio.sleep(10)
+    except KeyboardInterrupt:
+        pass
+
+    if online_start is not None:
+        now = datetime.now(IST)
+        sessions.append((online_start, now, int((now - online_start).total_seconds())))
+    print()
+    clear()
+    header(f"📊  PATTERN REPORT  —  {name}")
+    if not sessions:
+        warn("Not seen online during this window.")
+        await go_offline(client); press_enter(); return
+
+    total = sum(s[2] for s in sessions)
+    avg   = total // len(sessions)
+    print(col(f"\n  Sessions observed   :  {len(sessions)}", Fore.WHITE))
+    print(col(f"  Total online time   :  {total//60}m {total%60}s", Fore.WHITE))
+    print(col(f"  Avg session length  :  {avg//60}m {avg%60}s",    Fore.WHITE))
+    print()
+    for i, (st, en, dur) in enumerate(sessions):
