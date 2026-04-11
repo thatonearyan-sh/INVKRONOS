@@ -3253,3 +3253,24 @@ async def feat_pattern_analyze(client, accent):
     print(col(f"  Avg session length  :  {avg//60}m {avg%60}s",    Fore.WHITE))
     print()
     for i, (st, en, dur) in enumerate(sessions):
+        print(col(f"  Session {i+1:>2}:  {st.strftime('%H:%M:%S')}  →  "
+                  f"{en.strftime('%H:%M:%S')}  ({dur//60}m {dur%60}s)", Fore.CYAN))
+
+    safe  = "".join(c if c.isalnum() or c in "_-" else "_" for c in name)
+    rfile = f"pattern_{safe}_{datetime.now(IST).strftime('%Y%m%d_%H%M')}.txt"
+    with open(rfile, "w", encoding="utf-8") as f:
+        f.write(f"Online Pattern Report — {name}\n")
+        f.write(f"Generated: {datetime.now(IST).strftime('%Y-%m-%d %H:%M IST')}\n")
+        f.write(f"Sessions observed: {len(sessions)}\n")
+        f.write(f"Total online: {total//60}m {total%60}s\n")
+        f.write(f"Avg session: {avg//60}m {avg%60}s\n\n")
+        for i, (st, en, dur) in enumerate(sessions):
+            f.write(f"Session {i+1}: {st.strftime('%H:%M:%S')} → "
+                    f"{en.strftime('%H:%M:%S')} ({dur//60}m {dur%60}s)\n")
+    success(f"\n  Report saved  →  {rfile}")
+    await go_offline(client)
+    press_enter()
+
+
+async def feat_keyword_alert(client, accent):
+    """26. Real-Time Keyword Alert (timed monitor)."""
