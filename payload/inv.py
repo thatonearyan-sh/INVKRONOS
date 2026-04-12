@@ -3274,3 +3274,24 @@ async def feat_pattern_analyze(client, accent):
 
 async def feat_keyword_alert(client, accent):
     """26. Real-Time Keyword Alert (timed monitor)."""
+    clear()
+    header("KEYWORD ALERT  ⚡")
+    kw = prompt("Keyword to watch for  (all chats — blank = back)")
+    if not kw:
+        return
+    mins_s = prompt("Monitor for how many minutes?  (default 15)")
+    mins   = int(mins_s) if mins_s.isdigit() else 15
+    clear()
+    header(f"⚡  WATCHING for  '{kw}'")
+    info(f"Scanning every 15 s for {mins} min.  Ctrl+C to stop.")
+    print()
+    loop  = asyncio.get_running_loop()
+    end   = loop.time() + mins * 60
+    seen  = set()
+    found = 0
+    kw_l  = kw.lower()
+    try:
+        while loop.time() < end:
+            await go_offline(client)
+            try:
+                dialogs = await client.get_dialogs(limit=100)
