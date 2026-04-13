@@ -3295,3 +3295,23 @@ async def feat_keyword_alert(client, accent):
             await go_offline(client)
             try:
                 dialogs = await client.get_dialogs(limit=100)
+                for d in dialogs:
+                    msgs = await client.get_messages(d.entity, limit=5)
+                    await go_offline(client)
+                    for m in msgs:
+                        key = (d.id, m.id)
+                        if key in seen:
+                            continue
+                        seen.add(key)
+                        if kw_l in (m.text or "").lower():
+                            found += 1
+                            sndr = "You" if m.out else (
+                                getattr(m.sender, "first_name", None) or d.name)
+                            ts = datetime.now(IST).strftime("%H:%M:%S")
+                            print(col(f"\n  🚨  [{ts}]  MATCH in [{d.name}]",
+                                      Fore.RED + Style.BRIGHT))
+                            print(col(f"       From : {sndr}", Fore.YELLOW))
+                            print(col(f"       Text : {trunc(m.text, 80)}", Fore.WHITE))
+            except Exception:
+                pass
+            await asyncio.sleep(15)
