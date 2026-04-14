@@ -3315,3 +3315,24 @@ async def feat_keyword_alert(client, accent):
             except Exception:
                 pass
             await asyncio.sleep(15)
+    except KeyboardInterrupt:
+        pass
+    print()
+    success(f"Alert ended.  {found} match(es) found.")
+    await go_offline(client)
+    press_enter()
+
+
+async def feat_nuclear_delete(client, accent):
+    """27. Nuclear Delete — loop: nuke another chat after each run."""
+    while True:
+        clear()
+        header("NUCLEAR DELETE  ☢️")
+        warn("Deletes ALL your messages in a chat.  CANNOT BE UNDONE!")
+        print()
+        selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
+        print(col(f"\n  ⚠️   DELETE all YOUR messages in  [{selected.name}]  for EVERYONE?", Fore.RED + Style.BRIGHT))
+        print(col("       This action is permanent and cannot be reversed.", Fore.RED))
