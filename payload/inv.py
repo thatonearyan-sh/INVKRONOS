@@ -3336,3 +3336,24 @@ async def feat_nuclear_delete(client, accent):
 
         print(col(f"\n  ⚠️   DELETE all YOUR messages in  [{selected.name}]  for EVERYONE?", Fore.RED + Style.BRIGHT))
         print(col("       This action is permanent and cannot be reversed.", Fore.RED))
+        if prompt("Type  YES  to confirm  (anything else = cancel)") != "YES":
+            warn("Cancelled.")
+        else:
+            n_s = prompt("Scan how many messages back?  (default 1000)")
+            n   = int(n_s) if n_s.isdigit() else 1000
+            info(f"Loading {n} messages…")
+            await go_offline(client)
+            msgs    = await client.get_messages(selected.entity, limit=n)
+            await go_offline(client)
+            my_msgs = [m for m in msgs if m.out]
+            if not my_msgs:
+                warn("No messages from you found.")
+            else:
+                ok = fail = 0
+                for i in range(0, len(my_msgs), 100):
+                    chunk = my_msgs[i:i+100]
+                    try:
+                        await go_offline(client)
+                        await client.delete_messages(selected.entity,
+                                                     [m.id for m in chunk], revoke=True)
+                        await go_offline(client)
