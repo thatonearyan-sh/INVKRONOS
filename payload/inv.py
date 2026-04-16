@@ -3357,3 +3357,24 @@ async def feat_nuclear_delete(client, accent):
                         await client.delete_messages(selected.entity,
                                                      [m.id for m in chunk], revoke=True)
                         await go_offline(client)
+                        ok += len(chunk)
+                        print(col(f"  ☢️   Deleted {ok}/{len(my_msgs)}…", Fore.RED), end="\r")
+                    except Exception as e:
+                        fail += len(chunk)
+                print()
+                success(f"\n  {ok} deleted  ·  {fail} failed  ·  👻 Invisible throughout.")
+
+        nxt = again_menu("Nuke another chat")
+        if nxt is None:
+            return
+
+
+async def feat_group_scraper(client, accent):
+    """28. Group Member Scraper (→ CSV) — loop: scrape another group."""
+    while True:
+        clear()
+        header("GROUP MEMBER SCRAPER  👥")
+        selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
