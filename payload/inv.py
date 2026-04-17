@@ -3378,3 +3378,24 @@ async def feat_group_scraper(client, accent):
         if not selected:
             return
 
+        info(f"Scraping [{selected.name}]…  (may take a moment for large groups)")
+        await go_offline(client)
+        try:
+            members = await client.get_participants(selected.entity, aggressive=True)
+            await go_offline(client)
+        except Exception as e:
+            error(f"Could not scrape: {e}"); press_enter()
+            nxt = again_menu("Try a different group")
+            if nxt is None: return
+            continue
+
+        clear()
+        header(f"👥  {selected.name}  —  {len(members)} members")
+        print()
+        for i, m in enumerate(members[:25]):
+            nm  = (m.first_name or "") + (" " + m.last_name if m.last_name else "")
+            un  = "@" + m.username if m.username else "—"
+            stn = type(m.status).__name__ if m.status else ""
+            if   stn == "UserStatusOnline":       ls = "🟢 online"
+            elif stn == "UserStatusRecently":      ls = "recently"
+            elif hasattr(m.status, "was_online"): ls = to_ist(m.status.was_online)
