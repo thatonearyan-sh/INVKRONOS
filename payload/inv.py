@@ -3399,3 +3399,24 @@ async def feat_group_scraper(client, accent):
             if   stn == "UserStatusOnline":       ls = "🟢 online"
             elif stn == "UserStatusRecently":      ls = "recently"
             elif hasattr(m.status, "was_online"): ls = to_ist(m.status.was_online)
+            else:                                  ls = "hidden"
+            print(col(f"  {i+1:>4}.  {nm:<22}  {un:<20}  {ls}", Fore.WHITE))
+        if len(members) > 25:
+            print(col(f"\n  … {len(members)-25} more in CSV", Style.DIM))
+
+        safe  = "".join(c if c.isalnum() or c in "_-" else "_" for c in selected.name)
+        cfile = f"members_{safe}_{datetime.now(IST).strftime('%Y%m%d_%H%M')}.csv"
+        with open(cfile, "w", encoding="utf-8") as f:
+            f.write("id,name,username,last_seen,type\n")
+            for m in members:
+                nm  = ((m.first_name or "") + (" " + m.last_name if m.last_name else "")
+                       ).replace(",", " ")
+                un  = ("@" + m.username) if m.username else ""
+                stn = type(m.status).__name__ if m.status else ""
+                if   stn == "UserStatusOnline":       ls = "online"
+                elif stn == "UserStatusRecently":      ls = "recently"
+                elif hasattr(m.status, "was_online"):  ls = m.status.was_online.isoformat()
+                else:                                  ls = "hidden"
+                f.write(f"{m.id},{nm},{un},{ls},{'bot' if m.bot else 'user'}\n")
+        success(f"\n  {len(members)} members saved  →  {cfile}")
+
