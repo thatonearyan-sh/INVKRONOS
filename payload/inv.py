@@ -3420,3 +3420,24 @@ async def feat_group_scraper(client, accent):
                 f.write(f"{m.id},{nm},{un},{ls},{'bot' if m.bot else 'user'}\n")
         success(f"\n  {len(members)} members saved  →  {cfile}")
 
+        nxt = again_menu("Scrape another group")
+        if nxt is None:
+            return
+
+
+async def feat_chat_stats(client, accent):
+    """29. Chat Deep Stats — loop: analyze another chat."""
+    while True:
+        clear()
+        header("CHAT DEEP STATS  📈")
+        selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
+        n_s = prompt("Analyze how many messages?  (default 500)")
+        n   = int(n_s) if n_s.isdigit() else 500
+        info(f"Loading {n} messages…")
+        await go_offline(client)
+        msgs = await client.get_messages(selected.entity, limit=n)
+        await go_offline(client)
+        if not msgs:
