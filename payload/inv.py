@@ -3441,3 +3441,24 @@ async def feat_chat_stats(client, accent):
         msgs = await client.get_messages(selected.entity, limit=n)
         await go_offline(client)
         if not msgs:
+            warn("No messages found."); press_enter()
+            nxt = again_menu("Analyze another chat")
+            if nxt is None: return
+            continue
+
+        my_c  = sum(1 for m in msgs if m.out)
+        th_c  = len(msgs) - my_c
+        med_c = sum(1 for m in msgs if m.media)
+        hours = [0] * 24
+        for m in msgs:
+            hours[m.date.astimezone(IST).hour] += 1
+        peak_h = hours.index(max(hours))
+        dates  = [m.date for m in msgs]
+        first  = min(dates).astimezone(IST).strftime("%d %b %Y")
+        last   = max(dates).astimezone(IST).strftime("%d %b %Y")
+        word_freq: dict = {}
+        for m in msgs:
+            if not m.out and m.text:
+                for w in m.text.lower().split():
+                    w = w.strip(".,!?;:\"'()[]{}\n")
+                    if len(w) > 3:
