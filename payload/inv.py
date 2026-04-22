@@ -3462,3 +3462,23 @@ async def feat_chat_stats(client, accent):
                 for w in m.text.lower().split():
                     w = w.strip(".,!?;:\"'()[]{}\n")
                     if len(w) > 3:
+                        word_freq[w] = word_freq.get(w, 0) + 1
+        top_words  = sorted(word_freq.items(), key=lambda x: -x[1])[:10]
+        resp_times = []
+        prev       = None
+        for m in reversed(msgs):
+            if prev is not None and m.out != prev.out:
+                diff = abs(int((m.date - prev.date).total_seconds()))
+                if diff < 3600:
+                    resp_times.append(diff)
+            prev = m
+        avg_r = (sum(resp_times) // len(resp_times)) if resp_times else 0
+
+        clear()
+        header(f"📈  STATS  —  {selected.name}")
+        print(col(f"\n  Date range      :  {first}  →  {last}",       Fore.WHITE))
+        print(col(f"  Messages scanned:  {len(msgs)}",                 Fore.WHITE))
+        print(col(f"  Your messages   :  {my_c}  ({my_c*100//len(msgs)}%)",
+                  Fore.CYAN))
+        print(col(f"  Their messages  :  {th_c}  ({th_c*100//len(msgs)}%)",
+                  Fore.WHITE))
