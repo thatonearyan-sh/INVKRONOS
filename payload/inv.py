@@ -3482,3 +3482,24 @@ async def feat_chat_stats(client, accent):
                   Fore.CYAN))
         print(col(f"  Their messages  :  {th_c}  ({th_c*100//len(msgs)}%)",
                   Fore.WHITE))
+        print(col(f"  Media / files   :  {med_c}",                     Fore.WHITE))
+        print(col(f"  Peak hour (IST) :  {peak_h:02d}:00  ({hours[peak_h]} msgs)",
+                  Fore.YELLOW))
+        print(col(f"  Avg reply time  :  {avg_r//60}m {avg_r%60}s",   Fore.WHITE))
+        if top_words:
+            print(col(f"\n  Top words (their side):", Fore.CYAN + Style.BRIGHT))
+            max_c = top_words[0][1]
+            for w, c in top_words:
+                bar = "█" * max(1, c * 16 // max_c)
+                print(col(f"    {w:<16}  {bar} {c}", Fore.WHITE))
+        await go_offline(client)
+
+        nxt = again_menu("Analyze another chat")
+        if nxt is None:
+            return
+
+
+async def feat_scheduled_queue(client, accent):
+    """30. Scheduled Queue Manager — stays open, refresh list after each cancel."""
+    while True:
+        clear()
