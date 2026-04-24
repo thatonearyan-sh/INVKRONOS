@@ -3503,3 +3503,24 @@ async def feat_scheduled_queue(client, accent):
     """30. Scheduled Queue Manager — stays open, refresh list after each cancel."""
     while True:
         clear()
+        header("SCHEDULED QUEUE  🗓️")
+        selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
+        # Inner loop: stay in THIS chat's queue until user leaves
+        while True:
+            info(f"Loading scheduled messages for [{selected.name}]…")
+            await go_offline(client)
+            try:
+                sched = list(await client.get_messages(selected.entity, scheduled=True))
+                await go_offline(client)
+            except Exception as e:
+                error(f"Could not fetch: {e}"); press_enter(); break
+
+            if not sched:
+                warn("No scheduled messages in this chat."); press_enter(); break
+
+            clear()
+            header(f"🗓️  SCHEDULED  —  {selected.name}  ({len(sched)} pending)")
+            print()
