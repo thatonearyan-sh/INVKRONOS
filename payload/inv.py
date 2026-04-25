@@ -3524,3 +3524,24 @@ async def feat_scheduled_queue(client, accent):
             clear()
             header(f"🗓️  SCHEDULED  —  {selected.name}  ({len(sched)} pending)")
             print()
+            for i, m in enumerate(sched):
+                ts  = to_ist(m.date) if m.date else "?"
+                txt = trunc(m.text or "[media]", 50)
+                print(col(f"  {i:>3}.  [{ts}]  {txt}", Fore.WHITE))
+
+            print()
+            print(col("  Enter number to cancel one message.", Fore.YELLOW))
+            print(col("  Enter  'all'  to cancel all pending messages.", Fore.RED))
+            print(col("  Enter  blank  to pick a different chat.", Fore.WHITE + Style.DIM))
+            choice = prompt("Choice")
+
+            if not choice:
+                break  # go back to outer loop (pick new chat)
+
+            try:
+                await go_offline(client)
+                if choice.lower() == "all":
+                    print(col(f"\n  ⚠️   Cancel ALL {len(sched)} scheduled message(s) in [{selected.name}]?",
+                              Fore.RED + Style.BRIGHT))
+                    if prompt("Confirm?  (y / N)").lower() != "y":
+                        warn("Cancelled.")
