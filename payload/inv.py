@@ -3545,3 +3545,24 @@ async def feat_scheduled_queue(client, accent):
                               Fore.RED + Style.BRIGHT))
                     if prompt("Confirm?  (y / N)").lower() != "y":
                         warn("Cancelled.")
+                    else:
+                        await client.delete_messages(selected.entity,
+                                                     [m.id for m in sched], revoke=True)
+                        await go_offline(client)
+                        success(f"All {len(sched)} scheduled messages cancelled.")
+                        press_enter()
+                        break  # go pick new chat
+                else:
+                    idx_c = int(choice)
+                    if idx_c < 0 or idx_c >= len(sched):
+                        error("Number out of range."); press_enter(); continue
+                    t       = sched[idx_c]
+                    ts_str  = to_ist(t.date) if t.date else "?"
+                    txt_str = trunc(t.text or "[media]", 40)
+                    print(col(f"\n  ⚠️   Cancel  [{ts_str}]  '{txt_str}'?", Fore.YELLOW))
+                    if prompt("Confirm?  (y / N)").lower() != "y":
+                        warn("Cancelled.")
+                    else:
+                        await client.delete_messages(selected.entity, [t.id], revoke=True)
+                        await go_offline(client)
+                        success("Scheduled message cancelled.")
