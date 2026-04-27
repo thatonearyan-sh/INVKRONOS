@@ -3566,3 +3566,24 @@ async def feat_scheduled_queue(client, accent):
                         await client.delete_messages(selected.entity, [t.id], revoke=True)
                         await go_offline(client)
                         success("Scheduled message cancelled.")
+                        press_enter()
+                        # Loop refreshes list automatically (continue inner while)
+            except (ValueError, IndexError):
+                error("Invalid number."); press_enter()
+            except Exception as e:
+                error(f"Failed: {e}"); press_enter()
+
+        nxt = again_menu("Manage queue in another chat")
+        if nxt is None:
+            return
+
+
+async def feat_self_destruct(client, accent):
+    """31. Self-Destruct Message — loop: send another."""
+    while True:
+        clear()
+        header("SELF-DESTRUCT MESSAGE  💣")
+        selected, _ = await pick_dialog(client, accent)
+        if not selected:
+            return
+
