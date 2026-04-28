@@ -3587,3 +3587,24 @@ async def feat_self_destruct(client, accent):
         if not selected:
             return
 
+        print(col(f"\n  To:  [{selected.name}]", Fore.CYAN + Style.BRIGHT))
+        text = prompt("Message text  (blank = cancel)")
+        if not text:
+            warn("Cancelled.")
+        else:
+            del_s = prompt("Auto-delete after how many minutes?  (default 5)")
+            del_m = int(del_s) if del_s.isdigit() else 5
+            send_at     = auto_schedule()
+            send_at_ist = send_at.astimezone(IST).strftime("%H:%M")
+            delete_at   = send_at + timedelta(minutes=del_m)
+            del_ist     = delete_at.astimezone(IST).strftime("%H:%M")
+            try:
+                await go_offline(client)
+                msg = await client.send_message(selected.entity, text, schedule=send_at)
+                await go_offline(client)
+                success(f"Queued!  Sends at {send_at_ist}  →  💣 self-destructs at {del_ist} IST")
+                warn("Keep this script running for auto-delete to fire.")
+
+                async def _destroy():
+                    wait_s = (delete_at - datetime.now(timezone.utc)).total_seconds()
+                    if wait_s > 0:
