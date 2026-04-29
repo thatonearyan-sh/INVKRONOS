@@ -3608,3 +3608,24 @@ async def feat_self_destruct(client, accent):
                 async def _destroy():
                     wait_s = (delete_at - datetime.now(timezone.utc)).total_seconds()
                     if wait_s > 0:
+                        await asyncio.sleep(wait_s)
+                    try:
+                        await go_offline(client)
+                        try:
+                            await client.delete_messages(selected.entity, [msg.id], revoke=True)
+                        except Exception:
+                            recent = await client.get_messages(selected.entity, limit=50)
+                            for m in recent:
+                                if m.out and m.text == text:
+                                    await client.delete_messages(selected.entity,
+                                                                 [m.id], revoke=True)
+                                    break
+                        await go_offline(client)
+                        ts = datetime.now(IST).strftime("%H:%M IST")
+                        print(col(f"\n  💣  Self-destructed at {ts}", Fore.RED + Style.BRIGHT))
+                    except Exception:
+                        pass
+
+                asyncio.create_task(_destroy())
+            except Exception as e:
+                error(f"Failed: {e}")
