@@ -3629,3 +3629,23 @@ async def feat_self_destruct(client, accent):
                 asyncio.create_task(_destroy())
             except Exception as e:
                 error(f"Failed: {e}")
+
+        nxt = again_menu(
+            f"Send another self-destruct to  [{selected.name}]",
+            "Pick a different chat",
+        )
+        if nxt is None:
+            return
+
+
+async def feat_live_monitor(client, accent):
+    """32. Live Monitor Mode (timed real-time chat watcher)."""
+    clear()
+    header("LIVE MONITOR MODE  📡")
+    selected, _ = await pick_dialog(client, accent)
+    if not selected:
+        return
+
+    mins_s = prompt("Monitor for how many minutes?  (default 10)")
+    mins   = int(mins_s) if mins_s.isdigit() else 10
+    clear()
