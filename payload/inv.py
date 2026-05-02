@@ -3649,3 +3649,24 @@ async def feat_live_monitor(client, accent):
     mins_s = prompt("Monitor for how many minutes?  (default 10)")
     mins   = int(mins_s) if mins_s.isdigit() else 10
     clear()
+    header(f"📡  LIVE  —  {selected.name}")
+    info(f"Watching for {mins} min.  New messages appear as they arrive.  Ctrl+C to stop.")
+    divider()
+    await go_offline(client)
+    init_msgs = await client.get_messages(selected.entity, limit=5)
+    await go_offline(client)
+    last_id = max((m.id for m in init_msgs), default=0)
+    loop = asyncio.get_running_loop()
+    end  = loop.time() + mins * 60
+    try:
+        while loop.time() < end:
+            await go_offline(client)
+            try:
+                new_msgs = await client.get_messages(
+                    selected.entity, limit=20, min_id=last_id)
+                await go_offline(client)
+                for m in reversed(new_msgs):
+                    if m.id > last_id:
+                        last_id = m.id
+                        await render_msg(client, m)
+                        divider()
