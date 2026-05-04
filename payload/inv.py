@@ -3670,3 +3670,24 @@ async def feat_live_monitor(client, accent):
                         last_id = m.id
                         await render_msg(client, m)
                         divider()
+            except Exception:
+                pass
+            await asyncio.sleep(5)
+    except KeyboardInterrupt:
+        pass
+    print()
+    success("Monitor stopped.  👻 Invisible throughout.")
+    await go_offline(client)
+    press_enter()
+
+
+# ═══════════════════════════════════════════════════════════════
+#  FEATURES — SECURITY / PROFILE
+# ═══════════════════════════════════════════════════════════════
+
+async def feat_devices(client, accent):
+    """33. Active Devices — view, manage, and terminate sessions. Refreshes after each action."""
+    while True:
+        clear()
+        header("ACTIVE DEVICES  🔒")
+        info("Fetching active sessions from Telegram…")
