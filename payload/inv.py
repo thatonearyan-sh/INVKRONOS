@@ -3691,3 +3691,24 @@ async def feat_devices(client, accent):
         clear()
         header("ACTIVE DEVICES  🔒")
         info("Fetching active sessions from Telegram…")
+        await go_offline(client)
+        try:
+            result = await client(GetAuthorizationsRequest())
+            await go_offline(client)
+        except Exception as e:
+            error(f"Could not fetch sessions: {e}"); press_enter(); return
+
+        auths = result.authorizations
+        if not auths:
+            warn("No active sessions found."); press_enter(); return
+
+        clear()
+        header(f"🔒  ACTIVE DEVICES  ({len(auths)} session(s))")
+        print()
+
+        for i, a in enumerate(auths):
+            last_active = a.date_active.astimezone(IST).strftime("%d %b %Y  %H:%M IST")
+            created_on  = a.date_created.astimezone(IST).strftime("%d %b %Y")
+            tag         = col("  ◀ THIS DEVICE", Fore.GREEN + Style.BRIGHT) if a.current else ""
+            idx_col     = col(f"  {i:>3}.", Fore.GREEN if a.current else accent)
+
