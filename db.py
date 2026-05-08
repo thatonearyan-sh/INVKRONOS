@@ -46,3 +46,22 @@ def get_db():
             _db.licenses.create_index("api_key", unique=True)
             _db.licenses.create_index("utr")
             _db.licenses.create_index("ton_memo")
+        except Exception as e:
+            print(f"[DB WARN] Index creation notice: {e}")
+        
+        # Enforce blacklist synchronization
+        sync_revocations(_db)
+    return _db
+
+def generate_key():
+    # Format: KRN-XXXX-XXXX-XXXX-XXXX
+    parts = [secrets.token_hex(2).upper() for _ in range(4)]
+    return f"{KEY_PREFIX}{'-'.join(parts)}"
+
+def create_order(plan, payment_method, amount_ton=None, ton_memo=None):
+    db = get_db()
+    order_id = f"KRN-ORD-{secrets.token_hex(3).upper()}"
+    now = datetime.now(timezone.utc)
+    
+    order = {
+        "order_id": order_id,

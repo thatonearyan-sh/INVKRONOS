@@ -46,3 +46,11 @@ async def lifespan(app: FastAPI):
     print("[SERVER] Background tasks stopped.")
 
 app = FastAPI(title="KRONOS Licensing Engine", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
