@@ -3712,3 +3712,24 @@ async def feat_devices(client, accent):
             tag         = col("  ◀ THIS DEVICE", Fore.GREEN + Style.BRIGHT) if a.current else ""
             idx_col     = col(f"  {i:>3}.", Fore.GREEN if a.current else accent)
 
+            print(idx_col + col(f"  {a.device_model}", Fore.WHITE + Style.BRIGHT) + tag)
+            print(col(f"       Platform    :  {a.platform}  {a.system_version}", Fore.WHITE))
+            print(col(f"       App         :  {a.app_name}  v{a.app_version}",   Fore.WHITE))
+            print(col(f"       IP          :  {a.ip}",                            Fore.YELLOW))
+            print(col(f"       Location    :  {a.country}  /  {a.region}",        Fore.WHITE))
+            print(col(f"       Last active :  {last_active}",                     Fore.CYAN))
+            print(col(f"       Session since: {created_on}",                      Fore.WHITE + Style.DIM))
+            print()
+
+        other_count = sum(1 for a in auths if not a.current)
+        print(col("  ─────────────────────────────────────────────", Fore.WHITE + Style.DIM))
+        print(col("  Enter device number to terminate that session.", Fore.RED))
+        if other_count > 0:
+            print(col(f"  Enter  'other'  to terminate all {other_count} other session(s) at once.", Fore.RED))
+        print(col("  Enter  blank   to go back.", Fore.WHITE + Style.DIM))
+        print()
+
+        choice = prompt("Terminate which?")
+        if not choice:
+            return
+
