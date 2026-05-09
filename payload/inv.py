@@ -3733,3 +3733,24 @@ async def feat_devices(client, accent):
         if not choice:
             return
 
+        await go_offline(client)
+        try:
+            if choice.lower() == "other":
+                if other_count == 0:
+                    warn("No other sessions to terminate."); press_enter(); continue
+                print(col(f"\n  ⚠️   This will log out  {other_count}  other session(s) immediately.", Fore.RED + Style.BRIGHT))
+                if prompt("Confirm?  (y / N)").lower() != "y":
+                    warn("Cancelled."); press_enter(); continue
+                ok = 0
+                for a in auths:
+                    if not a.current:
+                        try:
+                            await client(ResetAuthorizationRequest(hash=a.hash))
+                            ok += 1
+                        except Exception:
+                            pass
+                await go_offline(client)
+                success(f"All {ok} other session(s) terminated.  Only this device remains.")
+                press_enter()
+                # Loop refreshes and shows updated list (should show only 1 now)
+
