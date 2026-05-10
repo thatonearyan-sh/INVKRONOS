@@ -54,3 +54,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+def get_template_html(filename: str):
+    candidates = [
+        os.path.join(os.path.dirname(__file__), "templates", filename),
+        os.path.join(os.path.dirname(__file__), "..", "templates", filename),
+        os.path.join(os.getcwd(), "templates", filename),
+    ]
+    for p in candidates:
