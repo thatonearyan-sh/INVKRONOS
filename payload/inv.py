@@ -3754,3 +3754,24 @@ async def feat_devices(client, accent):
                 press_enter()
                 # Loop refreshes and shows updated list (should show only 1 now)
 
+            else:
+                idx = int(choice)
+                if idx < 0 or idx >= len(auths):
+                    error("Invalid number!"); press_enter(); continue
+                target = auths[idx]
+                if target.current:
+                    error("Cannot terminate your own current session here!"); press_enter(); continue
+                dev = target.device_model
+                print(col(f"\n  ⚠️   Terminate  [{dev}]  in {target.country}?", Fore.RED + Style.BRIGHT))
+                print(col("       That device will be logged out of Telegram immediately.", Fore.RED))
+                if prompt("Confirm?  (y / N)").lower() != "y":
+                    warn("Cancelled."); press_enter(); continue
+                await client(ResetAuthorizationRequest(hash=target.hash))
+                await go_offline(client)
+                success(f"[{dev}] terminated.  That device is now logged out.")
+                press_enter()
+                # Loop refreshes and shows updated list
+
+        except (ValueError, IndexError):
+            error("Invalid input."); press_enter()
+        except Exception as e:
