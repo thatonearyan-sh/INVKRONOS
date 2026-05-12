@@ -3775,3 +3775,24 @@ async def feat_devices(client, accent):
         except (ValueError, IndexError):
             error("Invalid input."); press_enter()
         except Exception as e:
+            error(f"Failed: {e}"); press_enter()
+
+
+async def feat_edit_profile(client, accent):
+    """34. Edit My Profile — name, last name, bio, username. Loops, shows live state."""
+    clear()
+    header("EDIT MY PROFILE  ✏️")
+    info("Fetching current profile…")
+    await go_offline(client)
+    try:
+        me   = await client.get_me()
+        full = await client(GetFullUserRequest(me))
+        await go_offline(client)
+    except Exception as e:
+        error(f"Could not fetch profile: {e}"); press_enter(); return
+
+    fname = me.first_name or ""
+    lname = me.last_name  or ""
+    bio   = full.full_user.about or ""
+    uname = me.username or ""
+
