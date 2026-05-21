@@ -3796,3 +3796,24 @@ async def feat_edit_profile(client, accent):
     bio   = full.full_user.about or ""
     uname = me.username or ""
 
+    while True:
+        clear()
+        header("✏️  EDIT MY PROFILE")
+        print(col("\n  Current profile:", Fore.CYAN + Style.BRIGHT))
+        phone_str = f"+{me.phone}" if getattr(me, 'phone', None) else "(none)"
+        print(col(f"  Account ID  :  {me.id}", Fore.WHITE))
+        print(col(f"  Phone       :  {phone_str}", Fore.WHITE))
+        print(col(f"  Premium     :  {'Yes' if getattr(me, 'premium', False) else 'No'}", Fore.WHITE))
+        print(col(f"  First name  :  {fname or '(empty)'}",  Fore.WHITE))
+        print(col(f"  Last name   :  {lname or '(empty)'}",  Fore.WHITE))
+        print(col(f"  Bio         :  {trunc(bio, 60) or '(empty)'}",  Fore.WHITE))
+        print(col(f"  Username    :  {'@'+uname if uname else '(none)'}",
+                  Fore.CYAN if uname else Fore.WHITE + Style.DIM))
+        print()
+        print(col("  1.  Change first name",          Fore.WHITE))
+        print(col("  2.  Change last name",            Fore.WHITE))
+        print(col("  3.  Change bio / about",          Fore.WHITE))
+        print(col("  4.  Change username",             Fore.WHITE))
+        print(col("  5.  Edit everything at once",     Fore.WHITE))
+        print(col("  6.  Back to main menu",           Fore.WHITE + Style.DIM))
+        print()
