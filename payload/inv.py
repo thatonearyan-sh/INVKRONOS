@@ -3817,3 +3817,23 @@ async def feat_edit_profile(client, accent):
         print(col("  5.  Edit everything at once",     Fore.WHITE))
         print(col("  6.  Back to main menu",           Fore.WHITE + Style.DIM))
         print()
+
+        choice = prompt("Choose")
+        if choice == "6" or not choice:
+            return
+
+        try:
+            await go_offline(client)
+
+            if choice == "1":
+                new = prompt(f"New first name  (current: '{fname}')")
+                if not new:
+                    warn("No change."); press_enter(); continue
+                await client(UpdateProfileRequest(first_name=new))
+                await go_offline(client)
+                fname = new
+                success(f"First name  →  '{new}'")
+
+            elif choice == "2":
+                print(col(f"  Current last name:  {lname or '(empty)'}", Style.DIM))
+                new = prompt("New last name  (blank = remove last name)")
