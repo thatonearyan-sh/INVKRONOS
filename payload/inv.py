@@ -3837,3 +3837,24 @@ async def feat_edit_profile(client, accent):
             elif choice == "2":
                 print(col(f"  Current last name:  {lname or '(empty)'}", Style.DIM))
                 new = prompt("New last name  (blank = remove last name)")
+                if not new and lname:
+                    if prompt("Remove your last name entirely?  (y / N)").lower() != "y":
+                        warn("No change."); press_enter(); continue
+                await client(UpdateProfileRequest(last_name=new))
+                await go_offline(client)
+                lname = new
+                success(f"Last name  →  '{new}'" if new else "Last name removed.")
+
+            elif choice == "3":
+                print(col(f"  Current bio:  {bio or '(empty)'}", Style.DIM))
+                new = prompt("New bio  (up to 70 chars — blank = remove bio)")
+                if not new and bio:
+                    if prompt("Remove your bio entirely?  (y / N)").lower() != "y":
+                        warn("No change."); press_enter(); continue
+                await client(UpdateProfileRequest(about=new))
+                await go_offline(client)
+                bio = new
+                success("Bio updated." if new else "Bio removed.")
+
+            elif choice == "4":
+                print(col("  5–32 chars, letters / numbers / underscore only.",
