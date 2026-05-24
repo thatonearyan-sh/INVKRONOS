@@ -3879,3 +3879,24 @@ async def feat_edit_profile(client, accent):
                 nf     = prompt(f"First name  [{fname}]") or fname
                 nl_raw = prompt(f"Last name   [{lname}]  (REMOVE to clear)")
                 nl     = "" if nl_raw.upper() == "REMOVE" else (nl_raw or lname)
+                nb_raw = prompt(f"Bio         [{trunc(bio, 40)}]  (REMOVE to clear)")
+                nb     = "" if nb_raw.upper() == "REMOVE" else (nb_raw or bio)
+                nu_raw = prompt(f"Username    [{'@'+uname if uname else 'none'}]  (REMOVE to clear)")
+                nu_change = nu_raw.upper() == "REMOVE" or (nu_raw and nu_raw != uname)
+
+                await client(UpdateProfileRequest(first_name=nf, last_name=nl, about=nb))
+                await go_offline(client)
+                fname, lname, bio = nf, nl, nb
+
+                if nu_change:
+                    nu = "" if nu_raw.upper() == "REMOVE" else nu_raw
+                    try:
+                        await client(UpdateUsernameRequest(username=nu))
+                        await go_offline(client)
+                        uname = nu
+                    except Exception as ue:
+                        warn(f"Profile saved, but username error: {ue}")
+
+                success("Profile updated successfully!")
+
+            else:
