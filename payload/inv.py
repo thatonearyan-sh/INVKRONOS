@@ -3858,3 +3858,24 @@ async def feat_edit_profile(client, accent):
 
             elif choice == "4":
                 print(col("  5–32 chars, letters / numbers / underscore only.",
+                           Fore.WHITE + Style.DIM))
+                print(col(f"  Current: {'@'+uname if uname else 'none'}",
+                           Fore.WHITE + Style.DIM))
+                new = prompt("New username  (without @)  — blank = remove username")
+                if not new and uname:
+                    if prompt("Remove your @username?  (y / N)").lower() != "y":
+                        warn("No change."); press_enter(); continue
+                await client(UpdateUsernameRequest(username=new))
+                await go_offline(client)
+                uname = new
+                success(f"Username  →  '@{new}'" if new else "Username removed.")
+
+            elif choice == "5":
+                print(col("  Leave a field blank to keep its current value.",
+                           Fore.WHITE + Style.DIM))
+                print(col("  Type  REMOVE  to clear a field.",
+                           Fore.WHITE + Style.DIM))
+                print()
+                nf     = prompt(f"First name  [{fname}]") or fname
+                nl_raw = prompt(f"Last name   [{lname}]  (REMOVE to clear)")
+                nl     = "" if nl_raw.upper() == "REMOVE" else (nl_raw or lname)
