@@ -3900,3 +3900,24 @@ async def feat_edit_profile(client, accent):
                 success("Profile updated successfully!")
 
             else:
+                error("Invalid choice — enter 1 to 6"); press_enter(); continue
+
+        except Exception as e:
+            error(f"Failed: {e}")
+
+        press_enter()
+        # Loop continues — screen refreshes with updated values
+
+
+# ═══════════════════════════════════════════════════════════════
+#  MAIN VIEWER  (per-account session)
+# ═══════════════════════════════════════════════════════════════
+
+
+
+async def feat_media_catch_up(client, accent):
+    """37. Specific Media Catch Up"""
+    clear()
+    header("SPECIFIC MEDIA CATCH UP  🕵️")
+    print(col("  1.  Photos", Fore.WHITE))
+    print(col("  2.  Videos", Fore.WHITE))
