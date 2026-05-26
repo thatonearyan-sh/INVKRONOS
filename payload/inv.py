@@ -3921,3 +3921,24 @@ async def feat_media_catch_up(client, accent):
     header("SPECIFIC MEDIA CATCH UP  🕵️")
     print(col("  1.  Photos", Fore.WHITE))
     print(col("  2.  Videos", Fore.WHITE))
+    print(col("  3.  Voice Notes (with Auto-Transcribe)", Fore.WHITE))
+    print(col("  4.  Round Videos", Fore.WHITE))
+    print(col("  5.  Documents", Fore.WHITE))
+    print(col("  6.  Pinned Messages", Fore.WHITE))
+    print(col("  7.  View Once Only (Secret Media)", Fore.WHITE))
+    print(col("  8.  All Media (Everything)", Fore.WHITE))
+    print()
+    m_choice = prompt("Choose media type")
+    
+    filters = {
+        "1": InputMessagesFilterPhotos,
+        "2": InputMessagesFilterVideo,
+        "3": InputMessagesFilterVoice,
+        "4": InputMessagesFilterRoundVideo,
+        "5": InputMessagesFilterDocument,
+        "6": InputMessagesFilterPinned,
+        "7": None,
+        "8": None
+    }
+    
+    if m_choice not in filters: return
