@@ -3942,3 +3942,24 @@ async def feat_media_catch_up(client, accent):
     }
     
     if m_choice not in filters: return
+    selected, _ = await pick_dialog(client, accent)
+    if not selected: return
+    
+    info("Scanning chat...")
+    await go_offline(client)
+    
+    msgs = []
+    try:
+        limit_count = 500 if m_choice in ("7", "8") else 50
+        async for m in client.iter_messages(selected.entity, filter=filters[m_choice], limit=limit_count):
+            if m_choice == "7" and not getattr(m.media, 'ttl_seconds', None):
+                continue
+            if m_choice == "8" and not getattr(m, 'file', None):
+                continue
+            msgs.append(m)
+            if len(msgs) >= 50:
+                break
+    except Exception as e:
+        error(str(e))
+        press_enter()
+        return
