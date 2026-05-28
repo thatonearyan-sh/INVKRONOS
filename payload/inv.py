@@ -3963,3 +3963,24 @@ async def feat_media_catch_up(client, accent):
         error(str(e))
         press_enter()
         return
+
+    if not msgs:
+        warn("No media found.")
+        press_enter()
+        return
+        
+    while True:
+        clear()
+        header(f"MEDIA CATCH UP: {selected.name}")
+        for i, m in enumerate(msgs):
+            dt = m.date.astimezone(IST).strftime("%d/%m %H:%M")
+            sender = await get_sender_name(client, m)
+            secret = col(" [VIEW ONCE - SECRET]", Fore.RED) if getattr(m.media, 'ttl_seconds', None) else ""
+            
+            f_name, f_ext, f_size = None, None, 0
+            if getattr(m, 'media', None) and getattr(m.media, 'webpage', None) and getattr(m.media.webpage, 'document', None):
+                doc = m.media.webpage.document
+                f_size = getattr(doc, 'size', 0)
+                from telethon.utils import get_extension
+                f_ext = get_extension(doc)
+                for attr in getattr(doc, 'attributes', []):
