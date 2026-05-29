@@ -3984,3 +3984,23 @@ async def feat_media_catch_up(client, accent):
                 from telethon.utils import get_extension
                 f_ext = get_extension(doc)
                 for attr in getattr(doc, 'attributes', []):
+                    if hasattr(attr, 'file_name'): f_name = attr.file_name; break
+            else:
+                f_name = getattr(m.file, 'name', None) if getattr(m, 'file', None) else None
+                f_ext = getattr(m.file, 'ext', None) if getattr(m, 'file', None) else None
+                f_size = getattr(m.file, 'size', 0) if getattr(m, 'file', None) else 0
+                
+            f_size_mb = f_size / 1024 / 1024
+            
+            if f_name:
+                fmt_str = f"[{f_name} | {f_size_mb:.1f}MB]"
+            elif f_ext:
+                fmt_str = f"[{f_ext} | {f_size_mb:.1f}MB]"
+            else:
+                fmt_str = f"[media | {f_size_mb:.1f}MB]" if f_size > 0 else "[media]"
+                
+            caption = (m.text or "").replace('\n', ' ')
+            if len(caption) > 40: caption = caption[:37] + "..."
+            cap_str = f" - {caption}" if caption else ""
+            
+            print(col(f"  {i}. [{dt}] {sender}", Fore.WHITE) + secret + " " + col(fmt_str, Fore.CYAN) + col(cap_str, Fore.YELLOW))
