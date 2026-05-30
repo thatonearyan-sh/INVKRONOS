@@ -4004,3 +4004,24 @@ async def feat_media_catch_up(client, accent):
             cap_str = f" - {caption}" if caption else ""
             
             print(col(f"  {i}. [{dt}] {sender}", Fore.WHITE) + secret + " " + col(fmt_str, Fore.CYAN) + col(cap_str, Fore.YELLOW))
+            
+        print()
+        sel = prompt("Select messages (e.g. 0,2,3) or blank to exit")
+        if not sel: return
+        
+        try:
+            indices = set()
+            for part in sel.split(","):
+                part = part.strip()
+                if not part: continue
+                if "-" in part:
+                    s, e = map(int, part.split("-"))
+                    indices.update(range(s, e + 1))
+                elif part.isdigit():
+                    indices.add(int(part))
+            indices = sorted(list(indices))
+            target_msgs = [msgs[i] for i in indices if 0 <= i < len(msgs)]
+        except:
+            continue
+            
+        if not target_msgs: continue
