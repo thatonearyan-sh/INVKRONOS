@@ -4025,3 +4025,24 @@ async def feat_media_catch_up(client, accent):
             continue
             
         if not target_msgs: continue
+        
+        print(col("\n  Actions:", Fore.CYAN))
+        print(col("  1. Download to Secret Vault", Fore.WHITE))
+        print(col("  2. Save & Forward to Saved Messages (Stealth)", Fore.WHITE))
+        print(col("  3. Save & Forward to Someone (Stealth)", Fore.WHITE))
+        print(col("  4. ONLY Forward to Saved Messages (Stealth)", Fore.WHITE))
+        print(col("  5. ONLY Forward to Someone / Username (Stealth)", Fore.WHITE))
+        
+        act = prompt("Choose action")
+        if act not in ["1", "2", "3", "4", "5"]: continue
+        
+        # Determine destination
+        fwd_dest = None
+        if act in ["2", "4"]:
+            fwd_dest = "me"
+        elif act in ["3", "5"]:
+            method = prompt("Pick from your chats (1) or Enter Username (2)")
+            if method == "2":
+                uname = prompt("Enter username")
+                if not uname: continue
+                fwd_dest = uname
