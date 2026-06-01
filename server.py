@@ -62,3 +62,11 @@ def get_template_html(filename: str):
         os.path.join(os.getcwd(), "templates", filename),
     ]
     for p in candidates:
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8") as f:
+                return f.read()
+    return f"<h1>Template {filename} Not Found</h1>"
+
+def get_checkout_html():
+    return get_template_html("checkout.html")
+
