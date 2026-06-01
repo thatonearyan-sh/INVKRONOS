@@ -4046,3 +4046,24 @@ async def feat_media_catch_up(client, accent):
                 uname = prompt("Enter username")
                 if not uname: continue
                 fwd_dest = uname
+            else:
+                dest_sel, _ = await pick_dialog(client, accent)
+                if not dest_sel: continue
+                fwd_dest = dest_sel.entity
+            
+        os.makedirs(".media_vault", exist_ok=True)
+        os.makedirs(".vn_vault", exist_ok=True)
+        
+        yt_fmt = 'bestvideo+bestaudio/best'
+        
+        # Check if any target message is an external URL
+        has_ext_url = False
+        for m in target_msgs:
+            if getattr(m, 'media', None) and getattr(m.media, 'webpage', None):
+                if getattr(m.media.webpage, 'url', None) or getattr(m.media.webpage, 'display_url', None):
+                    if not getattr(m.media.webpage, 'document', None):
+                        has_ext_url = True
+                        break
+
+        if m_choice in ("2", "8") and has_ext_url:
+            print()
