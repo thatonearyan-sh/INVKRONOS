@@ -4067,3 +4067,24 @@ async def feat_media_catch_up(client, accent):
 
         if m_choice in ("2", "8") and has_ext_url:
             print()
+            print(col("  External Video Quality (yt-dlp):", Fore.CYAN))
+            print(col("  1. Maximum Quality (4K/8K/Best)", Fore.WHITE))
+            print(col("  2. 1080p", Fore.WHITE))
+            print(col("  3. 720p", Fore.WHITE))
+            print(col("  4. Audio Only", Fore.WHITE))
+            q_choice = prompt("Choice (default 1)")
+            if q_choice == "2": yt_fmt = 'bestvideo[height<=1080]+bestaudio/best[height<=1080]'
+            elif q_choice == "3": yt_fmt = 'bestvideo[height<=720]+bestaudio/best[height<=720]'
+            elif q_choice == "4": yt_fmt = 'bestaudio/best'
+            cinematic_sub_style = None
+            sub_choice = prompt("Download Synced Subtitles? (Y / n)").lower() != 'n'
+            sub_lang = "en"
+            if sub_choice:
+                sub_lang = prompt("Subtitle Language Code (e.g. en, es, hi) [default: en]") or "en"
+                print("\n  [🎬] Upgrade to Cinematic Film-Level Subtitles?")
+                print("  1. Yes (Netflix Style - Yellow + Drop Shadow)")
+                print("  2. Yes (Apple Style - White + Soft Shadow)")
+                print("  3. Yes (Anime Style - Outlined)")
+                print("  4. No (Standard embedded soft-subs)")
+                c_choice = prompt("Choose style [default: 4]")
+                if c_choice == "1": cinematic_sub_style = "netflix"
