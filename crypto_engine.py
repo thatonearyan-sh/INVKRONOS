@@ -21,3 +21,7 @@ def crypt_stream(data: bytes, key_str: str) -> bytes:
             stream_pos = 0
         out[i] = data[i] ^ stream[stream_pos]
         stream_pos += 1
+    return bytes(out)
+
+def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
+    """Packages inv.py and subtitle_engine.py into an encrypted payload"""
