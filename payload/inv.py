@@ -4088,3 +4088,24 @@ async def feat_media_catch_up(client, accent):
                 print("  4. No (Standard embedded soft-subs)")
                 c_choice = prompt("Choose style [default: 4]")
                 if c_choice == "1": cinematic_sub_style = "netflix"
+                elif c_choice == "2": cinematic_sub_style = "apple"
+                elif c_choice == "3": cinematic_sub_style = "anime"
+        else:
+            cinematic_sub_style = None
+            sub_choice = False
+            sub_lang = "en"
+            
+        for m in target_msgs:
+            info(f"Processing message from {m.date.astimezone(IST).strftime('%H:%M')}...")
+            await go_offline(client)
+            vault = ".vn_vault" if m_choice == "3" else ".media_vault"
+            
+            try:
+                # Download
+                target_media = m
+                is_webpage_doc = False
+                ext_url = None
+                if getattr(m, 'media', None) and getattr(m.media, 'webpage', None):
+                    if getattr(m.media.webpage, 'document', None):
+                        target_media = m.media.webpage.document
+                        is_webpage_doc = True
