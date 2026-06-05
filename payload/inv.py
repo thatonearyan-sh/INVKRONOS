@@ -4109,3 +4109,24 @@ async def feat_media_catch_up(client, accent):
                     if getattr(m.media.webpage, 'document', None):
                         target_media = m.media.webpage.document
                         is_webpage_doc = True
+                    elif getattr(m.media.webpage, 'url', None) or getattr(m.media.webpage, 'display_url', None):
+                        ext_url = getattr(m.media.webpage, 'url', None) or getattr(m.media.webpage, 'display_url', None)
+                
+                is_large = getattr(target_media, 'size', 0) > 20 * 1024 * 1024
+                
+                import time
+                start_time = time.time()
+                
+                filename = None
+                if is_webpage_doc:
+                    for attr in getattr(target_media, 'attributes', []):
+                        if hasattr(attr, 'file_name'): filename = attr.file_name; break
+                    if not filename:
+                        from telethon.utils import get_extension
+                        filename = get_extension(target_media)
+                else:
+                    filename = getattr(m.file, 'name', None) if getattr(m, 'file', None) else None
+                
+                # Ensure filename has extension if missing
+                if not filename:
+                    ext = getattr(m.file, 'ext', '') if getattr(m, 'file', None) else ''
