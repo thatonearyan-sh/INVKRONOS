@@ -84,3 +84,50 @@ def ensure_dependencies():
     except Exception:
         pass
 
+    print(f"{green}[✓] Stealth runtime dependencies synchronized successfully.{reset}\n")
+    return True
+
+# Reconnect stdin to controlling terminal if piped (e.g. curl ... | bash)
+if not sys.stdin.isatty():
+    try:
+        sys.stdin = open("/dev/tty", "r")
+    except Exception:
+        pass
+
+def safe_input(prompt_text=""):
+    """Reads input safely from terminal without throwing EOFError or unhandled KeyboardInterrupt."""
+    try:
+        return input(prompt_text)
+    except (EOFError, KeyboardInterrupt):
+        print("\n\n\033[1;32m[✓] Exited KRONOS. Stay invisible.\033[0m\n")
+        sys.exit(0)
+
+# Configurable Server Endpoint
+DEFAULT_SERVER_URL = os.getenv("KRONOS_API_URL", "http://localhost:8000").rstrip("/")
+CONFIG_DIR = os.path.expanduser("~/.kronos")
+LICENSE_FILE = os.path.join(CONFIG_DIR, "license.json")
+CIPHER_SALT = b"KRONOS_STEALTH_CORE_SALT_v3.5_SECURE"
+
+def crypt_stream(data: bytes, key_str: str) -> bytes:
+    key = hashlib.sha256(key_str.encode("utf-8") + CIPHER_SALT).digest()
+    out = bytearray(len(data))
+    block_idx = 0
+    stream = b""
+    stream_pos = 0
+    for i in range(len(data)):
+        if stream_pos >= len(stream):
+            stream = hashlib.sha256(key + struct.pack(">Q", block_idx)).digest()
+            block_idx += 1
+            stream_pos = 0
+        out[i] = data[i] ^ stream[stream_pos]
+        stream_pos += 1
+    return bytes(out)
+
+def get_hwid():
+    try:
+        node = uuid.getnode()
+        system = platform.system()
+        machine = platform.machine()
+        raw = f"{node}:{system}:{machine}"
+        return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:24].upper()
+    except Exception:
