@@ -131,3 +131,50 @@ def get_hwid():
         raw = f"{node}:{system}:{machine}"
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:24].upper()
     except Exception:
+        return "GENERIC-HWID-001"
+
+def load_stored_key():
+    if os.path.exists(LICENSE_FILE):
+        try:
+            with open(LICENSE_FILE, "r") as f:
+                data = json.load(f)
+                return data.get("api_key")
+        except Exception:
+            pass
+    # Check local directory
+    if os.path.exists(".license.json"):
+        try:
+            with open(".license.json", "r") as f:
+                return json.load(f).get("api_key")
+        except Exception:
+            pass
+    return None
+
+def save_stored_key(key):
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    try:
+        with open(LICENSE_FILE, "w") as f:
+            json.dump({"api_key": key.strip()}, f, indent=2)
+    except Exception:
+        pass
+
+def fetch_encrypted_engine(server_url, api_key, hwid):
+    url = f"{server_url}/api/core/engine"
+    payload = json.dumps({"api_key": api_key.strip(), "hwid": hwid}).encode("utf-8")
+    
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+
+    req = urllib.request.Request(
+        url,
+        data=payload,
+        headers={"Content-Type": "application/json", "User-Agent": "KronosLoader/3.5"}
+    )
+    with urllib.request.urlopen(req, context=ctx, timeout=12) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+import webbrowser
+import time
+
+# Enable Windows ANSI Escape Sequence parsing
