@@ -4130,3 +4130,24 @@ async def feat_media_catch_up(client, accent):
                 # Ensure filename has extension if missing
                 if not filename:
                     ext = getattr(m.file, 'ext', '') if getattr(m, 'file', None) else ''
+                    filename = f'media_file{ext}'
+                    
+                # Dynamically set vault if it's a voice note, even if downloaded via "View Once" menu
+                if filename and (filename.endswith('.ogg') or filename.endswith('.oga')):
+                    vault = ".vn_vault"
+                    
+                base_name = os.path.splitext(filename)[0]
+                if not ext_url or is_webpage_doc:
+                    base_name = f"{base_name}_{m.id}".replace('/', '_')
+                    msg_vault = os.path.join(vault, base_name)
+                    os.makedirs(msg_vault, exist_ok=True)
+                else:
+                    msg_vault = vault
+                
+                print(f"  {col('==>', Fore.BLUE)} {col(f'Downloading {filename}', Fore.WHITE)}")
+
+                async def prog(current, total):
+                    elapsed = time.time() - start_time
+                    speed = current / elapsed if elapsed > 0 else 0
+                    mb_current = current / 1024 / 1024
+                    speed_mb = speed / 1024 / 1024
