@@ -4151,3 +4151,23 @@ async def feat_media_catch_up(client, accent):
                     speed = current / elapsed if elapsed > 0 else 0
                     mb_current = current / 1024 / 1024
                     speed_mb = speed / 1024 / 1024
+                    
+                    m_el, s_el = divmod(int(elapsed), 60)
+                    h_el, m_el = divmod(m_el, 60)
+                    el_str = f"{h_el:02d}:{m_el:02d}:{s_el:02d}" if h_el > 0 else f"{m_el:02d}:{s_el:02d}"
+                    
+                    if total:
+                        eta = (total - current) / speed if speed > 0 else 0
+                        percent = current / total
+                        bar = make_bar(percent, width=72)
+                        spin = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"[int(time.time() * 10) % 10]
+                        mb_total = total / 1024 / 1024
+                        
+                        m_eta, s_eta = divmod(int(eta), 60)
+                        h_eta, m_eta = divmod(m_eta, 60)
+                        eta_str = f"{h_eta:02d}:{m_eta:02d}:{s_eta:02d}" if h_eta > 0 else f"{m_eta:02d}:{s_eta:02d}"
+                        
+                        if current >= total:
+                            stats_str = f"  ({mb_current:.1f}/{mb_total:.1f} MB, Finished in ⏱ {el_str})"
+                            print(f"\r{stats_str}\033[K\n\r {Fore.GREEN}✓{Style.RESET_ALL} {Fore.GREEN}{bar}{Style.RESET_ALL} 100.0%\033[K\n", end="", flush=True)
+                        else:
