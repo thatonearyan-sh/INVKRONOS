@@ -1,0 +1,3437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRONOS — Intelligent Privacy Architecture for Telegram (OPTION1)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-canvas: #faf9f5;
+      --bg-canvas-subtle: #f3f1ea;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #ffffff;
+      
+      --bg-dark: #141413;
+      --bg-dark-surface: #191918;
+      --bg-dark-border: rgba(255, 255, 255, 0.12);
+      
+      --border-hairline: #e8e6dc;
+      --border-strong: #d0cebf;
+      
+      --text-main: #141413;
+      --text-muted: #5e5d59;
+      --text-subtle: #8a8880;
+      
+      --text-dark-main: #faf9f5;
+      --text-dark-muted: #a3a199;
+      --text-dark-subtle: #75746e;
+      
+      --accent-clay: #d97757;
+      --accent-clay-hover: #c46545;
+      --accent-clay-subtle: rgba(217, 119, 87, 0.12);
+      --accent-olive: #788c5d;
+      --accent-olive-subtle: rgba(120, 140, 93, 0.14);
+      --accent-cyan: #4dd0e1;
+      
+      --font-serif: 'Newsreader', Georgia, Cambria, serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+      
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-pill: 9999px;
+      
+      --container-max: 1220px;
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; -webkit-font-smoothing: antialiased; }
+    
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    svg.icon {
+      width: 16px;
+      height: 16px;
+      vertical-align: -2px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* NAVIGATION BAR */
+    .site-nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(250, 249, 245, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .site-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    /* BRANDMARK STYLING (UN-COPIABLE VECTOR TYPOGRAPHY) */
+    /* BRANDMARK STYLING: OPTION 1 (ROLLING & EATING CLAY O) */
+    .brand-mark-interactive {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      cursor: pointer;
+    }
+    .brand-mark-interactive span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-clay);
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .brand-stage {
+      display: inline-block;
+      overflow: visible;
+      transition: max-width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .brand-svg-mark {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      pointer-events: none;
+      overflow: visible;
+      vertical-align: middle;
+      display: block;
+    }
+    .svg-glyph-fixed {
+      font-family: var(--font-sans);
+      font-size: 16.5px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      fill: var(--text-main);
+    }
+    .svg-glyph-eaten {
+      font-family: var(--font-sans);
+      font-size: 16.5px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      fill: var(--text-main);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+    .nav-support-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .nav-support-badge .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-olive);
+      box-shadow: 0 0 0 3px var(--accent-olive-subtle);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .btn-nav-cta {
+      background: var(--text-main);
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+      border: 1px solid var(--text-main);
+    }
+    .btn-nav-cta:hover {
+      background: #000000;
+      transform: translateY(-1px);
+    }
+
+    /* HERO SECTION */
+    .hero-wrap {
+      padding: 96px 0 72px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .hero-category-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-clay);
+      background: var(--accent-clay-subtle);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 28px;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+      font-weight: 400;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      color: var(--text-main);
+      max-width: 980px;
+      margin-bottom: 28px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--text-main);
+    }
+    .hero-lead {
+      font-size: clamp(1.125rem, 2vw, 1.25rem);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 740px;
+      margin-bottom: 40px;
+    }
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+    .btn-primary-clay {
+      background: var(--accent-clay);
+      color: #ffffff;
+      font-size: 14.5px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      border: 1px solid var(--accent-clay);
+    }
+    .btn-primary-clay:hover {
+      background: var(--accent-clay-hover);
+      transform: translateY(-1px);
+    }
+    .btn-outline-minimal {
+      background: transparent;
+      color: var(--text-main);
+      font-size: 14.5px;
+      font-weight: 500;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border-strong);
+      transition: var(--transition);
+    }
+    .btn-outline-minimal:hover {
+      border-color: var(--text-main);
+      background: #ffffff;
+    }
+
+    /* Telemetry Metric Strip */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 36px;
+    }
+    .metric-col {
+      padding: 0 20px 0 0;
+      border-right: 1px solid var(--border-hairline);
+    }
+    .metric-col:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+    .metric-num {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--text-main);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-subtle);
+    }
+
+    /* 6 CAPABILITIES MODULES */
+    .section-editorial {
+      padding: 96px 0;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .section-pretitle {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 14px;
+      display: block;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      margin-bottom: 20px;
+    }
+    .section-desc {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 640px;
+      margin-bottom: 56px;
+    }
+
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .cap-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    }
+    .cap-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
+    }
+    .cap-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .cap-index-tag {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent-clay);
+    }
+    .cap-status-pill {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-canvas-subtle);
+      color: var(--text-muted);
+    }
+    .cap-card h3 {
+      font-family: var(--font-sans);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .cap-card p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .cap-artifact-box {
+      background: #fafaf8;
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+    .cap-footer-meta {
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-subtle);
+    }
+
+    .wave-bars span {
+      display: inline-block;
+      width: 3px;
+      background: var(--accent-clay);
+      border-radius: 2px;
+      margin: 0 1px;
+      animation: soundBars 1.2s ease-in-out infinite alternate;
+    }
+    .wave-bars span:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+    .wave-bars span:nth-child(2) { height: 14px; animation-delay: 0.3s; }
+    .wave-bars span:nth-child(3) { height: 9px; animation-delay: 0.2s; }
+    .wave-bars span:nth-child(4) { height: 18px; animation-delay: 0.5s; }
+    .wave-bars span:nth-child(5) { height: 12px; animation-delay: 0.15s; }
+    .wave-bars span:nth-child(6) { height: 7px; animation-delay: 0.4s; }
+    @keyframes soundBars {
+      0% { transform: scaleY(0.4); }
+      100% { transform: scaleY(1.3); }
+    }
+
+    /* DARK TERMINAL SECTION */
+    .section-dark {
+      background: var(--bg-dark);
+      color: var(--text-dark-main);
+      padding: 104px 0;
+      border-top: 1px solid #262624;
+      border-bottom: 1px solid #262624;
+    }
+    .dark-header {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 52px;
+    }
+    .dark-header .section-pretitle {
+      color: var(--accent-clay);
+    }
+    .dark-header .section-title {
+      color: var(--text-dark-main);
+    }
+    .dark-header .section-desc {
+      color: var(--text-dark-muted);
+      margin: 0 auto;
+    }
+
+    /* Fixed Terminal Window */
+    .terminal-window-root {
+      max-width: 960px;
+      margin: 0 auto;
+      border: 1px solid var(--bg-dark-border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-dark-surface);
+      overflow: hidden;
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+    .term-system-bar {
+      background: #151514;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .term-os-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .os-tab-pill {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-dark-subtle);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      padding: 4px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+    .os-tab-pill:hover {
+      color: var(--text-dark-main);
+    }
+    .os-tab-pill.active {
+      color: #ffffff;
+      background: #252523;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .term-playback-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-term-action {
+      background: #232321;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      color: #d1cfc7;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition);
+    }
+    .btn-term-action:hover {
+      background: #2f2f2c;
+      color: #ffffff;
+    }
+
+    /* OS Window Chromes */
+    .chrome-mac {
+      background: #1c1c1a;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      height: 38px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mac-lights {
+      display: flex;
+      gap: 7px;
+    }
+    .mac-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .mac-dot.close { background: #ff5f56; }
+    .mac-dot.min { background: #ffbd2e; }
+    .mac-dot.max { background: #27c93f; }
+    .mac-title-text {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dark-muted);
+    }
+
+    .chrome-win {
+      background: #181816;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      height: 38px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 10px;
+    }
+    .win-tab-active {
+      background: var(--bg-dark-surface);
+      border-top: 2px solid var(--accent-clay);
+      height: 100%;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #ffffff;
+    }
+    .win-window-controls {
+      display: flex;
+    }
+    .win-btn {
+      width: 44px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark-subtle);
+      font-size: 11px;
+    }
+
+    .chrome-termux-touchbar {
+      background: #121211;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 14px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      overflow-x: auto;
+    }
+    .termux-key-chip {
+      background: #222220;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      color: var(--text-dark-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+    }
+
+    /* LOCKED VIEWPORT // EXACT 1:1 INV.PY MONOSPACE TEXT GRID */
+    .term-screen-viewport {
+      padding: 12px 16px;
+      height: 520px;
+      min-height: 520px;
+      max-height: 520px;
+      box-sizing: border-box;
+      font-family: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0;
+      font-size: 11.2px;
+      line-height: 14.2px;
+      white-space: pre;
+      letter-spacing: 0;
+      color: #e0ded6;
+      background: #101416;
+      border-top: 1px solid #1f3037;
+      position: relative;
+      overflow-x: auto;
+      overflow-y: hidden;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    .term-screen-viewport::-webkit-scrollbar {
+      height: 4px;
+    }
+    .term-screen-viewport::-webkit-scrollbar-thumb {
+      background: #366572;
+      border-radius: 2px;
+    }
+
+    .t-row {
+      height: 14.2px;
+      line-height: 14.2px;
+      white-space: pre;
+      font-family: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0;
+      letter-spacing: 0;
+      margin: 0;
+      padding: 0;
+      user-select: text;
+    }
+
+    /* Terminal Color Palette (Matched 1:1 to inv.py and Screenshot) */
+    .tb-bdr { color: #366572; }        /* Outer borders: slate cyan */
+    .mb-bdr { color: #366572; }        /* Matrix box borders: slate cyan */
+    .t-ok { color: #9aa567; font-weight: 600; }  /* Olive green status */
+    .t-gold { color: #d4a34b; }        /* Amber tags */
+    .t-cyan { color: #4a9fb0; }        /* Prompt cyan */
+    .t-white { color: #ffffff; }       /* White text */
+    .t-dim { color: #6e7d82; }         /* Dim text */
+
+    /* RIGID MONOSPACE MATRIX RAIN GRID (LOCKED 36ch CONTAINER & 18 DISCRETE 2ch CELLS) */
+    .m-stream-row {
+      display: inline-flex !important;
+      width: 36ch !important;
+      min-width: 36ch !important;
+      max-width: 36ch !important;
+      height: 14.2px !important;
+      line-height: 14.2px !important;
+      overflow: hidden !important;
+      vertical-align: top !important;
+      letter-spacing: 0 !important;
+    }
+    .m-cell {
+      display: inline-block !important;
+      width: 2ch !important;
+      min-width: 2ch !important;
+      max-width: 2ch !important;
+      height: 14.2px !important;
+      line-height: 14.2px !important;
+      overflow: hidden !important;
+      text-align: left !important;
+      flex-shrink: 0 !important;
+      white-space: pre !important;
+      box-sizing: border-box !important;
+      letter-spacing: 0 !important;
+      font-family: 'JetBrains Mono', 'SF Mono', Consolas, 'Hiragino Kaku Gothic ProN', Meiryo, monospace !important;
+    }
+
+    /* Clickable Terminal Menu Options */
+    .term-menu-choice {
+      color: #9da5a8;
+      cursor: pointer;
+      display: inline-block;
+      transition: all 0.08s ease;
+      user-select: text;
+    }
+    .term-menu-choice:hover {
+      color: #ffffff !important;
+      background: rgba(166, 226, 46, 0.15);
+      border-radius: 2px;
+    }
+    .term-menu-choice.active {
+      color: #a6e22e !important;
+      font-weight: 700;
+      text-shadow: 0 0 7px rgba(166, 226, 46, 0.55);
+    }
+
+    /* Interactive Prompt & Dynamic Console Output */
+    .term-cli-prompt {
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+      font-size: 11.2px;
+      line-height: 15px;
+      white-space: pre;
+      color: #e0ded6;
+    }
+    .term-cli-output {
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+      font-size: 10.5px;
+      line-height: 1.38;
+      color: #9aa567;
+      white-space: pre-wrap;
+      border-left: 2px solid #366572;
+      padding-left: 8px;
+      min-height: 52px;
+    }
+
+    .cursor-block {
+      display: inline-block;
+      width: 7px;
+      height: 13px;
+      vertical-align: -2px;
+      background: #ffffff;
+      animation: cursorBlink 0.85s infinite;
+    }
+    @keyframes cursorBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    /* Dynamic Action Terminal Output Strip */
+    .term-action-badge-row {
+      margin-top: 10px;
+      background: #101416;
+      border: 1px solid #233b43;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      color: #eae9e5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .term-bottom-info {
+      background: #171715;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dark-subtle);
+    }
+
+    /* PRICING PASSES SECTION */
+    .section-pricing {
+      padding: 96px 0;
+      border-bottom: 1px solid var(--border-hairline);
+      background: var(--bg-canvas);
+    }
+    .pricing-split-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 40px;
+      align-items: start;
+    }
+    .plans-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+    .plans-container-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .plan-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .plan-row {
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      background: #fafaf8;
+      transition: var(--transition);
+    }
+    .plan-row:hover {
+      border-color: var(--border-strong);
+      background: #ffffff;
+      transform: translateY(-1px);
+    }
+    .plan-row.active {
+      border-color: var(--text-main);
+      background: #ffffff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+    .plan-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .plan-radio {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      transition: var(--transition);
+    }
+    .plan-row.active .plan-radio {
+      border-color: var(--text-main);
+      background: var(--text-main);
+    }
+    .plan-radio::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: none;
+    }
+    .plan-row.active .plan-radio::after {
+      display: block;
+    }
+    .plan-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .plan-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+    }
+    .badge-pop { background: var(--accent-clay-subtle); color: var(--accent-clay); }
+    .badge-best { background: var(--accent-olive-subtle); color: var(--accent-olive); }
+    .plan-desc { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+    .plan-cost { font-family: var(--font-mono); font-size: 17px; font-weight: 600; color: var(--text-main); }
+
+    /* Payment Console */
+    .checkout-console {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+    .checkout-tabs-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border-hairline);
+      margin-bottom: 24px;
+    }
+    .checkout-tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .checkout-tab:hover { color: var(--text-main); }
+    .checkout-tab.active {
+      color: var(--text-main);
+      font-weight: 600;
+      border-bottom-color: var(--accent-clay);
+    }
+
+    .btn-direct-checkout {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      font-size: 14.5px;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+    .btn-upi-action { background: #141413; color: #ffffff; }
+    .btn-upi-action:hover { background: #000000; transform: translateY(-1px); }
+    .btn-ton-action { background: #0088cc; color: #ffffff; }
+    .btn-ton-action:hover { background: #0077b3; transform: translateY(-1px); }
+
+    .qr-box-frame {
+      background: #fafaf8;
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .qr-box-frame img {
+      width: 190px;
+      height: 190px;
+      display: block;
+      margin: 0 auto 10px;
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+    }
+    .qr-note { font-size: 12px; color: var(--text-muted); }
+
+    .meta-data-strip {
+      background: #fafaf8;
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    .meta-data-label {
+      color: var(--text-subtle);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      text-transform: uppercase;
+    }
+    .meta-data-val {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-chip-copy {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 2px 8px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: var(--transition);
+    }
+    .btn-chip-copy:hover { background: var(--text-main); color: #ffffff; }
+
+    .input-field-wrap { margin-top: 18px; }
+    .input-field-wrap label {
+      display: block;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-subtle);
+      margin-bottom: 8px;
+    }
+    .input-mono {
+      width: 100%;
+      background: #fafaf8;
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.15s ease;
+      margin-bottom: 12px;
+    }
+    .input-mono:focus { border-color: var(--text-main); background: #ffffff; }
+    .btn-submit-action {
+      width: 100%;
+      background: var(--accent-clay);
+      border: 1px solid var(--accent-clay);
+      border-radius: var(--radius-md);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 13px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+    .btn-submit-action:hover { background: var(--accent-clay-hover); }
+    .btn-submit-action:disabled {
+      opacity: 0.88;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .btn-submit-action.submitting {
+      background: #4a4843 !important;
+      border-color: #4a4843 !important;
+    }
+    .btn-submit-action.success-state {
+      background: #235438 !important;
+      border-color: #235438 !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px rgba(35, 84, 56, 0.28);
+    }
+    .btn-spinner {
+      width: 15px;
+      height: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: btn-spin 0.7s linear infinite;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    @keyframes btn-spin {
+      to { transform: rotate(360deg); }
+    }
+    .utr-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .utr-counter-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: var(--bg-canvas-subtle);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    .utr-counter-badge.ready {
+      background: rgba(46, 105, 69, 0.12);
+      border-color: rgba(46, 105, 69, 0.4);
+      color: #235438;
+      font-weight: 700;
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #235438;
+      box-shadow: 0 0 0 0 rgba(35, 84, 56, 0.7);
+      animation: pulse-ring 1.8s infinite;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(35, 84, 56, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(35, 84, 56, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(35, 84, 56, 0); }
+    }
+    .confirmation-card {
+      background: #ffffff;
+      border: 1.5px solid rgba(46, 105, 69, 0.35);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      text-align: left;
+    }
+    .confirmation-card-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: #1e3b2b;
+      margin-bottom: 8px;
+    }
+    .confirmation-card-body {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .confirmation-card-body code {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      background: var(--bg-canvas-subtle);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-main);
+      border: 1px solid var(--border-hairline);
+    }
+    .confirmation-live-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-hairline);
+      font-size: 12px;
+      color: #235438;
+      font-weight: 600;
+    }
+
+    .status-note {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+    }
+    .status-note.pending { display: block; background: var(--accent-clay-subtle); border: 1px solid var(--accent-clay); color: var(--text-main); }
+    .status-note.approved { display: block; background: var(--accent-olive-subtle); border: 1px solid var(--accent-olive); color: #1e3b2b; }
+    .status-note.rejected { display: block; background: #fdf0ed; border: 1px solid #d9534f; color: #a02824; }
+
+    /* KEY REVEAL MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 20, 19, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-dialog {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+    }
+    .modal-key-display {
+      background: #fafaf8;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-all;
+      margin-bottom: 16px;
+    }
+
+    .site-footer {
+      background: var(--bg-canvas-subtle);
+      border-top: 1px solid var(--border-hairline);
+      padding: 64px 0 48px;
+    }
+    .footer-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+    .footer-brand h4 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .footer-brand p { font-size: 13.5px; color: var(--text-muted); max-width: 320px; }
+    .footer-links-group { display: flex; gap: 48px; }
+    .footer-col h5 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 14px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: 13.5px; color: var(--text-muted); text-decoration: none; }
+    .footer-col a:hover { color: var(--text-main); }
+    .footer-bottom {
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-subtle);
+    }
+
+    .support-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 800;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      transition: var(--transition);
+    }
+
+    /* =========================================================
+       MOBILE HAMBURGER NAVIGATION & DRAWER
+       ========================================================= */
+    .mobile-menu-toggle {
+      display: none;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-hairline);
+      border-radius: 6px;
+      width: 38px;
+      height: 38px;
+      padding: 9px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      z-index: 10002;
+    }
+    .mobile-menu-toggle:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-clay);
+    }
+    .ham-line {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--text-main);
+      border-radius: 2px;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      transform-origin: center;
+    }
+    .mobile-menu-toggle.is-active .ham-line:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+    .mobile-menu-toggle.is-active .ham-line:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    .mobile-menu-toggle.is-active .ham-line:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .mobile-menu-drawer {
+      display: none;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: rgba(18, 18, 17, 0.98);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 20px 24px 28px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+      transform: translateY(-110%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 10001;
+    }
+    .mobile-menu-drawer.is-open {
+      transform: translateY(0);
+    }
+
+    .mobile-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 20px;
+    }
+    .mobile-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .mobile-nav-item:hover, .mobile-nav-item:active {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--accent-clay);
+    }
+    .m-nav-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-subtle);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .mobile-support-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 10px 14px;
+      background: rgba(217, 119, 87, 0.08);
+      border: 1px solid rgba(217, 119, 87, 0.2);
+      border-radius: 8px;
+      color: var(--accent-clay);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .mobile-menu-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 10000;
+    }
+    .mobile-menu-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* =========================================================
+       DEDICATED QUICK INSTALL COMMAND STRIP (BEFORE CORE MODULES)
+       ========================================================= */
+    .quick-run-wrap {
+      padding: 0 0 64px 0;
+      position: relative;
+    }
+    .quick-run-card {
+      background: #151718;
+      border: 1px solid #28373d;
+      border-radius: 12px;
+      padding: 24px 28px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .quick-run-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-clay), #55a832, transparent);
+    }
+    .qr-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .qr-label-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .qr-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(217, 119, 87, 0.12);
+      border: 1px solid rgba(217, 119, 87, 0.28);
+      color: var(--accent-clay);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .qr-pip {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-clay);
+      box-shadow: 0 0 6px var(--accent-clay);
+    }
+    .qr-meta {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-dark-subtle);
+    }
+    .qr-os-toggles {
+      display: inline-flex;
+      background: #0d1011;
+      border: 1px solid #233036;
+      border-radius: 6px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .qr-os-btn {
+      background: transparent;
+      border: none;
+      color: #7f8f94;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .qr-os-btn:hover {
+      color: #ffffff;
+    }
+    .qr-os-btn.active {
+      background: #233036;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    .qr-command-bar {
+      display: flex;
+      align-items: center;
+      background: #0b0e0f;
+      border: 1px solid #28373d;
+      border-radius: 8px;
+      padding: 10px 14px;
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .qr-prefix-tag {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #55a832;
+      font-weight: 700;
+      user-select: none;
+    }
+    .qr-cmd-text {
+      flex: 1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #e6e4dc;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      line-height: 1.4;
+      letter-spacing: 0;
+      padding: 2px 0;
+    }
+    .qr-cmd-text::-webkit-scrollbar {
+      height: 3px;
+    }
+    .qr-cmd-text::-webkit-scrollbar-thumb {
+      background: #28373d;
+      border-radius: 2px;
+    }
+    .qr-copy-btn {
+      background: var(--accent-clay);
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(217, 119, 87, 0.28);
+    }
+    .qr-copy-btn:hover {
+      background: #e28464;
+      box-shadow: 0 6px 18px rgba(217, 119, 87, 0.4);
+      transform: translateY(-1px);
+    }
+    .qr-copy-btn:active {
+      transform: translateY(0);
+    }
+    .qr-footer-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .qr-spec-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #8c9ea4;
+    }
+    .qr-dot-green {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #55a832;
+    }
+
+    @media (max-width: 900px) {
+      .capabilities-grid { grid-template-columns: 1fr; }
+      .pricing-split-layout { grid-template-columns: 1fr; }
+      .metric-strip { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .metric-col { border-right: none; }
+      .nav-links { display: none; }
+      .nav-actions { display: none; }
+      .mobile-menu-toggle { display: flex; }
+      .mobile-menu-drawer { display: block; }
+      .mobile-menu-backdrop { display: block; }
+      .unified-split-container { grid-template-columns: 1fr; height: auto; }
+      .matrix-box-wrap { display: none; }
+    }
+    @media (max-width: 768px) {
+      .quick-run-card { padding: 18px 16px; }
+      .qr-header { flex-direction: column; align-items: flex-start; }
+      .qr-os-toggles { width: 100%; justify-content: space-between; }
+      .qr-os-btn { flex: 1; text-align: center; padding: 6px 6px; font-size: 10px; }
+      .qr-command-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+      .qr-copy-btn { width: 100%; justify-content: center; }
+      .qr-footer-strip { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="site-nav-wrap">
+    <div class="container site-nav">
+      <a href="/" class="brand-mark-interactive" id="navbar-brandmark" aria-label="KRONOS Home">
+        <span class="dot"></span>
+        <div class="brand-stage" id="brand-stage" style="max-width: 120px;">
+          <svg class="brand-svg-mark" id="brand-svg-mark" viewBox="0 0 120 22" width="120" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Anchor Letter K: stays solid on the left -->
+            <text x="0" y="16" class="svg-glyph-fixed" id="glyph-k">K</text>
+            
+            <!-- Eatable middle letters: R, O, N -->
+            <text x="18" y="16" class="svg-glyph-eaten" id="glyph-r">R</text>
+            <text x="36" y="16" class="svg-glyph-eaten" id="glyph-o1">O</text>
+            <text x="56" y="16" class="svg-glyph-eaten" id="glyph-n">N</text>
+            
+            <!-- Trailing letter S: eaten first -->
+            <text x="96" y="16" class="svg-glyph-eaten" id="glyph-s">S</text>
+            
+            <!-- Rolling Clay O: rolls across from right to left, eating each letter, docking right beside K -->
+            <g id="rolling-clay-o" style="transform-origin: 84px 11px; transform: translateX(0px) rotate(-18deg);">
+              <circle cx="84" cy="11" r="7.5" fill="none" stroke="var(--accent-clay)" stroke-width="2.6" id="rolling-o-circle"/>
+              <circle cx="84" cy="6.2" r="1.3" fill="var(--accent-clay)" id="rolling-o-pip"/>
+            </g>
+          </svg>
+        </div>
+      </a>
+      
+      <nav class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#architecture">Live Terminal</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://t.me/KRONOSSPBOT" target="_blank" class="nav-support-badge">
+          <span class="live-dot"></span>
+          @KRONOSSPBOT
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="#pricing" class="btn-nav-cta">
+          <span>Get Access</span>
+          <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="mobile-menu-toggle" id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu">
+        <span class="ham-line"></span>
+        <span class="ham-line"></span>
+        <span class="ham-line"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MOBILE SLIDE-DOWN DRAWER -->
+  <div class="mobile-menu-drawer" id="mobile-menu-drawer">
+    <div class="mobile-drawer-inner">
+      <nav class="mobile-nav-list">
+        <a href="#overview" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">01</span>
+          <span>Overview</span>
+        </a>
+        <a href="#quick-run" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">02</span>
+          <span>Quick Install</span>
+        </a>
+        <a href="#capabilities" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">03</span>
+          <span>Core Modules</span>
+        </a>
+        <a href="#architecture" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">04</span>
+          <span>Live Terminal</span>
+        </a>
+        <a href="#pricing" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">05</span>
+          <span>Pricing Matrix</span>
+        </a>
+        <a href="https://t.me/KRONOSSPBOT" target="_blank" onclick="closeMobileMenu()" class="mobile-support-link">
+          <span class="live-dot"></span>
+          <span>Support Bot // @KRONOSSPBOT</span>
+        </a>
+      </nav>
+      <div style="margin-top: 10px;">
+        <a href="#pricing" onclick="closeMobileMenu()" class="btn-primary-clay" style="width: 100%; justify-content: center; box-sizing: border-box; text-decoration: none;">
+          <span>Get Access Pass</span>
+          <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="mobile-menu-backdrop" id="mobile-menu-backdrop" onclick="closeMobileMenu()"></div>
+
+  <!-- HERO SECTION -->
+  <section id="overview" class="hero-wrap">
+    <div class="container">
+      <div class="hero-category-tag">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Security Release // Architecture v3.5</span>
+      </div>
+
+      
+
+      <h1 class="hero-title">
+        Intelligent privacy for Telegram, <em>rigorously engineered</em>.
+      </h1>
+
+      <p class="hero-lead">
+        A high-performance stealth client interface designed for absolute discretion. Zero blue ticks, automatic preservation of expiring view-once media, and instantaneous local speech-to-text inference — running entirely in client memory.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#pricing" class="btn-primary-clay">
+          <span>Select Access Pass</span>
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </a>
+        <a href="#architecture" class="btn-outline-minimal">
+          <span>Live Terminal Demo</span>
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        </a>
+      </div>
+
+      <!-- Telemetry Metric Strip -->
+      <div class="metric-strip">
+        <div class="metric-col">
+          <div class="metric-num">0 ms</div>
+          <div class="metric-label">Receipt Latency (Ghost Mode)</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-num">100%</div>
+          <div class="metric-label">View-Once Media Preservation</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-num">&lt; 14 MB</div>
+          <div class="metric-label">Client RAM Footprint</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-num">256-bit</div>
+          <div class="metric-label">Stream Cipher Decryption</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEDICATED QUICK INSTALL & COMMAND STRIP // BEFORE CORE MODULES -->
+  <section id="quick-run" class="quick-run-wrap">
+    <div class="container">
+      <div class="quick-run-card">
+        <div class="qr-header">
+          <div class="qr-label-group">
+            <span class="qr-pill"><span class="qr-pip"></span>ONE-LINE INSTANT DEPLOY</span>
+            <span class="qr-meta">Universal Memory-Only Sandbox // Zero Local Dependencies</span>
+          </div>
+          <div class="qr-os-toggles">
+            <button class="qr-os-btn active" id="qr-os-mac" onclick="setQuickRunOS('mac')">macOS / Linux</button>
+            <button class="qr-os-btn" id="qr-os-win" onclick="setQuickRunOS('win')">Windows (PowerShell)</button>
+            <button class="qr-os-btn" id="qr-os-android" onclick="setQuickRunOS('android')">Android (Termux)</button>
+          </div>
+        </div>
+
+        <div class="qr-command-bar">
+          <div class="qr-prefix-tag" id="qr-prompt-prefix">$</div>
+          <div class="qr-cmd-text" id="qr-active-cmd">curl -sSL "https://invkronos.vercel.app/install" | bash</div>
+          <button class="qr-copy-btn" id="qr-copy-btn" onclick="copyQuickRunCommand()" aria-label="Copy installation command">
+            <svg class="qr-copy-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="qr-copy-text">Copy Command</span>
+          </button>
+        </div>
+
+        <div class="qr-footer-strip">
+          <div class="qr-spec-item">
+            <span class="qr-dot-green"></span>
+            <span>No sudo / administrator privileges required</span>
+          </div>
+          <div class="qr-spec-item">
+            <span class="qr-dot-green"></span>
+            <span>RAM resident &bull; 0 KB persistent footprint</span>
+          </div>
+          <div class="qr-spec-item">
+            <span class="qr-dot-green"></span>
+            <span>SHA-256 binary verification on launch</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 CAPABILITIES MODULES -->
+  <section id="capabilities" class="section-editorial">
+    <div class="container">
+      <span class="section-pretitle">System Capabilities // Core Modules</span>
+      <h2 class="section-title">Engineered for communication sovereignty.</h2>
+      <p class="section-desc">
+        Standard messaging applications enforce persistent tracking, read confirmation indicators, and ephemeral media deletion. KRONOS restores complete personal agency.
+      </p>
+
+      <div class="capabilities-grid">
+        <!-- Module 01 -->
+        <div class="cap-card">
+          <div>
+            <div class="cap-card-header">
+              <span class="cap-index-tag">MODULE // 01</span>
+              <span class="cap-status-pill">RECEIPT SHIELD</span>
+            </div>
+            <h3>True Ghost Reading</h3>
+            <p>Read messages in private dialogues, chaotic group arguments, and channels without ever dispatching a read receipt or triggering an online presence timestamp.</p>
+            
+            <div class="cap-artifact-box">
+              <div style="background: #fff; border: 1px solid var(--border-hairline); border-radius: 6px; padding: 8px 12px; margin-bottom: 6px;">
+                Sender: "Are you free right now?"
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--accent-olive);">
+                <span>STATUS: INVISIBLE</span>
+                <span>TICKS: SUPPRESSED [✓]</span>
+              </div>
+            </div>
+          </div>
+          <div class="cap-footer-meta">
+            <span>UNSEEN RECEPTOR</span>
+            <span>LATENCY: 0ms</span>
+          </div>
+        </div>
+
+        <!-- Module 02 -->
+        <div class="cap-card">
+          <div>
+            <div class="cap-card-header">
+              <span class="cap-index-tag">MODULE // 02</span>
+              <span class="cap-status-pill">AUTO-MIRROR</span>
+            </div>
+            <h3>Ephemeral Vault</h3>
+            <p>The moment a view-once photo or timer video hits your device, KRONOS mirrors the raw uncompressed stream to encrypted storage before Telegram's deletion trigger executes.</p>
+            
+            <div class="cap-artifact-box" style="min-height: 84px; height: 84px; box-sizing: border-box; overflow: hidden; display: flex; flex-direction: column; justify-content: center;">
+              <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid var(--border-hairline); border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; height: 32px; box-sizing: border-box; white-space: nowrap; overflow: hidden;">
+                <span id="vault-timer-dyn" style="color: #d9534f; font-weight: 700; font-size: 11px;">0:04 EXPIRING</span>
+                <span id="vault-badge-dyn" style="color: var(--accent-clay); font-weight: 600; font-size: 11px;">INTERCEPTING...</span>
+              </div>
+              <div style="font-size: 10.5px; color: var(--text-subtle); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">CONTAINER: media_4096x2160_raw.jpg [100% QUALITY]</div>
+            </div>
+          </div>
+          <div class="cap-footer-meta">
+            <span>MASTER 4K STREAM</span>
+            <span>ZERO COMPRESSION LOSS</span>
+          </div>
+        </div>
+
+        <!-- Module 03 -->
+        <div class="cap-card">
+          <div>
+            <div class="cap-card-header">
+              <span class="cap-index-tag">MODULE // 03</span>
+              <span class="cap-status-pill">INFERENCE ENGINE</span>
+            </div>
+            <h3>Sub-Second Speech Inference</h3>
+            <p>Convert incoming voice messages into punctuated text transcripts in under a second. Read private audio instantly in quiet meetings without reaching for headphones.</p>
+            
+            <div class="cap-artifact-box">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <span class="wave-bars"><span></span><span></span><span></span><span></span><span></span><span></span></span>
+                <span style="font-size: 11px; color: var(--text-muted);">Voice Note (0:48) ➔</span>
+              </div>
+              <div style="background: #fff; border: 1px solid var(--border-hairline); border-radius: 6px; padding: 6px 10px; font-size: 11px;">
+                "The contracts are ready. Let's close the deal today."
+              </div>
+            </div>
+          </div>
+          <div class="cap-footer-meta">
+            <span>INFERENCE: 0.64s</span>
+            <span>ZERO AUDIO PLAYED</span>
+          </div>
+        </div>
+
+        <!-- Module 04 -->
+        <div class="cap-card">
+          <div>
+            <div class="cap-card-header">
+              <span class="cap-index-tag">MODULE // 04</span>
+              <span class="cap-status-pill">HOT-SWAP CONTEXT</span>
+            </div>
+            <h3>Multi-Session Relay</h3>
+            <p>Run personal, enterprise, and stealth profiles concurrently inside a single memory runtime. Switch sessions with a single keystroke without re-authenticating.</p>
+            
+            <div class="cap-artifact-box">
+              <div style="font-size: 11px; color: var(--text-subtle); margin-bottom: 6px;">ACTIVE PROFILES [TAB + 1/2/3]:</div>
+              <div style="display: flex; gap: 6px;">
+                <span class="id-chip-card" onclick="setCapChip(this)">Personal</span>
+                <span class="id-chip-card" onclick="setCapChip(this)">Enterprise</span>
+                <span class="id-chip-card active" onclick="setCapChip(this)" style="background: var(--text-main); color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Stealth Vault</span>
+              </div>
+            </div>
+          </div>
+          <div class="cap-footer-meta">
+            <span>SWITCH TIME: 12ms</span>
+            <span>ZERO LOGOUT OVERHEAD</span>
+          </div>
+        </div>
+
+        <!-- Module 05 -->
+        <div class="cap-card">
+          <div>
+            <div class="cap-card-header">
+              <span class="cap-index-tag">MODULE // 05</span>
+              <span class="cap-status-pill">PROXY MESH</span>
+            </div>
+            <h3>Autonomous Geo-Shield</h3>
+            <p>Intelligent proxy routing automatically navigates ISP throttling, campus network firewalls, and regional censorship through dynamic low-latency relay circuits.</p>
+            
+            <div class="cap-artifact-box">
+              <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>CAMPUS [BLOCKED]</span>
+                <span style="color: var(--accent-olive); font-weight: 600;">➔ RELAY MESH</span>
+                <span>➔ ZURICH [32ms]</span>
+              </div>
+            </div>
+          </div>
+          <div class="cap-footer-meta">
+            <span>MTPROTO MULTI-HOP</span>
+            <span>FAILOVER: INSTANT</span>
+          </div>
+        </div>
+
+        <!-- Module 06 -->
+        <div class="cap-card">
+          <div>
+            <div class="cap-card-header">
+              <span class="cap-index-tag">MODULE // 06</span>
+              <span class="cap-status-pill">STREAM RESILIENCE</span>
+            </div>
+            <h3>Stream Reconstitution</h3>
+            <p>If network disconnects at 99% of a 2GB download, KRONOS isolates recovered chunks, stitches container headers, and outputs a playable file. Zero wasted data.</p>
+            
+            <div class="cap-artifact-box">
+              <div style="height: 6px; background: #e8e6dc; border-radius: 3px; overflow: hidden; margin-bottom: 6px;">
+                <div style="width: 98%; height: 100%; background: var(--accent-clay);"></div>
+              </div>
+              <div style="font-size: 11px; color: var(--accent-clay);">[98% DISCONNECT] ➔ CONTAINER REBUILT (1.84 GB SAVED) ✓</div>
+            </div>
+          </div>
+          <div class="cap-footer-meta">
+            <span>STREAM RECOVERY</span>
+            <span>ZERO PACKET RE-DOWNLOAD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DARK EDITORIAL SECTION // BULLETPROOF TERMINAL SIMULATOR -->
+  <section id="architecture" class="section-dark">
+    <div class="container">
+      <div class="dark-header">
+        <span class="section-pretitle">Live Execution // Interactive Terminal Simulator</span>
+        <h2 class="section-title">Exact terminal experience. From curl to runtime.</h2>
+        <p class="section-desc">
+          Paste the 1-line command below in your terminal. Watch the live playback below demonstrating the exact 2-second bootstrap and memory-streaming console. Click any menu option [1-8] to interact live!
+        </p>
+      </div>
+
+      <!-- Dit-to Multi-OS Terminal Window -->
+      <div class="terminal-window-root">
+        <!-- Top Controls & OS Profile Selector -->
+        <div class="term-system-bar">
+          <div class="term-os-tabs">
+            <button class="os-tab-pill active" id="pill-os-mac" onclick="setTerminalOS('mac')">
+              <span>macOS (zsh)</span>
+            </button>
+            <button class="os-tab-pill" id="pill-os-win" onclick="setTerminalOS('win')">
+              <span>Windows (PowerShell)</span>
+            </button>
+            <button class="os-tab-pill" id="pill-os-linux" onclick="setTerminalOS('linux')">
+              <span>Linux (bash)</span>
+            </button>
+            <button class="os-tab-pill" id="pill-os-android" onclick="setTerminalOS('android')">
+              <span>Android (Termux)</span>
+            </button>
+          </div>
+
+          <div class="term-playback-controls">
+            <button class="btn-term-action" style="color: #4dd0e1; border-color: rgba(77, 208, 225, 0.4);" onclick="jumpToInteractiveDeck()" title="Skip boot animation & interact immediately">
+              <svg class="icon" viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+              <span>Live Console</span>
+            </button>
+            <button class="btn-term-action" onclick="restartTerminalDemo()">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <span>Replay Boot</span>
+            </button>
+            <button class="btn-term-action" id="btn-pause-toggle" onclick="togglePauseTerminal()">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <span id="pause-label">Pause</span>
+            </button>
+            <button class="btn-term-action" style="background: var(--accent-clay); border-color: var(--accent-clay); color: #fff;" onclick="copyActiveCommand()">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span id="copy-btn-text">Copy Command</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. macOS Window Chrome -->
+        <div class="chrome-mac" id="chrome-mac-bar">
+          <div class="mac-lights">
+            <span class="mac-dot close"></span>
+            <span class="mac-dot min"></span>
+            <span class="mac-dot max"></span>
+          </div>
+          <div class="mac-title-text" id="mac-title-dyn">aryan@macbook-pro:~ (zsh) — 80×24</div>
+          <div style="width: 50px;"></div>
+        </div>
+
+        <!-- 2. Windows Window Chrome -->
+        <div class="chrome-win" id="chrome-win-bar">
+          <div class="win-tab-active">
+            <svg class="icon" style="width: 14px; height: 14px; color: #4dd0e1;" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <span>Windows PowerShell</span>
+          </div>
+          <div class="win-window-controls">
+            <div class="win-btn">─</div>
+            <div class="win-btn">□</div>
+            <div class="win-btn" style="color: #ff5f56;">✕</div>
+          </div>
+        </div>
+
+        <!-- 3. Android Termux Extra Keys Bar -->
+        <div class="chrome-termux-touchbar" id="chrome-termux-bar">
+          <span class="termux-key-chip">ESC</span>
+          <span class="termux-key-chip">TAB</span>
+          <span class="termux-key-chip">CTRL</span>
+          <span class="termux-key-chip">ALT</span>
+          <span class="termux-key-chip">-</span>
+          <span class="termux-key-chip">/</span>
+          <span class="termux-key-chip">▲</span>
+          <span class="termux-key-chip">▼</span>
+        </div>
+
+        <!-- FIXED 520px SCREEN VIEWPORT -->
+        <div class="term-screen-viewport" id="terminal-screen">
+          <!-- Real-time animation rendered here -->
+        </div>
+
+        <!-- Action Telemetry Output Strip -->
+        <div class="term-action-badge-row" id="term-action-badge-row">
+          <div id="term-live-feedback" style="color: #d97757; font-weight: 600;">
+            [READY] Click any module option [1-8] in the terminal deck to test live!
+          </div>
+          <div style="color: #8a8880; font-size: 11px;">CLICK TO INTERACT</div>
+        </div>
+
+        <!-- Bottom Status Line -->
+        <div class="term-bottom-info">
+          <div>KRONOS STEALTH PROTOCOL // DUAL-PANE RUNTIME</div>
+          <div>RAM: 12.4 MB · CIPHER: AES-256 CTR · PID: 49812</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING PASS MATRIX SECTION -->
+  <section id="pricing" class="section-pricing">
+    <div class="container">
+      <div style="margin-bottom: 48px;">
+        <span class="section-pretitle">Subscriptions // Access Passes</span>
+        <h2 class="section-title">Transparent tiers. Instant automated issuance.</h2>
+        <p class="section-desc" style="margin-bottom: 0;">
+          Select an access duration. Keys are cryptographically bound to one machine runtime upon initial boot and can be renewed or recovered anytime.
+        </p>
+      </div>
+
+      <div class="pricing-split-layout">
+        <div class="plans-container">
+          <div class="plans-container-header">
+            <h3>Step 1 // Choose Access Pass</h3>
+            <span class="cap-index-tag" style="font-size: 11px;">DIRECT ISSUANCE</span>
+          </div>
+
+          <div class="plan-stack">
+            <div class="plan-row" onclick="selectPlan('1w')" id="plan-1w">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">1 Week Access</div>
+                  <div class="plan-desc">7 Days Full License · Ideal for evaluation</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹119</div>
+            </div>
+
+            <div class="plan-row active" onclick="selectPlan('1m')" id="plan-1m">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">
+                    1 Month Access
+                    <span class="plan-badge badge-pop">RECOMMENDED</span>
+                  </div>
+                  <div class="plan-desc">30 Days Complete Stealth Suite</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹399</div>
+            </div>
+
+            <div class="plan-row" onclick="selectPlan('3m')" id="plan-3m">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">3 Months Access</div>
+                  <div class="plan-desc">Quarterly License · ₹166 / month (Save 58%)</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹499</div>
+            </div>
+
+            <div class="plan-row" onclick="selectPlan('6m')" id="plan-6m">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">6 Months Access</div>
+                  <div class="plan-desc">Half-Year License · ₹99 / month (Save 75%)</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹599</div>
+            </div>
+
+            <div class="plan-row" onclick="selectPlan('1y')" id="plan-1y">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">
+                    1 Year Access
+                    <span class="plan-badge badge-best">BEST VALUE</span>
+                  </div>
+                  <div class="plan-desc">365 Days Access · Under ₹2 / day</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹699</div>
+            </div>
+          </div>
+
+          <div class="meta-data-strip" style="background: transparent; border-color: var(--border-hairline); margin-bottom: 6px;">
+            <span class="meta-data-label">DEVICE CAPACITY</span>
+            <span style="font-size: 12px; color: #10b981; font-weight: 600;">✓ Up to 3 Devices per Key (Simultaneous)</span>
+          </div>
+
+          <div class="meta-data-strip" style="background: transparent; border-color: var(--border-hairline); margin-bottom: 0;">
+            <span class="meta-data-label">RUNTIME COMPATIBILITY</span>
+            <span style="font-size: 12px; color: var(--text-muted);">macOS · Windows · Linux · Android</span>
+          </div>
+        </div>
+
+        <div class="checkout-console">
+          <div class="checkout-tabs-bar">
+            <button class="checkout-tab active" id="tab-btn-upi" onclick="switchMethod('upi')">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              <span>UPI (Instant)</span>
+            </button>
+            <button class="checkout-tab" id="tab-btn-ton" onclick="switchMethod('ton')">
+              <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 22 22 7 12 2"/><polyline points="2 7 12 13 22 7"/></svg>
+              <span>TON Crypto</span>
+            </button>
+            <button class="checkout-tab" id="tab-btn-recover" onclick="switchMethod('recover')">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Recover Key</span>
+            </button>
+          </div>
+
+          <!-- UPI PANEL -->
+          <div id="panel-upi">
+            <a id="btn-upi-direct" href="#" class="btn-direct-checkout btn-upi-action">
+              <svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>1-Click Pay ₹<span id="upi-price-label">399</span> via UPI</span>
+            </a>
+
+            <div class="qr-box-frame">
+              <img id="img-upi-qr" src="/api/qr?data=placeholder" alt="UPI QR Code">
+              <div class="qr-note">Scan using PhonePe, GPay, Paytm, or CRED</div>
+            </div>
+
+            <div class="meta-data-strip">
+              <span class="meta-data-label">OFFICIAL UPI ID</span>
+              <span class="meta-data-val">
+                <code id="display-vpa">Loading...</code>
+                <button class="btn-chip-copy" onclick="copyDynamicText('display-vpa')">COPY</button>
+              </span>
+            </div>
+
+            <div class="meta-data-strip">
+              <span class="meta-data-label">ORDER REF</span>
+              <span class="meta-data-val">
+                <code id="display-order-id" style="color: var(--accent-clay);">KRN-ORD-...</code>
+              </span>
+            </div>
+
+            <div class="input-field-wrap">
+              <div class="utr-header-row">
+                <label for="input-utr" style="margin-bottom: 0;">Step 2 // Enter 12-Digit UPI Ref / UTR Number</label>
+                <span id="utr-counter" class="utr-counter-badge">0 / 12 digits</span>
+              </div>
+              <input type="text" id="input-utr" class="input-mono" placeholder="e.g. 425318920194 from receipt" maxlength="12" inputmode="numeric" autocomplete="off">
+              <button id="btn-submit-utr" class="btn-submit-action" onclick="submitUTR()">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                <span id="btn-submit-utr-text">Verify &amp; Activate License</span>
+              </button>
+            </div>
+
+            <div id="alert-upi" class="status-note"></div>
+          </div>
+
+          <!-- TON PANEL -->
+          <div id="panel-ton" style="display: none;">
+            <a id="btn-ton-direct" href="#" class="btn-direct-checkout btn-ton-action">
+              <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 22 22 7 12 2"/></svg>
+              <span>1-Click Pay via Telegram Wallet / Tonkeeper</span>
+            </a>
+
+            <div class="qr-box-frame">
+              <img id="img-ton-qr" src="/api/qr?data=placeholder" alt="TON Transfer QR">
+              <div class="qr-note">Automatic Blockchain Confirmation (~5s)</div>
+            </div>
+
+            <div class="meta-data-strip">
+              <span class="meta-data-label">AMOUNT (LIVE)</span>
+              <span class="meta-data-val" id="ton-rate-display" style="color: var(--accent-clay);">Calculating...</span>
+            </div>
+
+            <div class="meta-data-strip" style="background: var(--accent-clay-subtle); border-color: var(--accent-clay);">
+              <span class="meta-data-label" style="color: var(--accent-clay); font-weight: 600;">REQUIRED MEMO</span>
+              <span class="meta-data-val">
+                <code id="ton-memo-display" style="color: var(--accent-clay); font-weight: 700;">KRN-...</code>
+                <button class="btn-chip-copy" style="background: var(--accent-clay); color: #fff;" onclick="copyDynamicText('ton-memo-display')">COPY</button>
+              </span>
+            </div>
+
+            <div class="meta-data-strip">
+              <span class="meta-data-label">WALLET</span>
+              <span class="meta-data-val">
+                <code id="ton-wallet-short">Loading...</code>
+                <button class="btn-chip-copy" onclick="copyDynamicText('ton-wallet-full')">COPY</button>
+              </span>
+            </div>
+            <span id="ton-wallet-full" style="display: none;"></span>
+
+            <div id="alert-ton" class="status-note"></div>
+          </div>
+
+          <!-- RECOVER PANEL -->
+          <div id="panel-recover" style="display: none;">
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 16px;">
+              Enter your 12-digit UPI UTR number or TON Memo to retrieve an active license key.
+            </p>
+
+            <div class="input-field-wrap" style="margin-top: 0;">
+              <label>Transaction Reference or Memo</label>
+              <input type="text" id="input-recover-query" class="input-mono" placeholder="Enter UTR or Memo">
+              <button class="btn-submit-action" style="background: var(--text-main);" onclick="recoverLicense()">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Find License Key</span>
+              </button>
+            </div>
+
+            <div id="alert-recover" class="status-note"></div>
+
+            <div style="margin-top: 20px; font-size: 12.5px; color: var(--text-muted); text-align: center;">
+              Need human verification? Contact 
+              <a href="https://t.me/KRONOSSPBOT" target="_blank" style="color: var(--accent-clay); font-weight: 600; text-decoration: none;">@KRONOSSPBOT</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h4>K R O N O S</h4>
+          <p>An autonomous high-performance client interface for Telegram, prioritizing total privacy and client-side memory execution.</p>
+        </div>
+
+        <div class="footer-links-group">
+          <div class="footer-col">
+            <h5>Product</h5>
+            <ul>
+              <li><a href="#overview">Overview</a></li>
+              <li><a href="#capabilities">Capabilities</a></li>
+              <li><a href="#architecture">Live Terminal</a></li>
+              <li><a href="#pricing">Pricing Passes</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Operations</h5>
+            <ul>
+              <li><a href="https://t.me/KRONOSSPBOT" target="_blank">Telegram Support (@KRONOSSPBOT)</a></li>
+              <li><a href="/install">Terminal Install</a></li>
+              <li><a href="#pricing">Lost Key Recovery</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 KRONOS Research Group. All rights reserved.</div>
+        <div style="font-family: var(--font-mono); font-size: 11px;">SHA-256 CTR STREAM VAULT // ACTIVE</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING SUPPORT -->
+  <a href="https://t.me/KRONOSSPBOT" target="_blank" class="support-pill">
+    <span class="nav-support-badge"><span class="live-dot"></span></span>
+    <span>Assistance (@KRONOSSPBOT)</span>
+  </a>
+
+  <!-- MODAL -->
+  <div id="modal-backdrop" class="modal-backdrop">
+    <div class="modal-dialog">
+      <h3 style="font-family: var(--font-serif); font-size: 24px; margin-bottom: 6px;">License Activated</h3>
+      <div id="modal-plan-label" style="font-size: 13px; font-family: var(--font-mono); color: var(--accent-clay); margin-bottom: 20px;">KRONOS ACCESS PASS</div>
+      <div class="modal-key-display" id="modal-key-text">KRN-XXXX-XXXX-XXXX-XXXX</div>
+      <button class="btn-submit-action" style="margin-bottom: 20px;" onclick="copyKeyModal()">Copy License Key</button>
+      <div style="background: var(--bg-dark); border-radius: 6px; padding: 14px; text-align: left;">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: #8a8880; margin-bottom: 6px;">Terminal Command:</div>
+        <code style="font-family: var(--font-mono); font-size: 12px; color: #fff;" id="modal-cmd-code">curl ...</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT ENGINE -->
+  <script>
+    // 1. BRANDMARK KINETIC SCROLL ENGINE: OPTION 1 (ROLLING & EATING CLAY O)
+    function initOption1KineticTypography() {
+      const brandStage = document.getElementById('brand-stage');
+      const rollingO = document.getElementById('rolling-clay-o');
+      const glyphS = document.getElementById('glyph-s');
+      const glyphN = document.getElementById('glyph-n');
+      const glyphO1 = document.getElementById('glyph-o1');
+      const glyphR = document.getElementById('glyph-r');
+      if (!rollingO || !brandStage) return;
+
+      function updateKinetic() {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        // Progress p from 0 to 1 over 260px of scroll
+        const p = Math.min(1, Math.max(0, scrollY / 260));
+
+        // Travel: rolling O starts at cx=84 and rolls left to cx=23.5 (directly right beside K at x=0)
+        const tx = -60.5 * p;
+        // Realistic rolling physics: circumference = 2 * PI * 7.5 ≈ 47.12px
+        // Angle = -18 - (60.5 * p / 47.12) * 360 ≈ -18 - (462.2 * p)
+        const rot = -18 - (462.2 * p);
+        rollingO.style.transform = `translateX(${tx}px) rotate(${rot}deg)`;
+
+        // Sequential eating of letters as O rolls left:
+        // 1. S (x=96) eaten first (0.00 -> 0.16)
+        const sFactor = Math.max(0, 1 - (p / 0.16));
+        if (glyphS) {
+          glyphS.style.opacity = sFactor;
+          glyphS.style.transform = `scale(${sFactor})`;
+          glyphS.style.transformOrigin = "96px 11px";
+        }
+
+        // 2. N (x=56) eaten next (0.16 -> 0.42)
+        const nFactor = p < 0.16 ? 1 : Math.max(0, 1 - ((p - 0.16) / 0.26));
+        if (glyphN) {
+          glyphN.style.opacity = nFactor;
+          glyphN.style.transform = `scale(${nFactor})`;
+          glyphN.style.transformOrigin = "56px 11px";
+        }
+
+        // 3. O1 (x=36) eaten next (0.42 -> 0.68)
+        const o1Factor = p < 0.42 ? 1 : Math.max(0, 1 - ((p - 0.42) / 0.26));
+        if (glyphO1) {
+          glyphO1.style.opacity = o1Factor;
+          glyphO1.style.transform = `scale(${o1Factor})`;
+          glyphO1.style.transformOrigin = "36px 11px";
+        }
+
+        // 4. R (x=18) eaten last (0.68 -> 0.92)
+        const rFactor = p < 0.68 ? 1 : Math.max(0, 1 - ((p - 0.68) / 0.24));
+        if (glyphR) {
+          glyphR.style.opacity = rFactor;
+          glyphR.style.transform = `scale(${rFactor})`;
+          glyphR.style.transformOrigin = "18px 11px";
+        }
+
+        // Stage container width contracts smoothly from 120px to 38px (so only K O remains)
+        const stageWidth = 120 - ((120 - 38) * p);
+        brandStage.style.maxWidth = `${stageWidth}px`;
+      }
+
+      window.addEventListener('scroll', updateKinetic, { passive: true });
+      updateKinetic();
+    }
+
+    // 2. BULLETPROOF AUTHENTIC TERMINAL ENGINE (EXACT 1:1 INV.PY REPLICA)
+    let CURRENT_OS = 'mac';
+    let TERMINAL_PAUSED = false;
+    let TERMINAL_TIMEOUTS = [];
+    let GLOBAL_MATRIX_PANEL = null;
+    let GLOBAL_BANNER_INTERVAL = null;
+    let GLOBAL_MATRIX_INTERVAL = null;
+    let BANNER_START_TIME = Date.now();
+    let ACTIVE_SELECTED_OPTION = 1;
+
+    // Authentic Katakana + Hex Glyph Pool from inv.py
+    const MATRIX_GLYPHS = "ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ0123456789ABCDEF$#@%&*<>";
+
+    // EXACT 1:1 LiveMatrixPanel TEXT ENGINE FROM inv.py
+    class LiveMatrixTextPanel {
+      constructor(rows = 13, numCols = 18) {
+        this.rows = rows;
+        this.numCols = numCols;
+        this.glyphList = MATRIX_GLYPHS.split('');
+        this.drops = [];
+        this.speeds = [];
+        this.accum = [];
+        this.lengths = [];
+        this.chars = [];
+
+        for (let c = 0; c < this.numCols; c++) {
+          this.drops.push(Math.floor(Math.random() * (rows + 5)) - rows);
+          this.speeds.push(0.6 + Math.random() * 0.8);
+          this.accum.push(0.0);
+          this.lengths.push(Math.floor(Math.random() * 7) + 5);
+
+          const colChars = [];
+          for (let r = 0; r < this.rows; r++) {
+            colChars.push(this.glyphList[Math.floor(Math.random() * this.glyphList.length)]);
+          }
+          this.chars.push(colChars);
+        }
+      }
+
+      update() {
+        for (let c = 0; c < this.numCols; c++) {
+          this.accum[c] += this.speeds[c];
+          if (this.accum[c] >= 1.0) {
+            const steps = Math.floor(this.accum[c]);
+            this.accum[c] -= steps;
+            this.drops[c] += steps;
+
+            // Mutate random glyphs (10% chance)
+            for (let r = 0; r < this.rows; r++) {
+              if (Math.random() < 0.10) {
+                this.chars[c][r] = this.glyphList[Math.floor(Math.random() * this.glyphList.length)];
+              }
+            }
+          }
+
+          if (this.drops[c] - this.lengths[c] > this.rows) {
+            this.drops[c] = -Math.floor(Math.random() * 4);
+            this.lengths[c] = Math.floor(Math.random() * 7) + 5;
+            this.speeds[c] = 0.6 + Math.random() * 0.8;
+          }
+        }
+      }
+
+      renderRowsHtml() {
+        const lines = [];
+        for (let r = 0; r < this.rows; r++) {
+          let lineHtml = "";
+          for (let c = 0; c < this.numCols; c++) {
+            const headY = this.drops[c];
+            const dist = headY - r;
+            const glyph = this.chars[c][r];
+
+            if (dist === 0) {
+              // White-hot leading drop (Fore.WHITE + Style.BRIGHT)
+              lineHtml += `<span class="m-cell" style="color:#ffffff; font-weight:700;">${glyph}</span>`;
+            } else if (dist > 0 && dist < 3) {
+              // Bright neon green (Fore.LIGHTGREEN_EX + Style.BRIGHT)
+              lineHtml += `<span class="m-cell" style="color:#a6e22e; font-weight:700;">${glyph}</span>`;
+            } else if (dist >= 3 && dist < 7) {
+              // Standard matrix green (Fore.GREEN)
+              lineHtml += `<span class="m-cell" style="color:#55a832;">${glyph}</span>`;
+            } else if (dist >= 7 && dist < this.lengths[c]) {
+              // Dim trailing green (Fore.GREEN + Style.DIM)
+              lineHtml += `<span class="m-cell" style="color:#28581a;">${glyph}</span>`;
+            } else {
+              lineHtml += `<span class="m-cell">&nbsp;&nbsp;</span>`;
+            }
+          }
+          lines.push(lineHtml);
+        }
+        return lines;
+      }
+    }
+
+    // AUTHENTIC RAW TITLE BANNER (62 chars wide)
+    const RAW_TITLE_BANNER = [
+      "  ██╗███╗   ██╗██╗   ██╗██╗███████╗██╗██████╗ ██╗     ███████╗",
+      "  ██║████╗  ██║██║   ██║██║██╔════╝██║██╔══██╗██║     ██╔════╝",
+      "  ██║██╔██╗ ██║██║   ██║██║███████╗██║██████╔╝██║     █████╗  ",
+      "  ██║██║╚██╗██║╚██╗ ██╔╝██║╚════██║██║██╔══██╗██║     ██╔══╝  ",
+      "  ██║██║ ╚████║ ╚████╔╝ ██║███████║██║██████╔╝███████╗███████╗",
+      "  ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚══════╝╚═╝╚═════╝ ╚══════╝╚══════╝"
+    ];
+
+    // BANNER ROW GRADIENT COLORS (Matched to inv.py)
+    const BANNER_ROW_COLORS = [
+      "#00e5ff", // Row 0: bright cyan
+      "#38d9ff", // Row 1: light cyan
+      "#40a9ff", // Row 2: bright sky blue
+      "#597ef7", // Row 3: royal blue
+      "#597ef7", // Row 4: royal blue
+      "#40a9ff"  // Row 5: bright sky blue
+    ];
+
+    // TAGS (19 chars wide each)
+    const BANNER_TAGS = [
+      "                   ",
+      "    <span class='t-ok'>[SYS: OK]</span>      ",
+      "    <span class='t-ok'>[NET: ON]</span>      ",
+      "  <span class='t-gold'>[MEM: 0x4F1A]</span>    ",
+      "  <span class='t-gold'>[KEY: AES]</span>       ",
+      "  <span class='t-gold'>[ID : 0x8B22]</span>    "
+    ];
+
+    // AUTHENTIC EXECUTION LOGS FOR OPTIONS [1] THROUGH [8]
+    const MENU_LOGS = {
+      1: {
+        cmd: "1",
+        label: "Intercept Stream (1 Active)",
+        logs: [
+          "<span style='color:#4a9fb0;'>[GHOST RECEPTOR]</span> Hooking into MTProto transport stream...",
+          "<span style='color:#9aa567;'>[SUCCESS]</span> Blue-tick confirmations SUPPRESSED // Online indicator masked",
+          "<span style='color:#ffffff;'>[ACTIVE TARGET]</span> Session 0x8B22: +91 98110 44211 [Latency: 28ms] // 3 media chunks captured"
+        ],
+        telemetry: "[GHOST RECEPTOR] Intercepting private chat // Blue ticks suppressed // Delivered state only ✓"
+      },
+      2: {
+        cmd: "2",
+        label: "Open Unified Inbox (0 Unseen)",
+        logs: [
+          "<span style='color:#4a9fb0;'>[UNIFIED INBOX]</span> Aggregating 3 client instances across isolated memory threads...",
+          "<span style='color:#9aa567;'>[ISOLATION]</span> Zero cross-profile socket leakage // Local RAM sandbox verified",
+          "<span style='color:#ffffff;'>[STATUS]</span> 0 unread alerts // Context buffer synchronized with zero cloud footprints"
+        ],
+        telemetry: "[UNIFIED INBOX] Aggregating 3 isolated accounts: Personal, Stealth, Operative // Zero cross-metadata leakage ✓"
+      },
+      3: {
+        cmd: "3",
+        label: "Inject New Payload (Add Account)",
+        logs: [
+          "<span style='color:#d4a34b;'>[PAYLOAD INJECTOR]</span> Spawning isolated phone authentication session...",
+          "<span style='color:#4a9fb0;'>[HANDSHAKE]</span> Send SMS / QR handshake initiated on loopback IPC",
+          "<span style='color:#9aa567;'>[SUCCESS]</span> Ephemeral memory key generated: AES-256-GCM (Zero disk footprint)"
+        ],
+        telemetry: "[PAYLOAD INJECTOR] Ephemeral memory key generated // Zero disk footprint ✓"
+      },
+      4: {
+        cmd: "4",
+        label: "Purge Connection (Remove Account)",
+        logs: [
+          "<span style='color:#d4a34b;'>[MEMORY PURGE]</span> Targeting session memory blocks for address 0x8B22...",
+          "<span style='color:#9aa567;'>[PURGED]</span> Crypto keys zeroized from RAM // IPC sockets unlinked",
+          "<span style='color:#ffffff;'>[VERIFIED]</span> 0 residual logs or telemetry artifacts left on local filesystem"
+        ],
+        telemetry: "[MEMORY PURGE] Session cleanly unmounted from RAM // 0 residual traces ✓"
+      },
+      5: {
+        cmd: "5",
+        label: "List Remote Targets",
+        logs: [
+          "<span style='color:#4a9fb0;'>[TARGET REGISTRY]</span> 4 active monitored channels mapped in sandbox:",
+          "<span style='color:#9aa567;'>  [01]</span> @alpha_intel_feed (Direct Relay, 24ms)",
+          "<span style='color:#9aa567;'>  [02]</span> +44 7700 900123 (Stealth Mode, 0 receipts)",
+          "<span style='color:#ffffff;'>[STATUS]</span> All target sockets healthy // Relay mesh maintaining keep-alive"
+        ],
+        telemetry: "[TARGET REGISTRY] 4 active monitored channels mapped in sandbox ✓"
+      },
+      6: {
+        cmd: "6",
+        label: "Configure Tunnel Routing",
+        logs: [
+          "<span style='color:#d4a34b;'>[GEO-SHIELD]</span> Campus & ISP deep packet inspection filter bypassed",
+          "<span style='color:#4a9fb0;'>[TUNNEL ACTIVE]</span> Route: Local Node -> Zurich Relay [31ms] -> Telegram MTProto",
+          "<span style='color:#9aa567;'>[SECURE]</span> DNS leak protection: ENABLED (DoH Cloudflare zero-log)"
+        ],
+        telemetry: "[GEO-SHIELD] Routed via Zurich Relay [31ms latency] // DNS leak protection active ✓"
+      },
+      7: {
+        cmd: "7",
+        label: "Benchmark Proxy Pool (Auto-Test)",
+        logs: [
+          "<span style='color:#d4a34b;'>[BENCHMARK]</span> Pinging 14 distributed SOCKS5/MTProto relays in parallel...",
+          "<span style='color:#9aa567;'>[RESULTS]</span> 14/14 relays operational // 0.0% packet loss // Pool healthy",
+          "<span style='color:#ffffff;'>[OPTIMAL]</span> Selected fastest node: de-fra-02.kronos.is [19ms latency]"
+        ],
+        telemetry: "[PROXY BENCHMARK] 14/14 Global Relays Verified: 100% Operational // 0 Packet Loss ✓"
+      },
+      8: {
+        cmd: "8",
+        label: "Exit / Replay Boot Sequence",
+        logs: [
+          "<span style='color:#4a9fb0;'>[RESTART]</span> Flushing ephemeral memory sandbox...",
+          "<span style='color:#9aa567;'>[BOOTLOADER]</span> Relaunching stealth console..."
+        ],
+        telemetry: "[RESTART] Replaying terminal boot sequence..."
+      }
+    };
+
+    function clearAllTermTimeouts() {
+      TERMINAL_TIMEOUTS.forEach(t => clearTimeout(t));
+      TERMINAL_TIMEOUTS = [];
+      if (GLOBAL_BANNER_INTERVAL) {
+        clearInterval(GLOBAL_BANNER_INTERVAL);
+        GLOBAL_BANNER_INTERVAL = null;
+      }
+      if (GLOBAL_MATRIX_INTERVAL) {
+        clearInterval(GLOBAL_MATRIX_INTERVAL);
+        GLOBAL_MATRIX_INTERVAL = null;
+      }
+    }
+
+    function queueTermAction(fn, delay) {
+      const id = setTimeout(() => {
+        if (!TERMINAL_PAUSED) fn();
+      }, delay);
+      TERMINAL_TIMEOUTS.push(id);
+    }
+
+    function setTerminalOS(os) {
+      CURRENT_OS = os;
+      document.querySelectorAll('.os-tab-pill').forEach(b => b.classList.remove('active'));
+      const pill = document.getElementById(`pill-os-${os}`);
+      if (pill) pill.classList.add('active');
+
+      const macChrome = document.getElementById('chrome-mac-bar');
+      const winChrome = document.getElementById('chrome-win-bar');
+      const termuxChrome = document.getElementById('chrome-termux-bar');
+
+      if (macChrome) macChrome.style.display = 'none';
+      if (winChrome) winChrome.style.display = 'none';
+      if (termuxChrome) termuxChrome.style.display = 'none';
+
+      if (os === 'mac') {
+        if (macChrome) macChrome.style.display = 'flex';
+        document.getElementById('mac-title-dyn').textContent = 'aryan@macbook-pro:~ (zsh) — 80×24';
+      } else if (os === 'win') {
+        if (winChrome) winChrome.style.display = 'flex';
+      } else if (os === 'linux') {
+        if (macChrome) macChrome.style.display = 'flex';
+        document.getElementById('mac-title-dyn').textContent = 'aryan@arch-linux:~/kronos (bash)';
+      } else if (os === 'android') {
+        if (termuxChrome) termuxChrome.style.display = 'flex';
+      }
+
+      restartTerminalDemo();
+    }
+
+    function getPromptPrefix() {
+      if (CURRENT_OS === 'mac') return '<span class="t-ok">aryan@macbook-pro ~ % </span>';
+      if (CURRENT_OS === 'win') return '<span class="t-cyan">PS C:\\Users\\Aryan&gt; </span>';
+      if (CURRENT_OS === 'linux') return '<span class="t-ok">aryan@arch-linux:~$ </span>';
+      if (CURRENT_OS === 'android') return '<span class="t-cyan">~ $ </span>';
+      return '$ ';
+    }
+
+    function getInstallCommand() {
+      const host = window.location.origin;
+      if (CURRENT_OS === 'win') return `irm "${host}/install.ps1" | iex`;
+      return `curl -sSL "${host}/install" | bash`;
+    }
+
+    function copyActiveCommand() {
+      const cmd = getInstallCommand();
+      navigator.clipboard.writeText(cmd);
+      const label = document.getElementById('copy-btn-text');
+      label.textContent = 'Copied!';
+      setTimeout(() => { label.textContent = 'Copy Command'; }, 2000);
+    }
+
+    function togglePauseTerminal() {
+      TERMINAL_PAUSED = !TERMINAL_PAUSED;
+      document.getElementById('pause-label').textContent = TERMINAL_PAUSED ? 'Resume' : 'Pause';
+    }
+
+    function restartTerminalDemo() {
+      clearAllTermTimeouts();
+      const screen = document.getElementById('terminal-screen');
+      screen.innerHTML = '';
+      runTerminalSequence();
+    }
+
+    function jumpToInteractiveDeck() {
+      clearAllTermTimeouts();
+      renderInteractiveTerminalDeck();
+      selectTerminalOption(1);
+    }
+
+    function runTerminalSequence() {
+      const screen = document.getElementById('terminal-screen');
+      const cmd = getInstallCommand();
+      const prompt = getPromptPrefix();
+
+      const headerDiv = document.createElement('div');
+      headerDiv.className = 't-row t-dim';
+      headerDiv.style.marginBottom = '6px';
+
+      if (CURRENT_OS === 'mac') {
+        headerDiv.innerHTML = 'Last login: Fri Sep 11 14:48:10 on ttys004';
+      } else if (CURRENT_OS === 'win') {
+        headerDiv.innerHTML = 'Windows PowerShell 7.4.4 — Copyright (C) Microsoft Corporation.';
+      } else if (CURRENT_OS === 'linux') {
+        headerDiv.innerHTML = 'Linux arch-node 6.10.8-arch1-1 #1 SMP PREEMPT_DYNAMIC x86_64';
+      } else if (CURRENT_OS === 'android') {
+        headerDiv.innerHTML = 'Welcome to Termux! Working directory: /data/data/com.termux/files/home';
+      }
+      screen.appendChild(headerDiv);
+
+      const pLine = document.createElement('div');
+      pLine.className = 't-row';
+      pLine.innerHTML = `${prompt}<span id="type-target" class="t-white"></span><span class="cursor-block"></span>`;
+      screen.appendChild(pLine);
+
+      let idx = 0;
+      function typeChar() {
+        if (idx <= cmd.length) {
+          const tgt = document.getElementById('type-target');
+          if (tgt) tgt.textContent = cmd.slice(0, idx);
+          idx++;
+          const jitter = Math.floor(Math.random() * 16) + 12;
+          queueTermAction(typeChar, jitter);
+        } else {
+          queueTermAction(runBootstrapOutput, 180);
+        }
+      }
+      queueTermAction(typeChar, 200);
+    }
+
+    function runBootstrapOutput() {
+      const screen = document.getElementById('terminal-screen');
+      const cursor = screen.querySelector('.cursor-block');
+      if (cursor) cursor.remove();
+
+      const lines = [
+        "<span class='t-cyan'>[i]</span> Environment detected: " + (CURRENT_OS === 'win' ? 'Windows 11 (PowerShell 7.4)' : (CURRENT_OS === 'android' ? 'Android / Termux aarch64' : 'Unix / macOS Darwin arm64')),
+        "<span class='t-cyan'>[i]</span> Fetching universal zero-dependency client runner...",
+        "<span class='t-ok'>[✓]</span> Shortcut created: 'kronos' in binary path",
+        "<span class='t-ok'>[✓]</span> Ephemeral memory sandbox allocated (12.4 MB)",
+        "<span class='t-ok'>[✓]</span> Launching KRONOS Stealth Console..."
+      ];
+
+      let lIdx = 0;
+      function printNextLog() {
+        if (lIdx < lines.length) {
+          const div = document.createElement('div');
+          div.className = 't-row';
+          div.innerHTML = lines[lIdx];
+          screen.appendChild(div);
+          lIdx++;
+          queueTermAction(printNextLog, 100);
+        } else {
+          queueTermAction(renderInteractiveTerminalDeck, 240);
+        }
+      }
+      printNextLog();
+    }
+
+    // RENDER THE AUTHENTIC 88-CHARACTER MONOSPACE TERMINAL GRID
+    function renderInteractiveTerminalDeck() {
+      clearAllTermTimeouts();
+      const screen = document.getElementById('terminal-screen');
+      screen.innerHTML = '';
+
+      BANNER_START_TIME = Date.now();
+      GLOBAL_MATRIX_PANEL = new LiveMatrixTextPanel(13, 18);
+
+      // 1. Top border: exactly 88 chars (1 space + 1 ┌ + 85 dashes + 1 ┐)
+      const topRow = document.createElement('div');
+      topRow.className = 't-row tb-bdr';
+      topRow.textContent = " ┌" + "─".repeat(85) + "┐";
+      screen.appendChild(topRow);
+
+      // 2. Banner Rows (Rows 0 to 5)
+      for (let r = 0; r < 6; r++) {
+        const bRow = document.createElement('div');
+        bRow.className = 't-row';
+        bRow.id = `term-banner-row-${r}`;
+        bRow.innerHTML = `<span class="tb-bdr"> │ </span><span id="b-chars-${r}"></span><span id="b-tag-${r}"></span><span class="tb-bdr"> │</span>`;
+        screen.appendChild(bRow);
+      }
+
+      // 3. Middle Border: exactly 88 chars
+      const midRow = document.createElement('div');
+      midRow.className = 't-row tb-bdr';
+      midRow.textContent = " ├" + "─".repeat(85) + "┤";
+      screen.appendChild(midRow);
+
+      // 4. IP & Proxy Row: exactly 88 chars (4 + 23 + 10 + 46 + 5 = 88)
+      const ipRow = document.createElement('div');
+      ipRow.className = 't-row';
+      ipRow.innerHTML = `<span class="tb-bdr"> │  </span><span class="t-white">[ IP : 185.220.101.42 ]</span><span>` + " ".repeat(10) + `</span><span class="t-white">[ PROXY : off  (real IP visible to Telegram) ]</span><span class="tb-bdr">    │</span>`;
+      screen.appendChild(ipRow);
+
+      // 5. Split Header: exactly 88 chars (2 + 44 + 1 + 40 + 1 = 88)
+      const splitRow = document.createElement('div');
+      splitRow.className = 't-row tb-bdr';
+      splitRow.textContent = " ├" + "─".repeat(44) + "┬" + "─".repeat(40) + "┤";
+      screen.appendChild(splitRow);
+
+      // 6. Split Deck (15 rows: i=0 to 14)
+      // Every left column text is strictly padded to 42 characters!
+      const rawMenuDefinitions = [
+        { text: " [+] secure connection established...", cls: "t-ok" },
+        { text: " [+] verifying cryptographic signatures...", cls: "t-ok" },
+        { text: " [+] ghost protocol initialized.", cls: "t-ok" },
+        { text: "", cls: "" },
+        { text: " aryan@ghost-node:~# whoami", cls: "p-whoami" },
+        { text: " root", cls: "t-ok" },
+        { text: " aryan@ghost-node:~# ls -l targets", cls: "p-ls" },
+        { text: " > [ 1 ] intercept stream (1 active)", opt: 1 },
+        { text: " > [ 2 ] open unified inbox", opt: 2 },
+        { text: " > [ 3 ] inject new payload (add account)", opt: 3 },
+        { text: " > [ 4 ] purge connection (remove acct)", opt: 4 },
+        { text: " > [ 5 ] list remote targets", opt: 5 },
+        { text: " > [ 6 ] configure tunnel routing", opt: 6 },
+        { text: " > [ 7 ] benchmark proxy pool (auto-test)", opt: 7 },
+        { text: " > [ 8 ] exit", opt: 8 }
+      ];
+
+      for (let i = 0; i < 15; i++) {
+        const deckRow = document.createElement('div');
+        deckRow.className = 't-row';
+
+        const def = rawMenuDefinitions[i];
+        const paddedText = def.text.padEnd(42, " ");
+        let leftHtml = "";
+
+        if (def.opt) {
+          leftHtml = `<span class="term-menu-choice" onclick="selectTerminalOption(${def.opt})" id="term-opt-${def.opt}">${paddedText}</span>`;
+        } else if (def.cls === "p-whoami") {
+          leftHtml = `<span class="t-cyan"> aryan@ghost-node:~# </span><span class="t-white">whoami` + " ".repeat(15) + `</span>`;
+        } else if (def.cls === "p-ls") {
+          leftHtml = `<span class="t-cyan"> aryan@ghost-node:~# </span><span class="t-white">ls -l targets` + " ".repeat(8) + `</span>`;
+        } else if (def.cls === "t-ok") {
+          leftHtml = `<span class="t-ok">${paddedText}</span>`;
+        } else {
+          leftHtml = `<span>${paddedText}</span>`;
+        }
+
+        let rightContent = "";
+        if (i === 0) {
+          // Matrix box header (41 chars total: 1 space + 4 + 13 + 21 + 1 space + 1 │ = 41)
+          rightContent = ` <span class="mb-bdr">┌── </span><span style="color:#ffffff; font-weight:700;">MATRIX STREAM</span><span class="mb-bdr"> ───────────────────┐ </span><span class="tb-bdr">│</span>`;
+        } else if (i === 14) {
+          // Matrix box bottom (41 chars total: 1 space + 1 + 36 + 1 + 1 space + 1 │ = 41)
+          rightContent = ` <span class="mb-bdr">└` + "─".repeat(36) + `┘ </span><span class="tb-bdr">│</span>`;
+        } else {
+          // Rain rows 0..12 (41 chars total: 1 space + 1 + 36 + 1 + 1 space + 1 │ = 41)
+          rightContent = ` <span class="mb-bdr">│</span><span id="matrix-text-row-${i - 1}" class="m-stream-row">` + `<span class="m-cell">&nbsp;&nbsp;</span>`.repeat(18) + `</span><span class="mb-bdr">│ </span><span class="tb-bdr">│</span>`;
+        }
+
+        // Left side:  │  (3) + 42 chars +  │ (2) = 47 chars. Right side: 41 chars. 47 + 41 = 88!
+        deckRow.innerHTML = `<span class="tb-bdr"> │ </span>${leftHtml}<span class="tb-bdr"> │</span>${rightContent}`;
+        screen.appendChild(deckRow);
+      }
+
+      // 7. Bottom Border: 2 + 44 + 1 + 40 + 1 = 88 chars
+      const botRow = document.createElement('div');
+      botRow.className = 't-row tb-bdr';
+      botRow.textContent = " └" + "─".repeat(44) + "┴" + "─".repeat(40) + "┘";
+      screen.appendChild(botRow);
+
+      // 8. Prompt Line below console frame
+      const promptLine = document.createElement('div');
+      promptLine.className = 'term-cli-prompt';
+      promptLine.innerHTML = `<span class="t-cyan"> aryan@ghost-node:~# </span><span id="term-active-cmd" class="t-white" style="font-weight:700;">1</span><span class="cursor-block"></span> <span class="t-dim" style="font-size:10px;">[Tip: Click any option or press keys 1-8]</span>`;
+      screen.appendChild(promptLine);
+
+      // 9. Output Pane below prompt line
+      const outputPane = document.createElement('div');
+      outputPane.className = 'term-cli-output';
+      outputPane.id = 'term-active-output';
+      screen.appendChild(outputPane);
+
+      // Start 7.0s authentic INVISIBLE title banner animation loop
+      startBannerAnimationLoop();
+
+      // Start 45ms discrete Katakana matrix stream loop
+      startMatrixAnimationLoop();
+
+      // Activate Option 1 default
+      selectTerminalOption(1);
+    }
+
+    // 7.0-SECOND 4-PHASE INVISIBLE BANNER ANIMATION LOOP (FROM INV.PY)
+    function startBannerAnimationLoop() {
+      if (GLOBAL_BANNER_INTERVAL) clearInterval(GLOBAL_BANNER_INTERVAL);
+
+      function tickBanner() {
+        if (TERMINAL_PAUSED) return;
+        const now = Date.now();
+        const cycle = 7.0;
+        const phase = ((now - BANNER_START_TIME) / 1000) % cycle;
+
+        for (let r = 0; r < 6; r++) {
+          const raw = RAW_TITLE_BANNER[r];
+          const color = BANNER_ROW_COLORS[r];
+          const tag = BANNER_TAGS[r];
+          const charsEl = document.getElementById(`b-chars-${r}`);
+          const tagEl = document.getElementById(`b-tag-${r}`);
+          if (!charsEl || !tagEl) continue;
+
+          let renderedChars = "  ";
+          let renderedTag = "";
+
+          if (phase < 3.0) {
+            // Phase 1 (0-3.0s): Smooth left-to-right typewriter stream with block cursor
+            const cutoff = Math.floor((phase / 3.0) * 62);
+            for (let c = 0; c < 62; c++) {
+              const ch = raw[c];
+              if (c < cutoff) {
+                renderedChars += `<span style="color:${color};">${ch}</span>`;
+              } else if (c === cutoff) {
+                renderedChars += `<span style="color:#ffffff; font-weight:700;">█</span>`;
+              } else {
+                renderedChars += " ";
+              }
+            }
+            renderedTag = (cutoff >= 60) ? tag : " ".repeat(19);
+
+          } else if (phase < 4.5) {
+            // Phase 2 (3.0-4.5s): Specular white shimmer glint wave
+            const wave = Math.floor(((phase - 3.0) / 1.5) * 62);
+            for (let c = 0; c < 62; c++) {
+              const ch = raw[c];
+              if (Math.abs(c - wave) <= 2) {
+                renderedChars += `<span style="color:#ffffff; font-weight:700;">${ch}</span>`;
+              } else {
+                renderedChars += `<span style="color:${color};">${ch}</span>`;
+              }
+            }
+            renderedTag = tag;
+
+          } else if (phase < 6.2) {
+            // Phase 3 (4.5-6.2s): Solid fully-assembled glow hold
+            for (let c = 0; c < 62; c++) {
+              renderedChars += `<span style="color:${color};">${raw[c]}</span>`;
+            }
+            renderedTag = tag;
+
+          } else {
+            // Phase 4 (6.2-7.0s): Clean cursor wipe reset
+            const wipe = Math.floor(((phase - 6.2) / 0.8) * 62);
+            for (let c = 0; c < 62; c++) {
+              const ch = raw[c];
+              if (c < wipe) {
+                renderedChars += " ";
+              } else if (c === wipe) {
+                renderedChars += `<span style="color:#ffffff; font-weight:700;">█</span>`;
+              } else {
+                renderedChars += `<span style="color:${color};">${ch}</span>`;
+              }
+            }
+            renderedTag = (wipe < 30) ? tag : " ".repeat(19);
+          }
+
+          charsEl.innerHTML = renderedChars;
+          tagEl.innerHTML = renderedTag;
+        }
+      }
+
+      GLOBAL_BANNER_INTERVAL = setInterval(tickBanner, 33);
+      tickBanner();
+    }
+
+    // 45ms DISCRETE KATAKANA MATRIX STREAM LOOP
+    function startMatrixAnimationLoop() {
+      if (GLOBAL_MATRIX_INTERVAL) clearInterval(GLOBAL_MATRIX_INTERVAL);
+
+      GLOBAL_MATRIX_INTERVAL = setInterval(() => {
+        if (TERMINAL_PAUSED || !GLOBAL_MATRIX_PANEL) return;
+        GLOBAL_MATRIX_PANEL.update();
+        const rowHtmls = GLOBAL_MATRIX_PANEL.renderRowsHtml();
+        for (let r = 0; r < 13; r++) {
+          const el = document.getElementById(`matrix-text-row-${r}`);
+          if (el) el.innerHTML = rowHtmls[r];
+        }
+      }, 45);
+    }
+
+    // INTERACTIVE OPTION SELECTION (CLICK & KEYBOARD)
+    function selectTerminalOption(num) {
+      ACTIVE_SELECTED_OPTION = num;
+      document.querySelectorAll('.term-menu-choice').forEach(el => el.classList.remove('active'));
+      const activeEl = document.getElementById(`term-opt-${num}`);
+      if (activeEl) activeEl.classList.add('active');
+
+      const data = MENU_LOGS[num];
+      if (!data) return;
+
+      const cmdEl = document.getElementById('term-active-cmd');
+      if (cmdEl) cmdEl.textContent = data.cmd;
+
+      const outputEl = document.getElementById('term-active-output');
+      if (outputEl) {
+        outputEl.innerHTML = data.logs.join('<br>');
+      }
+
+      const feedbackEl = document.getElementById('term-live-feedback');
+      if (feedbackEl) {
+        feedbackEl.innerHTML = `<span style="color:#a6e22e; font-weight:700;">[OPT ${num}]</span> ` + data.telemetry;
+      }
+
+      if (num === 8) {
+        setTimeout(() => {
+          restartTerminalDemo();
+        }, 800);
+      }
+    }
+
+    // Keyboard listener: Press keys 1 through 8
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      const num = parseInt(e.key);
+      if (num >= 1 && num <= 8) {
+        selectTerminalOption(num);
+      }
+    });
+
+    // 3. CAPABILITY CARDS INTERACTIVE LOGIC
+    let VAULT_TIMER = 4;
+    setInterval(() => {
+      const tEl = document.getElementById('vault-timer-dyn');
+      const bEl = document.getElementById('vault-badge-dyn');
+      if (!tEl || !bEl) return;
+
+      if (VAULT_TIMER > 0) {
+        tEl.textContent = `0:0${VAULT_TIMER} EXPIRING`;
+        tEl.style.color = '#d9534f';
+        bEl.textContent = 'INTERCEPTING...';
+        bEl.style.color = 'var(--accent-clay)';
+        VAULT_TIMER--;
+      } else {
+        tEl.textContent = '0:00 EXPIRED';
+        tEl.style.color = '#8a8880';
+        bEl.textContent = 'SAVED 4K RAW ✓';
+        bEl.style.color = 'var(--accent-olive)';
+        VAULT_TIMER = 4;
+      }
+    }, 1200);
+
+    function setCapChip(el) {
+      document.querySelectorAll('.id-chip-card').forEach(c => {
+        c.style.background = '#fff';
+        c.style.color = 'var(--text-muted)';
+      });
+      el.style.background = 'var(--text-main)';
+      el.style.color = '#fff';
+    }
+
+    // 4. CHECKOUT & ORDER API
+    let CURRENT_PLAN = '1m';
+    let CURRENT_METHOD = 'upi';
+    let CURRENT_ORDER_ID = null;
+    let CURRENT_TON_MEMO = '';
+    let CURRENT_TON_WALLET = '';
+    let CURRENT_POLLER = null;
+
+    function selectPlan(planId) {
+      CURRENT_PLAN = planId;
+      document.querySelectorAll('.plan-row').forEach(el => el.classList.remove('active'));
+      const row = document.getElementById(`plan-${planId}`);
+      if (row) row.classList.add('active');
+      createOrder();
+    }
+
+    function switchMethod(method) {
+      CURRENT_METHOD = method;
+      document.querySelectorAll('.checkout-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('panel-upi').style.display = 'none';
+      document.getElementById('panel-ton').style.display = 'none';
+      document.getElementById('panel-recover').style.display = 'none';
+
+      document.getElementById(`tab-btn-${method}`).classList.add('active');
+      document.getElementById(`panel-${method}`).style.display = 'block';
+
+      if (method !== 'recover') createOrder();
+    }
+
+    async function createOrder() {
+      try {
+        const res = await fetch('/api/order/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan_id: CURRENT_PLAN, payment_method: CURRENT_METHOD })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Order creation failed');
+
+        CURRENT_ORDER_ID = data.order_id;
+        CURRENT_TON_MEMO = data.ton_memo || '';
+        CURRENT_TON_WALLET = data.ton_wallet || '';
+
+        document.getElementById('display-order-id').textContent = data.order_id;
+        document.getElementById('upi-price-label').textContent = data.amount_inr;
+        document.getElementById('display-vpa').textContent = data.upi_id;
+        document.getElementById('ton-memo-display').textContent = data.ton_memo;
+        document.getElementById('ton-wallet-full').textContent = data.ton_wallet;
+        
+        if (data.ton_wallet && data.ton_wallet.length > 14) {
+          document.getElementById('ton-wallet-short').textContent = data.ton_wallet.slice(0, 7) + '...' + data.ton_wallet.slice(-6);
+        }
+
+        if (data.amount_ton) {
+          document.getElementById('ton-rate-display').textContent = `${data.amount_ton} TON (₹${data.amount_inr})`;
+        }
+
+        const upiUri = `upi://pay?pa=${encodeURIComponent(data.upi_id)}&pn=${encodeURIComponent(data.payee_name || 'KRONOS')}&am=${data.amount_inr}&cu=INR&tn=${encodeURIComponent(data.order_id)}`;
+        document.getElementById('btn-upi-direct').href = upiUri;
+        document.getElementById('img-upi-qr').src = `/api/qr?data=${encodeURIComponent(upiUri)}`;
+
+        if (data.ton_wallet) {
+          const nanoTon = Math.round((data.amount_ton || 0) * 1e9);
+          const tonUri = `ton://transfer/${data.ton_wallet}?amount=${nanoTon}&text=${encodeURIComponent(data.ton_memo)}`;
+          document.getElementById('btn-ton-direct').href = tonUri;
+          document.getElementById('img-ton-qr').src = `/api/qr?data=${encodeURIComponent(tonUri)}`;
+        }
+
+        const alertUpi = document.getElementById('alert-upi');
+        if (alertUpi) {
+          alertUpi.className = 'status-note';
+          alertUpi.style.display = 'none';
+          alertUpi.innerHTML = '';
+        }
+        const btnUtr = document.getElementById('btn-submit-utr');
+        if (btnUtr) {
+          btnUtr.disabled = false;
+          btnUtr.classList.remove('submitting', 'success-state');
+          btnUtr.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="btn-submit-utr-text">Verify &amp; Activate License</span>`;
+        }
+        const counter = document.getElementById('utr-counter');
+        const inputUtr = document.getElementById('input-utr');
+        if (inputUtr && counter) {
+          const digits = inputUtr.value.replace(/\D/g, '').slice(0, 12);
+          counter.textContent = digits.length === 12 ? '12 / 12 digits (Ready ✓)' : `${digits.length} / 12 digits`;
+          if (digits.length === 12) counter.classList.add('ready'); else counter.classList.remove('ready');
+        }
+        lastSubmittedUTR = null;
+
+        if (CURRENT_METHOD === 'ton') startOrderPolling();
+      } catch (err) {
+        console.error('Order creation error:', err);
+      }
+    }
+
+    let lastSubmittedUTR = null;
+    let utrAutoSubmitTimer = null;
+
+    function initUTRInputListener() {
+      const input = document.getElementById('input-utr');
+      if (!input) return;
+
+      input.addEventListener('input', function(e) {
+        // Sanitize to numeric only, maximum 12 digits
+        const raw = this.value;
+        const digits = raw.replace(/\D/g, '').slice(0, 12);
+        if (raw !== digits) {
+          this.value = digits;
+        }
+
+        const counter = document.getElementById('utr-counter');
+        if (counter) {
+          if (digits.length === 12) {
+            counter.classList.add('ready');
+            counter.textContent = '12 / 12 digits (Ready ✓)';
+          } else {
+            counter.classList.remove('ready');
+            counter.textContent = `${digits.length} / 12 digits`;
+          }
+        }
+
+        // Automatic instant submission on entering 12 digits!
+        if (utrAutoSubmitTimer) clearTimeout(utrAutoSubmitTimer);
+        if (digits.length === 12) {
+          utrAutoSubmitTimer = setTimeout(() => {
+            submitUTR(true);
+          }, 350);
+        }
+      });
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (utrAutoSubmitTimer) clearTimeout(utrAutoSubmitTimer);
+          submitUTR(false);
+        }
+      });
+    }
+
+    async function submitUTR(isAuto = false) {
+      const input = document.getElementById('input-utr');
+      const btn = document.getElementById('btn-submit-utr') || document.querySelector('.input-field-wrap .btn-submit-action');
+      const alertBox = document.getElementById('alert-upi');
+      
+      const utr = (input ? input.value : '').replace(/\D/g, '').trim();
+
+      if (!utr || utr.length < 8) {
+        if (alertBox) {
+          alertBox.className = 'status-note rejected';
+          alertBox.style.display = 'block';
+          alertBox.innerHTML = '<strong>Invalid UTR:</strong> Please enter the 12-digit transaction reference from your UPI payment receipt.';
+        }
+        if (input) input.focus();
+        return;
+      }
+
+      // Avoid redundant duplicate submission if already awaiting approval for this UTR
+      if (lastSubmittedUTR === utr && btn && btn.classList.contains('success-state')) {
+        return;
+      }
+
+      // 1. Instant loading feedback on the button
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add('submitting');
+        btn.classList.remove('success-state');
+        btn.innerHTML = `<span class="btn-spinner"></span><span>Verifying &amp; Registering UTR...</span>`;
+      }
+
+      // 2. High-visibility animated confirmation card
+      if (alertBox) {
+        alertBox.className = 'status-note';
+        alertBox.style.display = 'block';
+        alertBox.innerHTML = `
+          <div class="confirmation-card">
+            <div class="confirmation-card-header">
+              <span class="pulse-dot"></span>
+              <span>Payment Reference Registered</span>
+            </div>
+            <div class="confirmation-card-body">
+              Submitted UTR: <code>${utr}</code><br>
+              <div class="confirmation-live-status">
+                <span class="btn-spinner" style="border-color: rgba(35,84,56,0.25); border-top-color: #235438; width: 13px; height: 13px;"></span>
+                <span>Verification dispatched to Telegram admin. Checking live every 2s...</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      try {
+        const res = await fetch('/api/order/submit-utr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_id: CURRENT_ORDER_ID, utr: utr })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Submission failed');
+
+        lastSubmittedUTR = utr;
+
+        // Button updated to locked success state
+        if (btn) {
+          btn.disabled = true;
+          btn.classList.remove('submitting');
+          btn.classList.add('success-state');
+          btn.innerHTML = `
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>✓ UTR Submitted · Awaiting Instant Approval</span>
+          `;
+        }
+
+        if (navigator.vibrate) {
+          try { navigator.vibrate([40, 60, 40]); } catch (e) {}
+        }
+
+        startOrderPolling();
+      } catch (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('submitting', 'success-state');
+          btn.innerHTML = `
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Verify &amp; Activate License</span>
+          `;
+        }
+        if (alertBox) {
+          alertBox.className = 'status-note rejected';
+          alertBox.style.display = 'block';
+          alertBox.innerHTML = `<strong>Submission Error:</strong> ${err.message || 'Submission error. Contact support.'}`;
+        }
+      }
+    }
+
+    function startOrderPolling() {
+      if (CURRENT_POLLER) clearInterval(CURRENT_POLLER);
+      CURRENT_POLLER = setInterval(async () => {
+        if (!CURRENT_ORDER_ID) return;
+        try {
+          const res = await fetch(`/api/order/status/${CURRENT_ORDER_ID}`);
+          const data = await res.json();
+          if (data.status === 'approved' && data.api_key) {
+            clearInterval(CURRENT_POLLER);
+            revealLicenseKey(data.api_key, data.plan_name);
+          } else if (data.status === 'rejected') {
+            clearInterval(CURRENT_POLLER);
+            const alertBox = document.getElementById(CURRENT_METHOD === 'upi' ? 'alert-upi' : 'alert-ton');
+            if (alertBox) {
+              alertBox.className = 'status-note rejected';
+              alertBox.style.display = 'block';
+              alertBox.textContent = 'Order was marked rejected. Please check reference or message @KRONOSSPBOT.';
+            }
+            const btn = document.getElementById('btn-submit-utr');
+            if (btn) {
+              btn.disabled = false;
+              btn.classList.remove('submitting', 'success-state');
+              btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Verify &amp; Activate License</span>`;
+            }
+          }
+        } catch (e) {
+          console.warn('Status poll warning:', e);
+        }
+      }, 2000);
+    }
+
+    function revealLicenseKey(key, planName) {
+      document.getElementById('modal-plan-label').textContent = planName || 'KRONOS ACCESS PASS';
+      document.getElementById('modal-key-text').textContent = key;
+      const host = window.location.origin;
+      document.getElementById('modal-cmd-code').textContent = `curl -sSL "${host}/install?key=${key}" | bash`;
+      document.getElementById('modal-backdrop').classList.add('open');
+    }
+
+    function copyKeyModal() {
+      const key = document.getElementById('modal-key-text').textContent;
+      navigator.clipboard.writeText(key);
+      alert('License Key copied to clipboard.');
+    }
+
+    async function recoverLicense() {
+      const q = document.getElementById('input-recover-query').value.trim();
+      const alertBox = document.getElementById('alert-recover');
+      if (!q) {
+        alertBox.className = 'status-note rejected';
+        alertBox.textContent = 'Please enter a UTR number or TON memo.';
+        return;
+      }
+      try {
+        const res = await fetch('/api/license/recover', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q })
+        });
+        const data = await res.json();
+        if (data.found && data.api_key) {
+          alertBox.className = 'status-note approved';
+          alertBox.innerHTML = `Active License Found: <br><strong style="font-family: monospace; font-size: 15px;">${data.api_key}</strong>`;
+        } else {
+          alertBox.className = 'status-note rejected';
+          alertBox.textContent = 'No matching active license located.';
+        }
+      } catch (err) {
+        alertBox.className = 'status-note rejected';
+        alertBox.textContent = 'Recovery error. Reach out to @KRONOSSPBOT.';
+      }
+    }
+
+    function copyDynamicText(elemId) {
+      const el = document.getElementById(elemId);
+      if (el) navigator.clipboard.writeText(el.textContent.trim());
+    }
+
+    // MOBILE HAMBURGER TOGGLE LOGIC
+    function toggleMobileMenu() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const drawer = document.getElementById('mobile-menu-drawer');
+      const backdrop = document.getElementById('mobile-menu-backdrop');
+      if (!btn || !drawer) return;
+      const isOpen = drawer.classList.contains('is-open');
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        btn.classList.add('is-active');
+        drawer.classList.add('is-open');
+        if (backdrop) backdrop.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileMenu() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const drawer = document.getElementById('mobile-menu-drawer');
+      const backdrop = document.getElementById('mobile-menu-backdrop');
+      if (btn) btn.classList.remove('is-active');
+      if (drawer) drawer.classList.remove('is-open');
+      if (backdrop) backdrop.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    // QUICK INSTALL DEDICATED COMMAND LOGIC
+    let QUICK_RUN_OS = 'mac';
+    function setQuickRunOS(os) {
+      QUICK_RUN_OS = os;
+      document.querySelectorAll('.qr-os-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`qr-os-${os}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const prefix = document.getElementById('qr-prompt-prefix');
+      const cmdEl = document.getElementById('qr-active-cmd');
+      const host = window.location.origin;
+
+      if (os === 'mac') {
+        if (prefix) prefix.textContent = '$';
+        if (cmdEl) cmdEl.textContent = `curl -sSL "${host}/install" | bash`;
+      } else if (os === 'win') {
+        if (prefix) prefix.textContent = 'PS>';
+        if (cmdEl) cmdEl.textContent = `irm "${host}/install.ps1" | iex`;
+      } else if (os === 'android') {
+        if (prefix) prefix.textContent = '~ $';
+        if (cmdEl) cmdEl.textContent = `curl -sSL "${host}/install" | bash`;
+      }
+    }
+
+    function copyQuickRunCommand() {
+      const host = window.location.origin;
+      let cmd = `curl -sSL "${host}/install" | bash`;
+      if (QUICK_RUN_OS === 'win') cmd = `irm "${host}/install.ps1" | iex`;
+      if (QUICK_RUN_OS === 'android') cmd = `curl -sSL "${host}/install" | bash`;
+
+      navigator.clipboard.writeText(cmd);
+      const textEl = document.getElementById('qr-copy-text');
+      if (textEl) {
+        textEl.textContent = 'Copied! ✓';
+        setTimeout(() => { textEl.textContent = 'Copy Command'; }, 2200);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initOption1KineticTypography();
+      createOrder();
+      initUTRInputListener();
+      setTerminalOS('mac');
+      setQuickRunOS('mac');
+    });
+  </script>
+</body>
+</html>

@@ -178,3 +178,50 @@ import webbrowser
 import time
 
 # Enable Windows ANSI Escape Sequence parsing
+if os.name == "nt":
+    try:
+        os.system("")
+    except Exception:
+        pass
+
+def run_showcase_mode(server_url, hwid):
+    """
+    Interactive Locked Showcase Console.
+    Allows prospective buyers to preview the full KRONOS environment.
+    All features are locked and prompt the user to get a license key.
+    """
+    # Open browser on initial entry into showcase mode
+    try:
+        webbrowser.open(f"{server_url}/checkout")
+    except Exception:
+        pass
+
+    cyan = "\033[1;36m"
+    green = "\033[1;32m"
+    yellow = "\033[1;33m"
+    red = "\033[1;31m"
+    white = "\033[1;37m"
+    dim = "\033[2;37m"
+    reset = "\033[0m"
+
+    feature_names = {
+        "1": "Zero-Presence Ghost Mode (Read receipts / Blue ticks bypass)",
+        "2": "Unified Matrix Inbox (Multi-chat aggregated terminal)",
+        "3": "Pre-Destruction Vault & Voice Note NLP Transcriber",
+        "4": "Remote Identity Injector (Multi-account matrix)",
+        "5": "Geo-Shield Proxy Relays (SOCKS5/MTProto rotation)",
+        "6": "Proxy Latency Pool Auto-Benchmark",
+        "7": "Fail-Safe Stream Salvager (.part reconstructor)"
+    }
+
+    while True:
+        os.system("cls" if os.name == "nt" else "clear")
+        print(f"{cyan} ┌" + "─" * 78 + f"┐{reset}")
+        print(f"{cyan} │{green}  ██╗  ██╗██████╗  ██████╗ ███╗   ██╗ ██████╗ ███████╗                       {cyan}│{reset}")
+        print(f"{cyan} │{green}  ██║ ██╔╝██╔══██╗██╔═══██╗████╗  ██║██╔═══██╗██╔════╝  {white}[ STEALTH CONSOLE ] {cyan}│{reset}")
+        print(f"{cyan} │{green}  █████╔╝ ██████╔╝██║   ██║██╔██╗ ██║██║   ██║███████╗  {yellow}[ STATUS: LOCKED  ] {cyan}│{reset}")
+        print(f"{cyan} │{green}  ██╔═██╗ ██╔══██╗██║   ██║██║╚██╗██║██║   ██║╚════██║  {white}[ HWID: {hwid[:10]}... ] {cyan}│{reset}")
+        print(f"{cyan} │{green}  ██║  ██╗██║  ██║╚██████╔╝██║ ╚████║╚██████╔╝███████║                       {cyan}│{reset}")
+        print(f"{cyan} │{green}  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝  {dim}v3.5 GHOST MATRIX   {cyan}│{reset}")
+        print(f"{cyan} ├" + "─" * 78 + f"┤{reset}")
+        print(f"{cyan} │{white} [ NODE : ONLINE ]  [ ENCRYPTION : AES-256 ]  [ TELEGRAM CORE : ASYNC ]      {cyan}│{reset}")
