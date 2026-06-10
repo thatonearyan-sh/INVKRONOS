@@ -4171,3 +4171,24 @@ async def feat_media_catch_up(client, accent):
                             stats_str = f"  ({mb_current:.1f}/{mb_total:.1f} MB, Finished in ⏱ {el_str})"
                             print(f"\r{stats_str}\033[K\n\r {Fore.GREEN}✓{Style.RESET_ALL} {Fore.GREEN}{bar}{Style.RESET_ALL} 100.0%\033[K\n", end="", flush=True)
                         else:
+                            # Print stats on first line, then move to next line for the bar. Move cursor up 1 line at the end.
+                            stats_str = f"  ({mb_current:.1f}/{mb_total:.1f} MB, {speed_mb:.1f} MB/s, ⏱ {el_str}, ETA: {eta_str})"
+                            print(f"\r{stats_str}\033[K\n\r {Fore.CYAN}{spin}{Style.RESET_ALL} {Fore.GREEN}{bar}{Style.RESET_ALL} {percent:5.1%}\033[K\033[1A", end="", flush=True)
+                    else:
+                        # Graceful fallback for massive streaming files where Telegram doesn't pass 'total'
+                        print(f"\r  Downloading... ({mb_current:.1f} MB, {speed_mb:.1f} MB/s, ⏱ {el_str})\033[K", end="", flush=True)
+
+                try:
+                    if ext_url and not is_webpage_doc:
+                        print(f"  {col('==>', Fore.BLUE)} {col('Downloading external video via yt-dlp...', Fore.WHITE)}")
+                        import yt_dlp
+                        import glob
+                        
+                        ydl_opts = {
+                            'format': yt_fmt,
+                            'merge_output_format': 'mp4',
+                            'outtmpl': msg_vault + '/%(title).100B/%(title).100B.%(ext)s',
+                            'restrictfilenames': True,
+                            'quiet': True,
+                            'noprogress': True,
+                            'retries': 5,
