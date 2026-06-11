@@ -25,3 +25,7 @@ def crypt_stream(data: bytes, key_str: str) -> bytes:
 
 def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
     """Packages inv.py and subtitle_engine.py into an encrypted payload"""
+    if not client_dir:
+        base = os.path.dirname(os.path.abspath(__file__))
+        candidate_paths = [
+            os.path.join(base, "payload"),
