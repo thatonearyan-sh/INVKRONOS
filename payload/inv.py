@@ -4192,3 +4192,24 @@ async def feat_media_catch_up(client, accent):
                             'quiet': True,
                             'noprogress': True,
                             'retries': 5,
+                            'fragment_retries': 5,
+                            'file_access_retries': 5,
+                        }
+                        # Try to use browser cookies to bypass 403 errors
+                        for browser in ['chrome', 'safari', 'firefox', 'brave', 'edge']:
+                            try:
+                                ydl_opts['cookiesfrombrowser'] = (browser,)
+                                break
+                            except Exception:
+                                continue
+                        if sub_choice:
+                            ydl_opts.update({
+                                'writesubtitles': True,
+                                'writeautomaticsub': True,
+                                'subtitleslangs': [sub_lang],
+                                'postprocessors': [{
+                                    'key': 'FFmpegEmbedSubtitle',
+                                    'already_have_subtitle': False,
+                                }],
+                                'postprocessor_args': {
+                                    'FFmpegEmbedSubtitle': ['-c:s', 'mov_text', '-disposition:s:0', 'default']
