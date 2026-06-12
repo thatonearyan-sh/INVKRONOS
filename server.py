@@ -70,3 +70,11 @@ def get_template_html(filename: str):
 def get_checkout_html():
     return get_template_html("checkout.html")
 
+# Request Models
+class CreateOrderReq(BaseModel):
+    plan_id: str
+    payment_method: str = "upi"
+
+class SubmitUTRReq(BaseModel):
+    order_id: str
+    utr: str
