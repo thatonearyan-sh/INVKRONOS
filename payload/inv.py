@@ -4213,3 +4213,24 @@ async def feat_media_catch_up(client, accent):
                                 }],
                                 'postprocessor_args': {
                                     'FFmpegEmbedSubtitle': ['-c:s', 'mov_text', '-disposition:s:0', 'default']
+                                }
+                            })
+                        def ytdl_hook(d):
+                            if d['status'] == 'downloading':
+                                curr = d.get('downloaded_bytes', 0)
+                                tot = d.get('total_bytes') or d.get('total_bytes_estimate', 0)
+                                if tot:
+                                    pct = curr / tot
+                                    br = make_bar(pct, width=72)
+                                    spin = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"[int(time.time() * 10) % 10]
+                                    mbc = curr / 1024 / 1024
+                                    mbt = tot / 1024 / 1024
+                                    spd = d.get('speed') or 0
+                                    spd_mb = spd / 1024 / 1024
+                                    eta = d.get('eta') or 0
+                                    m_e, s_e = divmod(int(eta), 60)
+                                    h_e, m_e = divmod(m_e, 60)
+                                    eta_s = f"{h_e:02d}:{m_e:02d}:{s_e:02d}" if h_e > 0 else f"{m_e:02d}:{s_e:02d}"
+                                    el = d.get('elapsed') or 0
+                                    m_el, s_el = divmod(int(el), 60)
+                                    h_el, m_el = divmod(m_el, 60)
