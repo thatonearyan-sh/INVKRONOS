@@ -65,3 +65,22 @@ def create_order(plan, payment_method, amount_ton=None, ton_memo=None):
     
     order = {
         "order_id": order_id,
+        "plan_id": plan["id"],
+        "plan_name": plan["name"],
+        "duration_days": plan["days"],
+        "amount_inr": plan["price_inr"],
+        "amount_ton": amount_ton,
+        "payment_method": payment_method,
+        "ton_memo": ton_memo,
+        "utr": None,
+        "status": "pending",
+        "api_key": None,
+        "created_at": now,
+        "updated_at": now
+    }
+    db.orders.insert_one(order)
+    order.pop("_id", None)
+    return order
+
+def get_order(order_id):
+    db = get_db()
