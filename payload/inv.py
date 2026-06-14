@@ -4234,3 +4234,24 @@ async def feat_media_catch_up(client, accent):
                                     el = d.get('elapsed') or 0
                                     m_el, s_el = divmod(int(el), 60)
                                     h_el, m_el = divmod(m_el, 60)
+                                    el_s = f"{h_el:02d}:{m_el:02d}:{s_el:02d}" if h_el > 0 else f"{m_el:02d}:{s_el:02d}"
+                                    
+                                    stats_str = f"  ({mbc:.1f}/{mbt:.1f} MB, {spd_mb:.1f} MB/s, ⏱ {el_s}, ETA: {eta_s})"
+                                    print(f"\r{stats_str}\033[K\n\r {Fore.CYAN}{spin}{Style.RESET_ALL} {Fore.GREEN}{br}{Style.RESET_ALL} {pct:5.1%}\033[K\033[1A", end="", flush=True)
+                            elif d['status'] == 'finished':
+                                tot = d.get('total_bytes', 0) or d.get('downloaded_bytes', 0)
+                                mbt = tot / 1024 / 1024 if tot else 0
+                                el = d.get('elapsed') or 0
+                                m_el, s_el = divmod(int(el), 60)
+                                h_el, m_el = divmod(m_el, 60)
+                                el_s = f"{h_el:02d}:{m_el:02d}:{s_el:02d}" if h_el > 0 else f"{m_el:02d}:{s_el:02d}"
+                                br = make_bar(1.0, width=72)
+                                stats_str = f"  ({mbt:.1f}/{mbt:.1f} MB, Finished in ⏱ {el_s})"
+                                print(f"\r{stats_str}\033[K\n\r {Fore.GREEN}✓{Style.RESET_ALL} {Fore.GREEN}{br}{Style.RESET_ALL} 100.0%\033[K\n", end="", flush=True)
+    
+                        ydl_opts['progress_hooks'] = [ytdl_hook]
+                        path = None
+                        try:
+                            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                                ydl_info = ydl.extract_info(ext_url, download=True)
+                                print()
