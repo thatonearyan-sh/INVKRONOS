@@ -84,3 +84,21 @@ def create_order(plan, payment_method, amount_ton=None, ton_memo=None):
 
 def get_order(order_id):
     db = get_db()
+    order = db.orders.find_one({"order_id": order_id})
+    if order:
+        order.pop("_id", None)
+    return order
+
+def get_order_by_memo(memo):
+    if not memo:
+        return None
+    db = get_db()
+    order = db.orders.find_one({"ton_memo": memo, "status": "pending"})
+    if order:
+        order.pop("_id", None)
+    return order
+
+def set_order_utr(order_id, utr):
+    db = get_db()
+    now = datetime.now(timezone.utc)
+    db.orders.update_one(
