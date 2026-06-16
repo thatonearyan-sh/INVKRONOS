@@ -4255,3 +4255,24 @@ async def feat_media_catch_up(client, accent):
                             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                                 ydl_info = ydl.extract_info(ext_url, download=True)
                                 print()
+                                path_guess = ydl.prepare_filename(ydl_info)
+                                if os.path.exists(path_guess):
+                                    path = path_guess
+                                else:
+                                    # Search for the downloaded file in msg_vault
+                                    possibles = glob.glob(msg_vault + "/**/*.mp4", recursive=True)
+                                    possibles += glob.glob(msg_vault + "/**/*.mkv", recursive=True)
+                                    possibles += glob.glob(msg_vault + "/**/*.webm", recursive=True)
+                                    possibles += glob.glob(msg_vault + "/**/*.mp3", recursive=True)
+                                    possibles += glob.glob(msg_vault + "/**/*.m4a", recursive=True)
+                                    if possibles: path = possibles[0]
+                        except Exception as yt_err:
+                            error(f"External download failed: {yt_err}")
+                            # DO NOT fallback to client.download_media for external URLs — that just downloads the thumbnail!
+                            path = None
+                    else:
+                        # FastTelethon requires the raw Document object that has a .size attribute
+                        dl_target = target_media
+                        if hasattr(target_media, 'document') and target_media.document:
+                            dl_target = target_media.document
+                        elif hasattr(target_media, 'media') and hasattr(target_media.media, 'document') and target_media.media.document:
