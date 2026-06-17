@@ -4276,3 +4276,24 @@ async def feat_media_catch_up(client, accent):
                         if hasattr(target_media, 'document') and target_media.document:
                             dl_target = target_media.document
                         elif hasattr(target_media, 'media') and hasattr(target_media.media, 'document') and target_media.media.document:
+                            dl_target = target_media.media.document
+    
+                        if hasattr(dl_target, 'size'):
+                            print(f"  {col('==>', Fore.BLUE)} {col('Using FastTelethon parallel downloader for max speed...', Fore.WHITE)}")
+                            from FastTelethonhelper.FastTelethon import ParallelTransferrer
+                            from telethon import utils
+                            dc_id, location = utils.get_input_location(dl_target)
+                            
+                            out_path = msg_vault + "/" + filename
+                            with open(out_path, "wb") as out_file:
+                                downloader = ParallelTransferrer(client, dc_id)
+                                downloaded = downloader.download(location, dl_target.size, connection_count=20)
+                                async for x in downloaded:
+                                    out_file.write(x)
+                                    await prog(out_file.tell(), dl_target.size)
+                            path = out_path
+                            print()
+                        else:
+                            path = await client.download_media(target_media, msg_vault + "/", progress_callback=prog)
+                            print()
+                        
