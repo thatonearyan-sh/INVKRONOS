@@ -40,3 +40,15 @@ def process_telegram_update(update: dict):
                 plan = updated_order.get("plan_name")
                 utr = updated_order.get("utr")
                 _tg_request("answerCallbackQuery", {
+                    "callback_query_id": cq_id,
+                    "text": "✅ Order Approved! Key Created."
+                })
+                if msg_id:
+                    edit_text = (
+                        f"✅ <b>ORDER APPROVED & DELIVERED</b>\n\n"
+                        f"💳 <b>Order:</b> <code>{order_id}</code>\n"
+                        f"📦 <b>Plan:</b> {plan}\n"
+                        f"🔢 <b>UTR:</b> <code>{utr}</code>\n\n"
+                        f"🔑 <b>Generated Key:</b>\n<code>{key}</code>\n\n"
+                        f"<i>The customer browser screen has automatically unlocked.</i>"
+                    )

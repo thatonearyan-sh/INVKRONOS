@@ -102,3 +102,22 @@ def set_order_utr(order_id, utr):
     db = get_db()
     now = datetime.now(timezone.utc)
     db.orders.update_one(
+        {"order_id": order_id},
+        {"$set": {"utr": utr, "status": "awaiting_approval", "updated_at": now}}
+    )
+    return get_order(order_id)
+
+def approve_order(order_id):
+    db = get_db()
+    order = db.orders.find_one({"order_id": order_id})
+    if not order:
+        return None
+    
+    if order.get("status") == "approved" and order.get("api_key"):
+        order.pop("_id", None)
+        return order
+
+    # Generate License
+    api_key = generate_key()
+    now = datetime.now(timezone.utc)
+    duration_days = order.get("duration_days", 30)
