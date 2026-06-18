@@ -78,3 +78,11 @@ class CreateOrderReq(BaseModel):
 class SubmitUTRReq(BaseModel):
     order_id: str
     utr: str
+
+class RecoverReq(BaseModel):
+    query: str
+
+class VerifyLicenseReq(BaseModel):
+    api_key: str
+    hwid: Optional[str] = None
+
