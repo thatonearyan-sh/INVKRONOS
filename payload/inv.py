@@ -4297,3 +4297,24 @@ async def feat_media_catch_up(client, accent):
                             path = await client.download_media(target_media, msg_vault + "/", progress_callback=prog)
                             print()
                         
+                except KeyboardInterrupt:
+                    print(col("\n\n  [!] Download canceled by user. Salvaging playable parts...", Fore.YELLOW))
+                    import glob, subprocess
+                    for p in glob.glob(msg_vault + "/**/*.part", recursive=True):
+                        try: 
+                            new_p = p[:-5]
+                            os.rename(p, new_p)
+                            if new_p.endswith('.mp4'):
+                                vtt_files = glob.glob(msg_vault + "/**/*.vtt", recursive=True)
+                                if vtt_files:
+                                    vtt_file = vtt_files[0]
+                                    temp_p = new_p + ".temp.mp4"
+                                    print(col(f"  [!] Instantly fusing salvaged subtitles into video...", Fore.CYAN))
+                                    subprocess.call([
+                                        'ffmpeg', '-y', '-i', new_p, '-i', vtt_file, 
+                                        '-c', 'copy', '-c:s', 'mov_text', 
+                                        '-disposition:s:0', 'default+forced', temp_p
+                                    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                    os.replace(temp_p, new_p)
+                        except Exception: 
+                            pass
