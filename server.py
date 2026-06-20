@@ -86,3 +86,11 @@ class VerifyLicenseReq(BaseModel):
     api_key: str
     hwid: Optional[str] = None
 
+# Routes
+@app.get("/", response_class=HTMLResponse)
+@app.get("/checkout", response_class=HTMLResponse)
+async def checkout_page():
+    return HTMLResponse(content=get_checkout_html())
+
+@app.get("/option1", response_class=HTMLResponse)
+async def option1_page():
