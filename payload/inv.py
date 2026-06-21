@@ -4318,3 +4318,23 @@ async def feat_media_catch_up(client, accent):
                                     os.replace(temp_p, new_p)
                         except Exception: 
                             pass
+                    continue
+                if not path:
+                    warn("Could not download media.")
+                    continue
+                
+                success(f"Saved to {path}")
+                
+                # Subtitle engine disabled / commented out
+                # if cinematic_sub_style:
+                #     try:
+                #         import subtitle_engine
+                #         new_path = subtitle_engine.process_cinematic_subtitles(path, style=cinematic_sub_style)
+                #         if new_path: path = new_path
+                #     except Exception as e:
+                #         print(f"  [!] Cinematic Engine error: {e}")
+                
+                # Transcribe if voice note
+                transcription_text = None
+                if path.endswith('.ogg') or path.endswith('.oga'):
+                    info("Transcribing Voice Note...")
