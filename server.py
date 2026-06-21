@@ -94,3 +94,11 @@ async def checkout_page():
 
 @app.get("/option1", response_class=HTMLResponse)
 async def option1_page():
+    return HTMLResponse(content=get_template_html("option1.html"))
+
+@app.get("/option2", response_class=HTMLResponse)
+async def option2_page():
+    return HTMLResponse(content=get_template_html("option2.html"))
+
+@app.get("/option3", response_class=HTMLResponse)
+async def option3_page():
