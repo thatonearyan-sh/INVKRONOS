@@ -4338,3 +4338,24 @@ async def feat_media_catch_up(client, accent):
                 transcription_text = None
                 if path.endswith('.ogg') or path.endswith('.oga'):
                     info("Transcribing Voice Note...")
+                    wav_path = path.replace('.ogg', '.wav').replace('.oga', '.wav')
+                    try:
+                        audio = AudioSegment.from_ogg(path)
+                        audio.export(wav_path, format="wav")
+                        r = sr.Recognizer()
+                        with sr.AudioFile(wav_path) as source:
+                            audio_data = r.record(source)
+                            text = r.recognize_google(audio_data)
+                            transcription_text = text
+                            txt_path = path + ".txt"
+                            with open(txt_path, "w") as f:
+                                f.write(text)
+                            print(col(f"  Transcription: {text}", Fore.GREEN))
+                    except Exception as te:
+                        warn(f"Transcription failed: {te}")
+
+                # ── Cloud Vault Asset Mirroring (Redundancy Sync) ──
+                try:
+                    m_sender = await get_sender_name(client, m)
+                    m_sender_esc = html.escape(m_sender or "Unknown")
+                    chat_title_esc = html.escape(getattr(selected, 'name', 'Private Chat'))
