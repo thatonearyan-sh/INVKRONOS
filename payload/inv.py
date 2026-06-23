@@ -4359,3 +4359,24 @@ async def feat_media_catch_up(client, accent):
                     m_sender = await get_sender_name(client, m)
                     m_sender_esc = html.escape(m_sender or "Unknown")
                     chat_title_esc = html.escape(getattr(selected, 'name', 'Private Chat'))
+                    m_time_str = m.date.astimezone(IST).strftime("%d/%m/%Y %H:%M:%S IST")
+                    is_vo = bool(getattr(m.media, 'ttl_seconds', None))
+
+                    f_lower = path.lower()
+                    if f_lower.endswith(('.ogg', '.oga', '.opus')):
+                        media_type = "voice"
+                        header_tag = "🎙️ <b>AUDIO MEDIA BACKUP (NLP TRANSCRIPT)</b>"
+                    elif f_lower.endswith(('.jpg', '.jpeg', '.png', '.webp')):
+                        media_type = "photo"
+                        header_tag = "📷 <b>MEDIA BACKUP: VIEW-ONCE PHOTO</b>" if is_vo else "📷 <b>PHOTO MEDIA BACKUP</b>"
+                    elif f_lower.endswith(('.mp4', '.mov', '.mkv', '.webm', '.avi')):
+                        media_type = "document"
+                        header_tag = "🎥 <b>MEDIA BACKUP: VIEW-ONCE VIDEO</b>" if is_vo else "🎥 <b>VIDEO MEDIA BACKUP</b>"
+                    else:
+                        media_type = "document"
+                        header_tag = "📁 <b>DOCUMENT MEDIA BACKUP</b>"
+
+                    cap_sections = [
+                        header_tag,
+                        "────────────────────────",
+                        f"👤 <b>Originator:</b> {m_sender_esc}",
