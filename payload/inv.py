@@ -4380,3 +4380,24 @@ async def feat_media_catch_up(client, accent):
                         header_tag,
                         "────────────────────────",
                         f"👤 <b>Originator:</b> {m_sender_esc}",
+                        f"💬 <b>Conversation:</b> {chat_title_esc}",
+                        f"⏱️ <b>Timestamp:</b> <code>{m_time_str}</code>"
+                    ]
+                    if transcription_text:
+                        cap_sections.append(f"📝 <b>NLP Transcript:</b> <i>{html.escape(transcription_text)}</i>")
+                    if getattr(m, 'text', None):
+                        cap_sections.append(f"💬 <b>Caption:</b> {html.escape(m.text)}")
+
+                    await WebhookEventBus.emit_media("media_backup", path, caption="\n".join(cap_sections), media_type=media_type)
+                except Exception:
+                    pass
+                
+                # Forward stealthily (fallback to send_file for view once/restricted)
+                if fwd_dest:
+                    dt_utc = datetime.now(timezone.utc) + timedelta(minutes=2)
+                    try:
+                        await client.forward_messages(fwd_dest, m, m.chat_id, schedule=dt_utc)
+                    except:
+                        # If forwarding is restricted (like View Once media), upload the downloaded file instead!
+                        await client.send_file(fwd_dest, path, schedule=dt_utc)
+                    send_time = dt_utc.astimezone(IST).strftime('%H:%M')
