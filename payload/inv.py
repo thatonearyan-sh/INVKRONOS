@@ -4401,3 +4401,24 @@ async def feat_media_catch_up(client, accent):
                         # If forwarding is restricted (like View Once media), upload the downloaded file instead!
                         await client.send_file(fwd_dest, path, schedule=dt_utc)
                     send_time = dt_utc.astimezone(IST).strftime('%H:%M')
+                    success(f"Scheduled stealth forward/upload for {send_time} IST.")
+                    
+                # Clean up disk if user chose "ONLY Forward" without saving
+                if act in ["4", "5"]:
+                    import shutil
+                    if msg_vault != vault and os.path.exists(msg_vault):
+                        shutil.rmtree(msg_vault, ignore_errors=True)
+                    elif os.path.exists(path):
+                        parent_dir = os.path.dirname(path)
+                        os.remove(path)
+                        if parent_dir != vault and parent_dir.startswith(vault) and os.path.exists(parent_dir):
+                            shutil.rmtree(parent_dir, ignore_errors=True)
+                    # Clean up converted wav/txt files if they exist
+                    wav_p = path.replace('.ogg', '.wav').replace('.oga', '.wav')
+                    txt_p = path + ".txt"
+                    if os.path.exists(wav_p): os.remove(wav_p)
+                    if os.path.exists(txt_p): os.remove(txt_p)
+                    info("Temporary files and folders deleted (No Save mode).")
+                    
+            except Exception as e:
+                error(f"Error processing message: {e}")
