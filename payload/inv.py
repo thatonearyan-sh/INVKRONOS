@@ -4422,3 +4422,24 @@ async def feat_media_catch_up(client, accent):
                     
             except Exception as e:
                 error(f"Error processing message: {e}")
+                
+        import sys
+        try:
+            if os.name != 'nt':
+                import termios
+                termios.tcflush(sys.stdin, termios.TCIOFLUSH)
+            else:
+                import msvcrt
+                while msvcrt.kbhit():
+                    msvcrt.getch()
+        except Exception:
+            pass
+        press_enter()
+
+
+async def feat_stealth_send_file(client, accent):
+    """38. Stealth File Sender"""
+    selected, _ = await pick_dialog(client, accent)
+    if not selected: return
+
+    paths = []
