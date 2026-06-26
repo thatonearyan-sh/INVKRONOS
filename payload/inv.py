@@ -4443,3 +4443,24 @@ async def feat_stealth_send_file(client, accent):
     if not selected: return
 
     paths = []
+    print(col("  Type or drag-and-drop file paths. Type 'done' when finished.", Fore.CYAN))
+    while True:
+        raw_path = prompt("Absolute File Path (or 'done')")
+        if not raw_path: 
+            break
+        if raw_path.strip().lower() == 'done':
+            break
+            
+        # Clean drag-and-drop artifacts
+        path = raw_path.strip().strip('\'"').replace("\\ ", " ")
+        
+        if not os.path.exists(path):
+            error(f"Path not found: {path}")
+            continue
+            
+        if os.path.isdir(path):
+            info("Directory detected. Extracting files...")
+            added = 0
+            for root, _, files in os.walk(path):
+                for f in files:
+                    if not f.startswith('.'):  # Ignore hidden files like .DS_Store
