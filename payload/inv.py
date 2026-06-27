@@ -4464,3 +4464,24 @@ async def feat_stealth_send_file(client, accent):
             for root, _, files in os.walk(path):
                 for f in files:
                     if not f.startswith('.'):  # Ignore hidden files like .DS_Store
+                        paths.append(os.path.join(root, f))
+                        added += 1
+            success(f"Added {added} files from directory  ({len(paths)} total)")
+        else:
+            paths.append(path)
+            success(f"Added: {os.path.basename(path)}  ({len(paths)} total)")
+
+    if not paths:
+        warn("No files selected.")
+        press_enter()
+        return
+
+    # schedule for 2 mins in the future
+    dt_utc = datetime.now(timezone.utc) + timedelta(minutes=2)
+    
+    try:
+        await go_offline(client)
+        # Send one by one to bypass Telegram's strict 10-item Album limit
+        for p in paths:
+            await client.send_file(selected.entity, p, schedule=dt_utc)
+        await go_offline(client)
