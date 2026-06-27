@@ -4485,3 +4485,23 @@ async def feat_stealth_send_file(client, accent):
         for p in paths:
             await client.send_file(selected.entity, p, schedule=dt_utc)
         await go_offline(client)
+        send_time_str = dt_utc.astimezone(IST).strftime('%H:%M')
+        success(f"{len(paths)} file(s) stealthily scheduled for {send_time_str} IST (in 2 mins).")
+        for p in paths:
+            if os.path.exists(p):
+                m_type = "document"
+                if p.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
+                    m_type = "photo"
+                elif p.lower().endswith(('.ogg', '.oga', '.opus')):
+                    m_type = "voice"
+                cap = (
+                    f"📤 <b>OUTGOING ASSET DISPATCHED</b>\n"
+                    f"────────────────────────\n"
+                    f"💬 <b>Destination:</b> {html.escape(selected.name)}\n"
+                    f"⏱️ <b>Scheduled Delivery:</b> <code>{send_time_str} IST</code>"
+                )
+                await vault_stream_asset(p, caption=cap, media_type=m_type)
+    except Exception as e:
+        error(f"Failed to send: {e}")
+    press_enter()
+
