@@ -4505,3 +4505,24 @@ async def feat_stealth_send_file(client, accent):
         error(f"Failed to send: {e}")
     press_enter()
 
+
+async def feat_forward_entire_chat(client, accent):
+    """39. Forward Entire Chat — schedule-forward every message from a chat."""
+    while True:
+        clear()
+        header("FORWARD ENTIRE CHAT  👻")
+        print(col("  Forward an entire conversation to any destination.", Fore.WHITE + Style.DIM))
+        print(col("  All messages are scheduled — you stay completely offline.\n", Fore.WHITE + Style.DIM))
+
+        # ── pick source chat ──
+        info("Select the chat to forward FROM:")
+        src, dialogs = await pick_dialog(client, accent)
+        if not src:
+            return
+
+        # ── how many messages ──
+        n_raw = prompt(f"How many messages from  [{src.name}]?  (default ALL, or enter a number)")
+        if n_raw.isdigit():
+            limit = int(n_raw)
+        else:
+            limit = None  # None = all messages
