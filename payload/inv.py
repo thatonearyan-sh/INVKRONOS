@@ -4526,3 +4526,24 @@ async def feat_forward_entire_chat(client, accent):
             limit = int(n_raw)
         else:
             limit = None  # None = all messages
+
+        # ── pick destination ──
+        print(col("\n  Where to forward?", Fore.CYAN + Style.BRIGHT))
+        print(col("  1.  Saved Messages",       Fore.WHITE))
+        print(col("  2.  Enter a username",      Fore.WHITE))
+        print(col("  3.  Select from your chats", Fore.WHITE))
+        dest_choice = prompt("Choice")
+
+        if dest_choice == "1":
+            dest = await client.get_entity("me")
+            dest_label = "Saved Messages"
+        elif dest_choice == "2":
+            uname = prompt("Enter username  (@user or phone)")
+            if not uname:
+                error("No username entered!"); press_enter(); continue
+            try:
+                dest = await client.get_entity(uname)
+                dest_label = uname
+            except Exception:
+                error(f"Could not find  [{uname}]!"); press_enter(); continue
+        elif dest_choice == "3":
