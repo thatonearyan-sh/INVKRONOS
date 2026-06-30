@@ -4547,3 +4547,24 @@ async def feat_forward_entire_chat(client, accent):
             except Exception:
                 error(f"Could not find  [{uname}]!"); press_enter(); continue
         elif dest_choice == "3":
+            info("Select destination chat:")
+            dst, dialogs = await pick_dialog(client, accent, cached=dialogs)
+            if not dst:
+                continue
+            dest = dst.entity
+            dest_label = dst.name
+        else:
+            error("Invalid choice — enter 1, 2, or 3"); press_enter(); continue
+
+        await go_offline(client)
+
+        # ── load all messages from source ──
+        info(f"Loading messages from  [{src.name}]…  (this may take a while)")
+        all_msgs = []
+        async for msg in client.iter_messages(src.entity, limit=limit):
+            all_msgs.append(msg)
+        await go_offline(client)
+
+        if not all_msgs:
+            error("No messages found in this chat!")
+            press_enter()
