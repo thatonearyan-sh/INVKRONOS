@@ -4568,3 +4568,24 @@ async def feat_forward_entire_chat(client, accent):
         if not all_msgs:
             error("No messages found in this chat!")
             press_enter()
+            continue
+
+        # reverse to chronological order (oldest first)
+        all_msgs.reverse()
+
+        total = len(all_msgs)
+        batches = (total + 99) // 100  # ceil division
+
+        print(col(f"\n  Found  {total}  message(s)  in  [{src.name}]", Fore.CYAN + Style.BRIGHT))
+        print(col(f"  Destination:  {dest_label}", Fore.WHITE))
+        if batches > 1:
+            print(col(f"  Batches:  {batches}  (100 msgs each, 3 min gap)", Fore.WHITE))
+        print(col(f"  You stay completely offline.\n", Fore.WHITE + Style.DIM))
+
+        if prompt("Confirm?  (y / N)").lower() != "y":
+            warn("Cancelled.")
+            nxt = again_menu("Forward another chat")
+            if nxt is None:
+                return
+            continue
+
