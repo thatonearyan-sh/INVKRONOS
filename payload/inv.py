@@ -4589,3 +4589,24 @@ async def feat_forward_entire_chat(client, accent):
                 return
             continue
 
+        # ── schedule-forward in batches of 100 ──
+        BATCH_LIMIT = 100
+        BATCH_WAIT  = 180  # 3 minutes between batches
+        ok, skipped = 0, 0
+
+        for batch_num in range(batches):
+            batch_start = batch_num * BATCH_LIMIT
+            batch_end   = min(batch_start + BATCH_LIMIT, total)
+            batch       = all_msgs[batch_start:batch_end]
+
+            send_at     = auto_schedule()
+            send_at_ist = send_at.astimezone(IST).strftime("%H:%M")
+
+            info(f"Batch {batch_num + 1}/{batches}  —  scheduling msgs {batch_start + 1}–{batch_end}  for {send_at_ist} IST…")
+            await go_offline(client)
+
+            for i, m in enumerate(batch):
+                try:
+                    await client.forward_messages(dest, m, schedule=send_at)
+                    ok += 1
+                except Exception as e:
