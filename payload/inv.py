@@ -4610,3 +4610,24 @@ async def feat_forward_entire_chat(client, accent):
                     await client.forward_messages(dest, m, schedule=send_at)
                     ok += 1
                 except Exception as e:
+                    warn(f"Skipped msg #{batch_start + i + 1}: {e}")
+                    skipped += 1
+
+            await go_offline(client)
+            success(f"Batch {batch_num + 1}/{batches} queued  ✓  ({len(batch)} msgs at {send_at_ist} IST)")
+
+            # Wait between batches so the scheduled msgs get sent and the queue clears
+            if batch_num < batches - 1:
+                print(col(f"\n  ⏳  Waiting 3 min for batch to send before next batch…", Fore.YELLOW))
+                import sys
+                for remaining in range(BATCH_WAIT, 0, -1):
+                    mins = remaining // 60
+                    secs = remaining % 60
+                    sys.stdout.write(col(f"\r      ⏳  {mins}:{secs:02d} remaining…   ", Fore.YELLOW + Style.BRIGHT))
+                    sys.stdout.flush()
+                    if remaining % KEEPALIVE_SEC == 0:
+                        await go_offline(client)
+                    await asyncio.sleep(1)
+                sys.stdout.write(col(f"\r      ✅  Batch wait complete!           \n", Fore.GREEN))
+                sys.stdout.flush()
+
