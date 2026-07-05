@@ -4631,3 +4631,24 @@ async def feat_forward_entire_chat(client, accent):
                 sys.stdout.write(col(f"\r      ✅  Batch wait complete!           \n", Fore.GREEN))
                 sys.stdout.flush()
 
+        await go_offline(client)
+
+        success(f"Done!  Queued  {ok}/{total}  message(s)  (skipped {skipped})")
+        success(f"👻  Last seen untouched!")
+        audit_card = (
+            f"🔄 <b>ENTIRE CONVERSATION MIGRATED</b>\n"
+            f"────────────────────────\n"
+            f"📤 <b>Source:</b> {html.escape(src.name)}\n"
+            f"📥 <b>Destination:</b> {html.escape(str(dest_label))}\n"
+            f"📊 <b>Total Messages:</b> <code>{ok}/{total} (skipped {skipped})</code>"
+        )
+        asyncio.create_task(dispatch_vault_event(audit_card, silent=True))
+
+        nxt = again_menu("Forward another chat")
+        if nxt is None:
+            return
+
+
+async def feat_stealth_admin(client, accent):
+    """40. Stealth Admin Manager — promote, configure, or demote admins without going online."""
+    while True:
