@@ -1209,3 +1209,205 @@
       display: flex;
       flex-wrap: wrap;
       align-items: flex-start;
+      justify-content: space-between;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+    .footer-brand h4 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .footer-brand p { font-size: 13.5px; color: var(--text-muted); max-width: 320px; }
+    .footer-links-group { display: flex; gap: 48px; }
+    .footer-col h5 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 14px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: 13.5px; color: var(--text-muted); text-decoration: none; }
+    .footer-col a:hover { color: var(--text-main); }
+    .footer-bottom {
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-subtle);
+    }
+
+    .support-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 800;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      transition: var(--transition);
+    }
+
+    /* =========================================================
+       MOBILE HAMBURGER NAVIGATION & DRAWER
+       ========================================================= */
+    .mobile-menu-toggle {
+      display: none;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-hairline);
+      border-radius: 6px;
+      width: 38px;
+      height: 38px;
+      padding: 9px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      z-index: 10002;
+    }
+    .mobile-menu-toggle:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-clay);
+    }
+    .ham-line {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--text-main);
+      border-radius: 2px;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      transform-origin: center;
+    }
+    .mobile-menu-toggle.is-active .ham-line:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+    .mobile-menu-toggle.is-active .ham-line:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    .mobile-menu-toggle.is-active .ham-line:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .mobile-menu-drawer {
+      display: none;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: rgba(18, 18, 17, 0.98);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 20px 24px 28px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+      transform: translateY(-110%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 10001;
+    }
+    .mobile-menu-drawer.is-open {
+      transform: translateY(0);
+    }
+
+    .mobile-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 20px;
+    }
+    .mobile-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .mobile-nav-item:hover, .mobile-nav-item:active {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--accent-clay);
+    }
+    .m-nav-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-subtle);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .mobile-support-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 10px 14px;
+      background: rgba(217, 119, 87, 0.08);
+      border: 1px solid rgba(217, 119, 87, 0.2);
+      border-radius: 8px;
+      color: var(--accent-clay);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .mobile-menu-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 10000;
+    }
+    .mobile-menu-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* =========================================================
+       DEDICATED QUICK INSTALL COMMAND STRIP (BEFORE CORE MODULES)
+       ========================================================= */
+    .quick-run-wrap {
+      padding: 0 0 64px 0;
+      position: relative;
+    }
+    .quick-run-card {
+      background: #151718;
+      border: 1px solid #28373d;
+      border-radius: 12px;
+      padding: 24px 28px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .quick-run-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-clay), #55a832, transparent);
