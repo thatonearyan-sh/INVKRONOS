@@ -4652,3 +4652,24 @@ async def feat_forward_entire_chat(client, accent):
 async def feat_stealth_admin(client, accent):
     """40. Stealth Admin Manager — promote, configure, or demote admins without going online."""
     while True:
+        clear()
+        header("STEALTH ADMIN MANAGER  🛡️")
+        print(col("  Manage group/channel admins 100% invisibly via MTProto RPC.", Fore.WHITE + Style.DIM))
+        print(col("  No online presence, typing indicators, or read receipts emitted.\n", Fore.WHITE + Style.DIM))
+
+        # ── Step 1: Select target chat/channel ──
+        print(col("  Select Target Group / Channel:", Fore.CYAN + Style.BRIGHT))
+        print(col("  1.  Pick from active dialogs (Admin / Creator only)", Fore.WHITE))
+        print(col("  2.  Enter @username / t.me link / Channel ID", Fore.WHITE))
+        print(col("  3.  Back to main menu", Fore.WHITE + Style.DIM))
+        c = prompt("Choice")
+
+        target_chat = None
+        chat_title = ""
+
+        if c == "1":
+            info("Loading your groups & channels where you have Admin rights…")
+            raw_dialogs = await fetch_dialogs(client, limit=200)
+            await go_offline(client)
+
+            # Strict filter: only Groups & Channels where you are Creator or Admin (no PMs, no Bots)
