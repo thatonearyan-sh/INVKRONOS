@@ -4673,3 +4673,23 @@ async def feat_stealth_admin(client, accent):
             await go_offline(client)
 
             # Strict filter: only Groups & Channels where you are Creator or Admin (no PMs, no Bots)
+            managed_dialogs = []
+            for d in raw_dialogs:
+                if d.is_user:
+                    continue
+                ent = d.entity
+                if getattr(ent, "left", False) or getattr(ent, "deactivated", False):
+                    continue
+                is_creator = bool(getattr(ent, "creator", False))
+                has_admin_rights = getattr(ent, "admin_rights", None) is not None
+                if is_creator or has_admin_rights:
+                    managed_dialogs.append(d)
+
+            if not managed_dialogs:
+                error("No groups or channels found where you have Admin or Creator rights!")
+                info("You can still use Option 2 to enter a target @username or ID directly.")
+                press_enter()
+                continue
+
+            def admin_dialog_fmt(accent_color):
+                def _fmt(idx, d):
