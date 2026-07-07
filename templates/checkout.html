@@ -1411,3 +1411,206 @@
       right: 0;
       height: 2px;
       background: linear-gradient(90deg, transparent, var(--accent-clay), #55a832, transparent);
+    }
+    .qr-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .qr-label-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .qr-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(217, 119, 87, 0.12);
+      border: 1px solid rgba(217, 119, 87, 0.28);
+      color: var(--accent-clay);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .qr-pip {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-clay);
+      box-shadow: 0 0 6px var(--accent-clay);
+    }
+    .qr-meta {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-dark-subtle);
+    }
+    .qr-os-toggles {
+      display: inline-flex;
+      background: #0d1011;
+      border: 1px solid #233036;
+      border-radius: 6px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .qr-os-btn {
+      background: transparent;
+      border: none;
+      color: #7f8f94;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .qr-os-btn:hover {
+      color: #ffffff;
+    }
+    .qr-os-btn.active {
+      background: #233036;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    .qr-command-bar {
+      display: flex;
+      align-items: center;
+      background: #0b0e0f;
+      border: 1px solid #28373d;
+      border-radius: 8px;
+      padding: 10px 14px;
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .qr-prefix-tag {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #55a832;
+      font-weight: 700;
+      user-select: none;
+    }
+    .qr-cmd-text {
+      flex: 1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #e6e4dc;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      line-height: 1.4;
+      letter-spacing: 0;
+      padding: 2px 0;
+    }
+    .qr-cmd-text::-webkit-scrollbar {
+      height: 3px;
+    }
+    .qr-cmd-text::-webkit-scrollbar-thumb {
+      background: #28373d;
+      border-radius: 2px;
+    }
+    .qr-copy-btn {
+      background: var(--accent-clay);
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(217, 119, 87, 0.28);
+    }
+    .qr-copy-btn:hover {
+      background: #e28464;
+      box-shadow: 0 6px 18px rgba(217, 119, 87, 0.4);
+      transform: translateY(-1px);
+    }
+    .qr-copy-btn:active {
+      transform: translateY(0);
+    }
+    .qr-footer-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .qr-spec-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #8c9ea4;
+    }
+    .qr-dot-green {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #55a832;
+    }
+
+    @media (max-width: 900px) {
+      .capabilities-grid { grid-template-columns: 1fr; }
+      .pricing-split-layout { grid-template-columns: 1fr; }
+      .metric-strip { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .metric-col { border-right: none; }
+      .nav-links { display: none; }
+      .nav-actions { display: none; }
+      .mobile-menu-toggle { display: flex; }
+      .mobile-menu-drawer { display: block; }
+      .mobile-menu-backdrop { display: block; }
+      .unified-split-container { grid-template-columns: 1fr; height: auto; }
+      .matrix-box-wrap { display: none; }
+    }
+    @media (max-width: 768px) {
+      .quick-run-card { padding: 18px 16px; }
+      .qr-header { flex-direction: column; align-items: flex-start; }
+      .qr-os-toggles { width: 100%; justify-content: space-between; }
+      .qr-os-btn { flex: 1; text-align: center; padding: 6px 6px; font-size: 10px; }
+      .qr-command-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+      .qr-copy-btn { width: 100%; justify-content: center; }
+      .qr-footer-strip { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="site-nav-wrap">
+    <div class="container site-nav">
+      <a href="/" class="brand-mark-interactive" id="navbar-brandmark" aria-label="KRONOS Home">
+        <span class="dot"></span>
+        <div class="brand-stage" id="brand-stage" style="max-width: 120px;">
+          <svg class="brand-svg-mark" id="brand-svg-mark" viewBox="0 0 120 22" width="120" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Anchor Letter K: stays solid on the left -->
+            <text x="0" y="16" class="svg-glyph-fixed" id="glyph-k">K</text>
+            
+            <!-- Eatable middle letters: R, O, N -->
+            <text x="18" y="16" class="svg-glyph-eaten" id="glyph-r">R</text>
+            <text x="36" y="16" class="svg-glyph-eaten" id="glyph-o1">O</text>
+            <text x="56" y="16" class="svg-glyph-eaten" id="glyph-n">N</text>
+            
+            <!-- Trailing letter S: eaten first -->
+            <text x="96" y="16" class="svg-glyph-eaten" id="glyph-s">S</text>
+            
+            <!-- Rolling Clay O: rolls across from right to left, eating each letter, docking right beside K -->
+            <g id="rolling-clay-o" style="transform-origin: 84px 11px; transform: translateX(0px) rotate(-18deg);">
+              <circle cx="84" cy="11" r="7.5" fill="none" stroke="var(--accent-clay)" stroke-width="2.6" id="rolling-o-circle"/>

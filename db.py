@@ -121,3 +121,22 @@ def approve_order(order_id):
     api_key = generate_key()
     now = datetime.now(timezone.utc)
     duration_days = order.get("duration_days", 30)
+    expires_at = now + timedelta(days=duration_days)
+
+    license_doc = {
+        "api_key": api_key,
+        "order_id": order_id,
+        "plan_id": order.get("plan_id"),
+        "plan_name": order.get("plan_name"),
+        "duration_days": duration_days,
+        "amount_inr": order.get("amount_inr"),
+        "amount_ton": order.get("amount_ton"),
+        "payment_method": order.get("payment_method"),
+        "utr": order.get("utr"),
+        "ton_memo": order.get("ton_memo"),
+        "status": "ACTIVE",
+        "hwid": None,
+        "hwids": [],
+        "max_devices": 3,
+        "created_at": now,
+        "expires_at": expires_at,
