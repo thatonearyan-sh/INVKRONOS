@@ -1614,3 +1614,205 @@
             <!-- Rolling Clay O: rolls across from right to left, eating each letter, docking right beside K -->
             <g id="rolling-clay-o" style="transform-origin: 84px 11px; transform: translateX(0px) rotate(-18deg);">
               <circle cx="84" cy="11" r="7.5" fill="none" stroke="var(--accent-clay)" stroke-width="2.6" id="rolling-o-circle"/>
+              <circle cx="84" cy="6.2" r="1.3" fill="var(--accent-clay)" id="rolling-o-pip"/>
+            </g>
+          </svg>
+        </div>
+      </a>
+      
+      <nav class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#architecture">Live Terminal</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://t.me/KRONOSSPBOT" target="_blank" class="nav-support-badge">
+          <span class="live-dot"></span>
+          @KRONOSSPBOT
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="#pricing" class="btn-nav-cta">
+          <span>Get Access</span>
+          <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="mobile-menu-toggle" id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu">
+        <span class="ham-line"></span>
+        <span class="ham-line"></span>
+        <span class="ham-line"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MOBILE SLIDE-DOWN DRAWER -->
+  <div class="mobile-menu-drawer" id="mobile-menu-drawer">
+    <div class="mobile-drawer-inner">
+      <nav class="mobile-nav-list">
+        <a href="#overview" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">01</span>
+          <span>Overview</span>
+        </a>
+        <a href="#quick-run" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">02</span>
+          <span>Quick Install</span>
+        </a>
+        <a href="#capabilities" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">03</span>
+          <span>Core Modules</span>
+        </a>
+        <a href="#architecture" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">04</span>
+          <span>Live Terminal</span>
+        </a>
+        <a href="#pricing" onclick="closeMobileMenu()" class="mobile-nav-item">
+          <span class="m-nav-num">05</span>
+          <span>Pricing Matrix</span>
+        </a>
+        <a href="https://t.me/KRONOSSPBOT" target="_blank" onclick="closeMobileMenu()" class="mobile-support-link">
+          <span class="live-dot"></span>
+          <span>Support Bot // @KRONOSSPBOT</span>
+        </a>
+      </nav>
+      <div style="margin-top: 10px;">
+        <a href="#pricing" onclick="closeMobileMenu()" class="btn-primary-clay" style="width: 100%; justify-content: center; box-sizing: border-box; text-decoration: none;">
+          <span>Get Access Pass</span>
+          <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="mobile-menu-backdrop" id="mobile-menu-backdrop" onclick="closeMobileMenu()"></div>
+
+  <!-- HERO SECTION -->
+  <section id="overview" class="hero-wrap">
+    <div class="container">
+      <div class="hero-category-tag">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Security Release // Architecture v3.5</span>
+      </div>
+
+      
+
+      <h1 class="hero-title">
+        Intelligent privacy for Telegram, <em>rigorously engineered</em>.
+      </h1>
+
+      <p class="hero-lead">
+        A high-performance stealth client interface designed for absolute discretion. Zero blue ticks, automatic preservation of expiring view-once media, and instantaneous local speech-to-text inference — running entirely in client memory.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#pricing" class="btn-primary-clay">
+          <span>Select Access Pass</span>
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </a>
+        <a href="#architecture" class="btn-outline-minimal">
+          <span>Live Terminal Demo</span>
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        </a>
+      </div>
+
+      <!-- Telemetry Metric Strip -->
+      <div class="metric-strip">
+        <div class="metric-col">
+          <div class="metric-num">0 ms</div>
+          <div class="metric-label">Receipt Latency (Ghost Mode)</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-num">100%</div>
+          <div class="metric-label">View-Once Media Preservation</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-num">&lt; 14 MB</div>
+          <div class="metric-label">Client RAM Footprint</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-num">256-bit</div>
+          <div class="metric-label">Stream Cipher Decryption</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEDICATED QUICK INSTALL & COMMAND STRIP // BEFORE CORE MODULES -->
+  <section id="quick-run" class="quick-run-wrap">
+    <div class="container">
+      <div class="quick-run-card">
+        <div class="qr-header">
+          <div class="qr-label-group">
+            <span class="qr-pill"><span class="qr-pip"></span>ONE-LINE INSTANT DEPLOY</span>
+            <span class="qr-meta">Universal Memory-Only Sandbox // Zero Local Dependencies</span>
+          </div>
+          <div class="qr-os-toggles">
+            <button class="qr-os-btn active" id="qr-os-mac" onclick="setQuickRunOS('mac')">macOS / Linux</button>
+            <button class="qr-os-btn" id="qr-os-win" onclick="setQuickRunOS('win')">Windows (PowerShell)</button>
+            <button class="qr-os-btn" id="qr-os-android" onclick="setQuickRunOS('android')">Android (Termux)</button>
+          </div>
+        </div>
+
+        <div class="qr-command-bar">
+          <div class="qr-prefix-tag" id="qr-prompt-prefix">$</div>
+          <div class="qr-cmd-text" id="qr-active-cmd">curl -sSL "https://invkronos.vercel.app/install" | bash</div>
+          <button class="qr-copy-btn" id="qr-copy-btn" onclick="copyQuickRunCommand()" aria-label="Copy installation command">
+            <svg class="qr-copy-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="qr-copy-text">Copy Command</span>
+          </button>
+        </div>
+
+        <div class="qr-footer-strip">
+          <div class="qr-spec-item">
+            <span class="qr-dot-green"></span>
+            <span>No sudo / administrator privileges required</span>
+          </div>
+          <div class="qr-spec-item">
+            <span class="qr-dot-green"></span>
+            <span>RAM resident &bull; 0 KB persistent footprint</span>
+          </div>
+          <div class="qr-spec-item">
+            <span class="qr-dot-green"></span>
+            <span>SHA-256 binary verification on launch</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 CAPABILITIES MODULES -->
+  <section id="capabilities" class="section-editorial">
+    <div class="container">
+      <span class="section-pretitle">System Capabilities // Core Modules</span>
+      <h2 class="section-title">Engineered for communication sovereignty.</h2>
+      <p class="section-desc">
+        Standard messaging applications enforce persistent tracking, read confirmation indicators, and ephemeral media deletion. KRONOS restores complete personal agency.
+      </p>
+
+      <div class="capabilities-grid">
+        <!-- Module 01 -->
+        <div class="cap-card">
+          <div>
+            <div class="cap-card-header">
+              <span class="cap-index-tag">MODULE // 01</span>
+              <span class="cap-status-pill">RECEIPT SHIELD</span>
+            </div>
+            <h3>True Ghost Reading</h3>
+            <p>Read messages in private dialogues, chaotic group arguments, and channels without ever dispatching a read receipt or triggering an online presence timestamp.</p>
+            
+            <div class="cap-artifact-box">
+              <div style="background: #fff; border: 1px solid var(--border-hairline); border-radius: 6px; padding: 8px 12px; margin-bottom: 6px;">
+                Sender: "Are you free right now?"
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--accent-olive);">
+                <span>STATUS: INVISIBLE</span>
+                <span>TICKS: SUPPRESSED [✓]</span>
+              </div>
+            </div>
+          </div>
+          <div class="cap-footer-meta">
+            <span>UNSEEN RECEPTOR</span>
+            <span>LATENCY: 0ms</span>
