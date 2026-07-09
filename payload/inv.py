@@ -4693,3 +4693,24 @@ async def feat_stealth_admin(client, accent):
 
             def admin_dialog_fmt(accent_color):
                 def _fmt(idx, d):
+                    ent = d.entity
+                    is_creator = bool(getattr(ent, "creator", False))
+                    role_badge = col("👑 Creator", Fore.YELLOW + Style.BRIGHT) if is_creator else col("🛡️ Admin", Fore.CYAN + Style.BRIGHT)
+                    is_channel = getattr(ent, "broadcast", False)
+                    type_badge = col("[Channel]", Fore.MAGENTA) if is_channel else col("[Group]", Fore.BLUE)
+                    return f"  {col(f'{idx:>3}', accent_color)}.  {type_badge} {col(trunc(d.name or 'Unknown', 28), Fore.WHITE)}  {role_badge}"
+                return _fmt
+
+            idx = show_page(managed_dialogs, formatter=admin_dialog_fmt(accent))
+            if idx is None:
+                return
+            selected = managed_dialogs[idx]
+            target_chat = selected.entity
+            chat_title = selected.name
+        elif c == "2":
+            raw = prompt("Enter @username, t.me link, or ID")
+            if not raw:
+                return
+            if raw.startswith("https://t.me/"):
+                raw = raw.replace("https://t.me/", "").split("/")[0]
+            elif raw.startswith("t.me/"):
