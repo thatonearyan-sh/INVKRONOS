@@ -4714,3 +4714,24 @@ async def feat_stealth_admin(client, accent):
             if raw.startswith("https://t.me/"):
                 raw = raw.replace("https://t.me/", "").split("/")[0]
             elif raw.startswith("t.me/"):
+                raw = raw.replace("t.me/", "").split("/")[0]
+            if raw.isdigit() or (raw.startswith("-") and raw[1:].isdigit()):
+                raw = int(raw)
+            info(f"Resolving chat [{raw}]…")
+            try:
+                target_chat = await client.get_entity(raw)
+                chat_title = getattr(target_chat, "title", str(raw))
+            except Exception as e:
+                error(f"Could not resolve chat: {e}")
+                press_enter()
+                continue
+        elif c == "3":
+            return
+        else:
+            error("Invalid choice!")
+            press_enter()
+            continue
+
+        await go_offline(client)
+
+        is_user = getattr(target_chat, "first_name", None) is not None or type(target_chat).__name__ == "User"
