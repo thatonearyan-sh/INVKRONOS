@@ -33,3 +33,7 @@ def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
         ]
         for cp in candidate_paths:
             if os.path.exists(os.path.join(cp, "inv.py")):
+                client_dir = cp
+                break
+        if not client_dir:
+            client_dir = os.path.join(base, "payload")
