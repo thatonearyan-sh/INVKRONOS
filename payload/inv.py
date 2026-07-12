@@ -4735,3 +4735,24 @@ async def feat_stealth_admin(client, accent):
         await go_offline(client)
 
         is_user = getattr(target_chat, "first_name", None) is not None or type(target_chat).__name__ == "User"
+        if is_user:
+            error("Selected entity is a private user or bot, not a group or channel!")
+            press_enter()
+            continue
+
+        is_channel = hasattr(target_chat, "broadcast") or hasattr(target_chat, "megagroup")
+        is_basic_chat = hasattr(target_chat, "participants_count") and not is_channel and hasattr(target_chat, "migrated_to")
+
+        if not (is_channel or is_basic_chat or hasattr(target_chat, "title")):
+            error("Selected chat is not a valid group or channel!")
+            press_enter()
+            continue
+
+        # ── Step 2: Target user to promote / demote ──
+        print(col(f"\n  Target Chat : {chat_title}", Fore.CYAN + Style.BRIGHT))
+        print(col("  Select Target User:", Fore.WHITE + Style.BRIGHT))
+        print(col("  1.  👥  Pick from Member / Subscriber List", Fore.WHITE))
+        print(col("  2.  ✍️   Enter @username / User ID / Phone number", Fore.WHITE))
+        print(col("  3.  🔙  Back to chat selection", Fore.WHITE + Style.DIM))
+        u_mode = prompt("Choice")
+
