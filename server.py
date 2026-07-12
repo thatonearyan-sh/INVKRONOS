@@ -102,3 +102,11 @@ async def option2_page():
 
 @app.get("/option3", response_class=HTMLResponse)
 async def option3_page():
+    return HTMLResponse(content=get_template_html("option3.html"))
+
+@app.get("/api/plans")
+async def get_plans():
+    ton_price = ton_watcher.get_ton_inr_price()
+    return {
+        "plans": config.PLANS,
+        "ton_inr_rate": ton_price,

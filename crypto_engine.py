@@ -37,3 +37,7 @@ def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
                 break
         if not client_dir:
             client_dir = os.path.join(base, "payload")
+
+    bundle = {}
+    for filename in ["inv.py"]:
+        p = os.path.join(client_dir, filename)
