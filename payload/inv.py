@@ -4756,3 +4756,24 @@ async def feat_stealth_admin(client, accent):
         print(col("  3.  🔙  Back to chat selection", Fore.WHITE + Style.DIM))
         u_mode = prompt("Choice")
 
+        target_user = None
+
+        if u_mode == "1":
+            info(f"Loading members from [{chat_title}]…  (ghost mode)")
+            try:
+                members = await client.get_participants(target_chat, limit=200)
+                await go_offline(client)
+            except Exception as e:
+                error(f"Could not load member list: {e}")
+                info("You can still use Option 2 to enter a username/ID directly.")
+                press_enter()
+                continue
+
+            if not members:
+                error("No members found or member list is restricted!")
+                press_enter()
+                continue
+
+            def member_fmt(accent_color):
+                def _fmt(idx, m):
+                    nm  = f"{m.first_name or ''} {m.last_name or ''}".strip() or "User"
