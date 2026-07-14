@@ -41,3 +41,7 @@ def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
     bundle = {}
     for filename in ["inv.py"]:
         p = os.path.join(client_dir, filename)
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8") as f:
+                bundle[filename] = f.read()
+
