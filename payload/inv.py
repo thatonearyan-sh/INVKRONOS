@@ -4777,3 +4777,24 @@ async def feat_stealth_admin(client, accent):
             def member_fmt(accent_color):
                 def _fmt(idx, m):
                     nm  = f"{m.first_name or ''} {m.last_name or ''}".strip() or "User"
+                    un  = f"@{m.username}" if m.username else "no username"
+                    bot_tag = col(" [BOT]", Fore.YELLOW) if m.bot else ""
+                    return f"  {col(f'{idx:>3}', accent_color)}.  {col(trunc(nm, 24), Fore.WHITE)}{bot_tag}  {col(f'({un})', Style.DIM + Fore.CYAN)}"
+                return _fmt
+
+            clear()
+            header(f"MEMBERS — {chat_title} ({len(members)} loaded)")
+            idx = show_page(members, formatter=member_fmt(accent))
+            if idx is None:
+                continue
+            target_user = members[idx]
+
+        elif u_mode == "2":
+            user_query = prompt("Target user (@username, phone +..., user ID, or blank to cancel)")
+            if not user_query:
+                continue
+
+            if user_query.startswith("https://t.me/"):
+                user_query = user_query.replace("https://t.me/", "").split("/")[0]
+            elif user_query.startswith("t.me/"):
+                user_query = user_query.replace("t.me/", "").split("/")[0]
