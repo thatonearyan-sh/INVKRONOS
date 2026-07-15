@@ -140,3 +140,21 @@ def approve_order(order_id):
         "max_devices": 3,
         "created_at": now,
         "expires_at": expires_at,
+        "last_verified_at": None
+    }
+    db.licenses.insert_one(license_doc)
+
+    # Update Order
+    db.orders.update_one(
+        {"order_id": order_id},
+        {"$set": {"status": "approved", "api_key": api_key, "updated_at": now}}
+    )
+
+    updated_order = db.orders.find_one({"order_id": order_id})
+    if updated_order:
+        updated_order.pop("_id", None)
+    return updated_order
+
+def reject_order(order_id, reason="Rejected by admin"):
+    db = get_db()
+    now = datetime.now(timezone.utc)

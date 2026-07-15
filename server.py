@@ -110,3 +110,11 @@ async def get_plans():
     return {
         "plans": config.PLANS,
         "ton_inr_rate": ton_price,
+        "upi_id": config.UPI_ID,
+        "ton_wallet": config.TON_WALLET
+    }
+
+@app.get("/api/qr")
+async def generate_qr(data: str):
+    """Generates a high-contrast PNG QR Code in memory"""
+    if not data:
