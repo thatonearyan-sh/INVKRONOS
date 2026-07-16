@@ -158,3 +158,22 @@ def approve_order(order_id):
 def reject_order(order_id, reason="Rejected by admin"):
     db = get_db()
     now = datetime.now(timezone.utc)
+    db.orders.update_one(
+        {"order_id": order_id},
+        {"$set": {"status": "rejected", "reject_reason": reason, "updated_at": now}}
+    )
+    return get_order(order_id)
+
+def reset_license_hwid(api_key: str):
+    """Admin tool to clear all bound devices for a license key."""
+    db = get_db()
+    res = db.licenses.update_one(
+        {"api_key": api_key.strip()},
+        {"$set": {"hwids": [], "hwid": None}}
+    )
+    return res.modified_count > 0
+
+def verify_license(api_key, hwid=None):
+    if not api_key:
+        return {"valid": False, "reason": "No license key provided."}
+    
