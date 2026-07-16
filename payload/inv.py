@@ -4798,3 +4798,24 @@ async def feat_stealth_admin(client, accent):
                 user_query = user_query.replace("https://t.me/", "").split("/")[0]
             elif user_query.startswith("t.me/"):
                 user_query = user_query.replace("t.me/", "").split("/")[0]
+            if user_query.isdigit() or (user_query.startswith("-") and user_query[1:].isdigit()):
+                user_query = int(user_query)
+
+            info(f"Resolving user [{user_query}]…")
+            try:
+                target_user = await client.get_entity(user_query)
+            except Exception as e:
+                error(f"Could not find user: {e}")
+                press_enter()
+                continue
+        elif u_mode == "3":
+            continue
+        else:
+            error("Invalid choice!")
+            press_enter()
+            continue
+
+        await go_offline(client)
+
+        user_fname = getattr(target_user, "first_name", "") or ""
+        user_lname = getattr(target_user, "last_name", "") or ""
