@@ -4819,3 +4819,24 @@ async def feat_stealth_admin(client, accent):
 
         user_fname = getattr(target_user, "first_name", "") or ""
         user_lname = getattr(target_user, "last_name", "") or ""
+        user_display = f"{user_fname} {user_lname}".strip() or "User"
+        user_handle = f"@{target_user.username}" if getattr(target_user, "username", None) else f"ID: {target_user.id}"
+
+        # ── Step 3: Action / Preset selection ──
+        clear()
+        header("STEALTH ADMIN MANAGER  🛡️")
+        print(col(f"  Target Chat : {chat_title}", Fore.CYAN))
+        print(col(f"  Target User : {user_display} ({user_handle})", Fore.GREEN))
+        print(col("  " + SEP, Fore.WHITE + Style.DIM))
+        print(col("\n  Select Admin Role Preset:", Fore.WHITE + Style.BRIGHT))
+        print(col("  1.  👑  Full Admin         (All permissions: delete, ban, info, pin, invite, topics, call)", Fore.YELLOW + Style.BRIGHT))
+        print(col("  2.  🛡️   Standard Moderator (Delete messages, Ban users, Pin msgs, Invite users)", Fore.CYAN))
+        print(col("  3.  📢  Content Publisher  (Post & Edit messages, Delete msgs, Pin msgs)", Fore.LIGHTBLUE_EX))
+        print(col("  4.  ⚙️   Custom Permissions (Choose exact granular rights)", Fore.WHITE))
+        print(col("  5.  ❌  Demote / Strip Admin (Remove all admin permissions)", Fore.RED))
+        print(col("  6.  🔙  Cancel & Back", Fore.WHITE + Style.DIM))
+
+        role_choice = prompt("Choose Preset")
+        if role_choice == "6" or not role_choice:
+            return
+
