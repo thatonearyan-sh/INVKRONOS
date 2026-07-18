@@ -4840,3 +4840,23 @@ async def feat_stealth_admin(client, accent):
         if role_choice == "6" or not role_choice:
             return
 
+        rights = None
+        custom_rank = ""
+        action_name = ""
+
+        if role_choice == "1":
+            action_name = "Full Admin"
+            can_add_adm = prompt("Allow this admin to add other admins? (y / N)").lower() == "y"
+            is_anon = prompt("Make this admin Anonymous in chat? (y / N)").lower() == "y"
+            rights = ChatAdminRights(
+                change_info=True,
+                post_messages=True,
+                edit_messages=True,
+                delete_messages=True,
+                ban_users=True,
+                invite_users=True,
+                pin_messages=True,
+                add_admins=can_add_adm,
+                anonymous=is_anon,
+                manage_call=True,
+                manage_topics=True,
