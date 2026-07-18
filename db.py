@@ -177,3 +177,22 @@ def verify_license(api_key, hwid=None):
     if not api_key:
         return {"valid": False, "reason": "No license key provided."}
     
+    clean_key = str(api_key).strip().upper()
+    if clean_key in REVOKED_KEYS:
+        return {"valid": False, "reason": REVOKED_KEYS[clean_key]}
+
+    db = get_db()
+    lic = db.licenses.find_one({"api_key": clean_key})
+    if not lic:
+        lic = db.licenses.find_one({"api_key": str(api_key).strip()})
+    if not lic:
+        return {"valid": False, "reason": "License key not found."}
+    
+    if lic.get("status") in ["REVOKED", "DISABLED", "CANCELLED"] or lic.get("api_key") in REVOKED_KEYS:
+        return {"valid": False, "reason": "License key has been permanently revoked."}
+
+    if lic.get("status") != "ACTIVE":
+        return {"valid": False, "reason": f"License is {lic.get('status')}."}
+    
+    now = datetime.now(timezone.utc)
+    expires_at = lic.get("expires_at")

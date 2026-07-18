@@ -118,3 +118,11 @@ async def get_plans():
 async def generate_qr(data: str):
     """Generates a high-contrast PNG QR Code in memory"""
     if not data:
+        raise HTTPException(status_code=400, detail="Missing data parameter")
+    
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=8,
+        border=2,
+    )
