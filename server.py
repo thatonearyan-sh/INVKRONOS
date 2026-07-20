@@ -134,3 +134,11 @@ async def generate_qr(data: str):
     img.save(buf, format="PNG")
     return Response(content=buf.getvalue(), media_type="image/png")
 
+@app.post("/api/order/create")
+async def create_order_endpoint(req: CreateOrderReq):
+    plan = config.PLANS.get(req.plan_id)
+    if not plan:
+        raise HTTPException(status_code=400, detail="Invalid plan ID")
+
+    # Generate TON Memo e.g. KRN-829143
+    ton_memo = f"KRN-{secrets.token_hex(3).upper()}"
