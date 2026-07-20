@@ -4860,3 +4860,24 @@ async def feat_stealth_admin(client, accent):
                 anonymous=is_anon,
                 manage_call=True,
                 manage_topics=True,
+            )
+            custom_rank = prompt("Custom Title / Badge (e.g. 'Admin', 'Owner', or blank)")
+
+        elif role_choice == "2":
+            action_name = "Standard Moderator"
+            rights = ChatAdminRights(
+                change_info=False,
+                post_messages=True,
+                edit_messages=False,
+                delete_messages=True,
+                ban_users=True,
+                invite_users=True,
+                pin_messages=True,
+                add_admins=False,
+                anonymous=False,
+                manage_call=True,
+                manage_topics=True,
+            )
+            custom_rank = prompt("Custom Title / Badge (e.g. 'Mod', 'Support', or blank)")
+
+        elif role_choice == "3":
