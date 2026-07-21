@@ -4881,3 +4881,24 @@ async def feat_stealth_admin(client, accent):
             custom_rank = prompt("Custom Title / Badge (e.g. 'Mod', 'Support', or blank)")
 
         elif role_choice == "3":
+            action_name = "Content Publisher"
+            rights = ChatAdminRights(
+                change_info=False,
+                post_messages=True,
+                edit_messages=True,
+                delete_messages=True,
+                ban_users=False,
+                invite_users=True,
+                pin_messages=True,
+                add_admins=False,
+                anonymous=False,
+                manage_call=False,
+                manage_topics=False,
+            )
+            custom_rank = prompt("Custom Title / Badge (e.g. 'Editor', 'Writer', or blank)")
+
+        elif role_choice == "4":
+            action_name = "Custom Permissions"
+            clear()
+            header("CUSTOM PERMISSIONS BUILDER")
+            print(col(f"  Configuring rights for {user_display} in {chat_title}\n", Fore.WHITE + Style.DIM))
