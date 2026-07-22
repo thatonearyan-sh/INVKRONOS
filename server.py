@@ -142,3 +142,11 @@ async def create_order_endpoint(req: CreateOrderReq):
 
     # Generate TON Memo e.g. KRN-829143
     ton_memo = f"KRN-{secrets.token_hex(3).upper()}"
+    ton_amount, ton_price = ton_watcher.calculate_ton_amount(plan["price_inr"])
+
+    order = db.create_order(
+        plan=plan,
+        payment_method=req.payment_method,
+        amount_ton=ton_amount,
+        ton_memo=ton_memo
+    )
