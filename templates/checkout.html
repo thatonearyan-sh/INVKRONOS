@@ -2018,3 +2018,206 @@
           </div>
         </div>
 
+        <!-- 3. Android Termux Extra Keys Bar -->
+        <div class="chrome-termux-touchbar" id="chrome-termux-bar">
+          <span class="termux-key-chip">ESC</span>
+          <span class="termux-key-chip">TAB</span>
+          <span class="termux-key-chip">CTRL</span>
+          <span class="termux-key-chip">ALT</span>
+          <span class="termux-key-chip">-</span>
+          <span class="termux-key-chip">/</span>
+          <span class="termux-key-chip">▲</span>
+          <span class="termux-key-chip">▼</span>
+        </div>
+
+        <!-- FIXED 520px SCREEN VIEWPORT -->
+        <div class="term-screen-viewport" id="terminal-screen">
+          <!-- Real-time animation rendered here -->
+        </div>
+
+        <!-- Action Telemetry Output Strip -->
+        <div class="term-action-badge-row" id="term-action-badge-row">
+          <div id="term-live-feedback" style="color: #d97757; font-weight: 600;">
+            [READY] Click any module option [1-8] in the terminal deck to test live!
+          </div>
+          <div style="color: #8a8880; font-size: 11px;">CLICK TO INTERACT</div>
+        </div>
+
+        <!-- Bottom Status Line -->
+        <div class="term-bottom-info">
+          <div>KRONOS STEALTH PROTOCOL // DUAL-PANE RUNTIME</div>
+          <div>RAM: 12.4 MB · CIPHER: AES-256 CTR · PID: 49812</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING PASS MATRIX SECTION -->
+  <section id="pricing" class="section-pricing">
+    <div class="container">
+      <div style="margin-bottom: 48px;">
+        <span class="section-pretitle">Subscriptions // Access Passes</span>
+        <h2 class="section-title">Transparent tiers. Instant automated issuance.</h2>
+        <p class="section-desc" style="margin-bottom: 0;">
+          Select an access duration. Keys are cryptographically bound to one machine runtime upon initial boot and can be renewed or recovered anytime.
+        </p>
+      </div>
+
+      <div class="pricing-split-layout">
+        <div class="plans-container">
+          <div class="plans-container-header">
+            <h3>Step 1 // Choose Access Pass</h3>
+            <span class="cap-index-tag" style="font-size: 11px;">DIRECT ISSUANCE</span>
+          </div>
+
+          <div class="plan-stack">
+            <div class="plan-row" onclick="selectPlan('1w')" id="plan-1w">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">1 Week Access</div>
+                  <div class="plan-desc">7 Days Full License · Ideal for evaluation</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹119</div>
+            </div>
+
+            <div class="plan-row active" onclick="selectPlan('1m')" id="plan-1m">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">
+                    1 Month Access
+                    <span class="plan-badge badge-pop">RECOMMENDED</span>
+                  </div>
+                  <div class="plan-desc">30 Days Complete Stealth Suite</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹399</div>
+            </div>
+
+            <div class="plan-row" onclick="selectPlan('3m')" id="plan-3m">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">3 Months Access</div>
+                  <div class="plan-desc">Quarterly License · ₹166 / month (Save 58%)</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹499</div>
+            </div>
+
+            <div class="plan-row" onclick="selectPlan('6m')" id="plan-6m">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">6 Months Access</div>
+                  <div class="plan-desc">Half-Year License · ₹99 / month (Save 75%)</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹599</div>
+            </div>
+
+            <div class="plan-row" onclick="selectPlan('1y')" id="plan-1y">
+              <div class="plan-left">
+                <div class="plan-radio"></div>
+                <div>
+                  <div class="plan-name">
+                    1 Year Access
+                    <span class="plan-badge badge-best">BEST VALUE</span>
+                  </div>
+                  <div class="plan-desc">365 Days Access · Under ₹2 / day</div>
+                </div>
+              </div>
+              <div class="plan-cost">₹699</div>
+            </div>
+          </div>
+
+          <div class="meta-data-strip" style="background: transparent; border-color: var(--border-hairline); margin-bottom: 6px;">
+            <span class="meta-data-label">DEVICE CAPACITY</span>
+            <span style="font-size: 12px; color: #10b981; font-weight: 600;">✓ Up to 3 Devices per Key (Simultaneous)</span>
+          </div>
+
+          <div class="meta-data-strip" style="background: transparent; border-color: var(--border-hairline); margin-bottom: 0;">
+            <span class="meta-data-label">RUNTIME COMPATIBILITY</span>
+            <span style="font-size: 12px; color: var(--text-muted);">macOS · Windows · Linux · Android</span>
+          </div>
+        </div>
+
+        <div class="checkout-console">
+          <div class="checkout-tabs-bar">
+            <button class="checkout-tab active" id="tab-btn-upi" onclick="switchMethod('upi')">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              <span>UPI (Instant)</span>
+            </button>
+            <button class="checkout-tab" id="tab-btn-ton" onclick="switchMethod('ton')">
+              <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 22 22 7 12 2"/><polyline points="2 7 12 13 22 7"/></svg>
+              <span>TON Crypto</span>
+            </button>
+            <button class="checkout-tab" id="tab-btn-recover" onclick="switchMethod('recover')">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Recover Key</span>
+            </button>
+          </div>
+
+          <!-- UPI PANEL -->
+          <div id="panel-upi">
+            <a id="btn-upi-direct" href="#" class="btn-direct-checkout btn-upi-action">
+              <svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>1-Click Pay ₹<span id="upi-price-label">399</span> via UPI</span>
+            </a>
+
+            <div class="qr-box-frame">
+              <img id="img-upi-qr" src="/api/qr?data=placeholder" alt="UPI QR Code">
+              <div class="qr-note">Scan using PhonePe, GPay, Paytm, or CRED</div>
+            </div>
+
+            <div class="meta-data-strip">
+              <span class="meta-data-label">OFFICIAL UPI ID</span>
+              <span class="meta-data-val">
+                <code id="display-vpa">Loading...</code>
+                <button class="btn-chip-copy" onclick="copyDynamicText('display-vpa')">COPY</button>
+              </span>
+            </div>
+
+            <div class="meta-data-strip">
+              <span class="meta-data-label">ORDER REF</span>
+              <span class="meta-data-val">
+                <code id="display-order-id" style="color: var(--accent-clay);">KRN-ORD-...</code>
+              </span>
+            </div>
+
+            <div class="input-field-wrap">
+              <div class="utr-header-row">
+                <label for="input-utr" style="margin-bottom: 0;">Step 2 // Enter 12-Digit UPI Ref / UTR Number</label>
+                <span id="utr-counter" class="utr-counter-badge">0 / 12 digits</span>
+              </div>
+              <input type="text" id="input-utr" class="input-mono" placeholder="e.g. 425318920194 from receipt" maxlength="12" inputmode="numeric" autocomplete="off">
+              <button id="btn-submit-utr" class="btn-submit-action" onclick="submitUTR()">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                <span id="btn-submit-utr-text">Verify &amp; Activate License</span>
+              </button>
+            </div>
+
+            <div id="alert-upi" class="status-note"></div>
+          </div>
+
+          <!-- TON PANEL -->
+          <div id="panel-ton" style="display: none;">
+            <a id="btn-ton-direct" href="#" class="btn-direct-checkout btn-ton-action">
+              <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 22 22 7 12 2"/></svg>
+              <span>1-Click Pay via Telegram Wallet / Tonkeeper</span>
+            </a>
+
+            <div class="qr-box-frame">
+              <img id="img-ton-qr" src="/api/qr?data=placeholder" alt="TON Transfer QR">
+              <div class="qr-note">Automatic Blockchain Confirmation (~5s)</div>
+            </div>
+
+            <div class="meta-data-strip">
+              <span class="meta-data-label">AMOUNT (LIVE)</span>
+              <span class="meta-data-val" id="ton-rate-display" style="color: var(--accent-clay);">Calculating...</span>
+            </div>
+
+            <div class="meta-data-strip" style="background: var(--accent-clay-subtle); border-color: var(--accent-clay);">
+              <span class="meta-data-label" style="color: var(--accent-clay); font-weight: 600;">REQUIRED MEMO</span>
