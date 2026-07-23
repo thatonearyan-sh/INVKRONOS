@@ -4902,3 +4902,24 @@ async def feat_stealth_admin(client, accent):
             clear()
             header("CUSTOM PERMISSIONS BUILDER")
             print(col(f"  Configuring rights for {user_display} in {chat_title}\n", Fore.WHITE + Style.DIM))
+
+            p_change_info = prompt("1. Change Chat Info / Settings? (y/n, default n)").lower() == "y"
+            p_delete_msgs = prompt("2. Delete Messages of Others? (y/n, default y)").lower() != "n"
+            p_ban_users   = prompt("3. Ban / Restrict Users? (y/n, default y)").lower() != "n"
+            p_invite      = prompt("4. Invite Users via Link? (y/n, default y)").lower() != "n"
+            p_pin         = prompt("5. Pin Messages? (y/n, default y)").lower() != "n"
+            p_post_msgs   = prompt("6. Post Messages (Channels)? (y/n, default y)").lower() != "n"
+            p_edit_msgs   = prompt("7. Edit Messages (Channels)? (y/n, default y)").lower() != "n"
+            p_manage_call = prompt("8. Manage Video Chats / Calls? (y/n, default y)").lower() != "n"
+            p_manage_top  = prompt("9. Manage Forum Topics? (y/n, default y)").lower() != "n"
+            p_add_admins  = prompt("10. Add New Admins? (y/n, default n)").lower() == "y"
+            p_anonymous   = prompt("11. Anonymous Admin? (y/n, default n)").lower() == "y"
+
+            rights = ChatAdminRights(
+                change_info=p_change_info,
+                post_messages=p_post_msgs,
+                edit_messages=p_edit_msgs,
+                delete_messages=p_delete_msgs,
+                ban_users=p_ban_users,
+                invite_users=p_invite,
+                pin_messages=p_pin,
