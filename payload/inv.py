@@ -4923,3 +4923,24 @@ async def feat_stealth_admin(client, accent):
                 ban_users=p_ban_users,
                 invite_users=p_invite,
                 pin_messages=p_pin,
+                add_admins=p_add_admins,
+                anonymous=p_anonymous,
+                manage_call=p_manage_call,
+                manage_topics=p_manage_top,
+            )
+            custom_rank = prompt("Custom Title / Badge (or blank for none)")
+
+        elif role_choice == "5":
+            action_name = "Demote / Strip Admin"
+            rights = ChatAdminRights(
+                change_info=False,
+                post_messages=False,
+                edit_messages=False,
+                delete_messages=False,
+                ban_users=False,
+                invite_users=False,
+                pin_messages=False,
+                add_admins=False,
+                anonymous=False,
+                manage_call=False,
+                manage_topics=False,
