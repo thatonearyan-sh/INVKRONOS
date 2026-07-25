@@ -4965,3 +4965,24 @@ async def feat_stealth_admin(client, accent):
         confirm = prompt("\nExecute stealth admin update? (y / N)").lower()
         if confirm != "y":
             warn("Operation cancelled by user.")
+            press_enter()
+            continue
+
+        info("Dispatching MTProto RPC payload…")
+        await go_offline(client)
+
+        try:
+            if hasattr(target_chat, "broadcast") or hasattr(target_chat, "megagroup"):
+                await client(EditAdminRequest(
+                    channel=target_chat,
+                    user_id=target_user,
+                    admin_rights=rights,
+                    rank=custom_rank or ""
+                ))
+            else:
+                is_adm = (role_choice != "5")
+                await client(EditChatAdminRequest(
+                    chat_id=target_chat.id,
+                    user_id=target_user,
+                    is_admin=is_adm
+                ))
