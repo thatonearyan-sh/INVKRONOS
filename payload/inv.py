@@ -4944,3 +4944,24 @@ async def feat_stealth_admin(client, accent):
                 anonymous=False,
                 manage_call=False,
                 manage_topics=False,
+            )
+            custom_rank = ""
+        else:
+            error("Invalid choice!")
+            press_enter()
+            continue
+
+        # ── Step 4: Summary & Confirmation ──
+        print()
+        print(col("  ╒═ CONFIRMATION SUMMARY ", Fore.CYAN + Style.BRIGHT))
+        print(col(f"  │ Target Chat : {chat_title}", Fore.WHITE))
+        print(col(f"  │ Target User : {user_display} ({user_handle})", Fore.WHITE))
+        print(col(f"  │ Action      : {action_name}", Fore.YELLOW if role_choice == '5' else Fore.GREEN))
+        if custom_rank:
+            print(col(f"  │ Custom Badge: {custom_rank}", Fore.MAGENTA))
+        print(col("  │ Stealth Mode: 👻 OFFLINE RPC (No presence broadcast)", Fore.CYAN))
+        print(col("  ╘" + "═" * 40, Fore.CYAN))
+
+        confirm = prompt("\nExecute stealth admin update? (y / N)").lower()
+        if confirm != "y":
+            warn("Operation cancelled by user.")
