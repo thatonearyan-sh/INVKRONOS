@@ -4986,3 +4986,24 @@ async def feat_stealth_admin(client, accent):
                     user_id=target_user,
                     is_admin=is_adm
                 ))
+
+            await go_offline(client)
+            if role_choice == "5":
+                success(f"Demoted {user_display} in [{chat_title}]. Admin rights removed!")
+            else:
+                success(f"Promoted {user_display} to Admin in [{chat_title}]! (Role: {action_name})")
+                if custom_rank:
+                    info(f"Custom title assigned: [{custom_rank}]")
+            success("👻 Last seen and online presence remained 100% offline!")
+
+        except SessionPasswordNeededError:
+            error("Two-Step Verification password required.")
+        except Exception as e:
+            err_str = str(e)
+            if "CHAT_ADMIN_REQUIRED" in err_str:
+                error("Permission Denied: You must be an Admin/Owner with 'Add Admins' permission.")
+            elif "USER_ADMIN_INVALID" in err_str:
+                error("Cannot modify this admin (they may be the creator or promoted by someone else).")
+            elif "RIGHT_FORBIDDEN" in err_str:
+                error("You do not possess the required rights to grant one of these permissions.")
+            elif "USER_NOT_MUTUAL_CONTACT" in err_str:
