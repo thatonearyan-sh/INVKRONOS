@@ -5007,3 +5007,23 @@ async def feat_stealth_admin(client, accent):
             elif "RIGHT_FORBIDDEN" in err_str:
                 error("You do not possess the required rights to grant one of these permissions.")
             elif "USER_NOT_MUTUAL_CONTACT" in err_str:
+                error("Telegram requires mutual contact or privacy allowance to add this user as admin.")
+            else:
+                error(f"Failed to update admin rights: {e}")
+        finally:
+            await go_offline(client)
+
+        nxt = again_menu("Manage another admin / group")
+        if nxt is None:
+            return
+
+
+# ═══════════════════════════════════════════════════════════════
+#  FEATURE — MY GIFTS  (show / hide from profile)
+# ═══════════════════════════════════════════════════════════════
+
+async def feat_gifts(client, accent):
+    """41. My Gifts — view received star gifts and show/hide them from profile."""
+    if GetSavedStarGiftsRequest is None:
+        warn("Star Gifts requires Telethon >= 1.37 (pip install -U telethon)")
+        press_enter()
