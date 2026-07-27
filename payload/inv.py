@@ -5027,3 +5027,24 @@ async def feat_gifts(client, accent):
     if GetSavedStarGiftsRequest is None:
         warn("Star Gifts requires Telethon >= 1.37 (pip install -U telethon)")
         press_enter()
+        return
+    while True:
+        clear()
+        header("🎁  MY GIFTS")
+        print(col("  View gifts you received (teddy, heart, etc.)", Fore.WHITE + Style.DIM))
+        print(col("  You can show or hide them from your profile.", Fore.WHITE + Style.DIM))
+        print()
+
+        target = prompt("Whose gifts?  (Enter = your own, or @username / ID)")
+        if target and target.lower() == "q":
+            return
+
+        info("Fetching gifts…")
+        try:
+            if target:
+                peer = await client.get_input_entity(target)
+            else:
+                peer = await client.get_input_entity("me")
+
+            offset = ""
+            page_num = 0
