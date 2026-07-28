@@ -5048,3 +5048,24 @@ async def feat_gifts(client, accent):
 
             offset = ""
             page_num = 0
+            all_gifts = []
+
+            # Fetch up to 200 gifts in batches
+            while True:
+                result = await client(GetSavedStarGiftsRequest(
+                    peer=peer,
+                    offset=offset,
+                    limit=50,
+                ))
+                await go_offline(client)
+
+                if not result.gifts:
+                    break
+                all_gifts.extend(result.gifts)
+                if len(all_gifts) >= 200:
+                    break
+                offset = result.next_offset or ""
+                if not offset:
+                    break
+
+            if not all_gifts:
