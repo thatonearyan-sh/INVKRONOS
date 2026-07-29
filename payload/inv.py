@@ -5069,3 +5069,24 @@ async def feat_gifts(client, accent):
                     break
 
             if not all_gifts:
+                warn("No gifts found!")
+                press_enter()
+                nxt = again_menu("Try a different user")
+                if nxt is None:
+                    return
+                continue
+
+            total = getattr(result, 'count', len(all_gifts))
+            success(f"Found {total} gift(s)  (loaded {len(all_gifts)})")
+            print()
+
+        except Exception as e:
+            error(f"Failed to fetch gifts: {e}")
+            press_enter()
+            nxt = again_menu("Try again")
+            if nxt is None:
+                return
+            continue
+
+        # ── Display gifts & NFTs ──
+        clear()
