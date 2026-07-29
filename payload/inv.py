@@ -5090,3 +5090,24 @@ async def feat_gifts(client, accent):
 
         # ── Display gifts & NFTs ──
         clear()
+        header(f"🎁  GIFTS & NFTS  ({len(all_gifts)} loaded)")
+
+        gift_items = []
+        for i, g in enumerate(all_gifts):
+            # Extract gift details — SavedStarGift uses unsaved=True for hidden
+            is_unsaved = getattr(g, 'unsaved', False)  # True = hidden from profile
+            is_shown = not is_unsaved                  # shown on profile
+            msg_id = getattr(g, 'msg_id', None)
+            saved_id = getattr(g, 'saved_id', None)
+            date = to_ist(getattr(g, 'date', None))
+
+            # Try to get sender name
+            from_name = "Anonymous"
+            from_id = getattr(g, 'from_id', None)
+            if from_id:
+                try:
+                    sender = await client.get_entity(from_id)
+                    from_name = f"{getattr(sender, 'first_name', '') or ''} {getattr(sender, 'last_name', '') or ''}".strip()
+                    from_name = from_name or getattr(sender, 'username', 'Unknown')
+                except Exception:
+                    from_name = f"User {from_id}"
