@@ -5111,3 +5111,24 @@ async def feat_gifts(client, accent):
                     from_name = from_name or getattr(sender, 'username', 'Unknown')
                 except Exception:
                     from_name = f"User {from_id}"
+
+            # Gift name / NFT details from the inner gift object
+            gift_obj = getattr(g, 'gift', None)
+            gift_label = "⭐ Star Gift"
+            slug = None
+            is_nft = False
+
+            if gift_obj:
+                if isinstance(gift_obj, StarGiftUnique) or hasattr(gift_obj, 'num'):
+                    is_nft = True
+                    slug = getattr(gift_obj, 'slug', None)
+                    nft_title = getattr(gift_obj, 'title', 'Collectible')
+                    nft_num = getattr(gift_obj, 'num', '')
+                    gift_label = f"💎 NFT: {nft_title} #{nft_num}"
+                elif hasattr(gift_obj, 'title') and gift_obj.title:
+                    gift_stars = getattr(gift_obj, 'stars', None)
+                    stars_str = f" ({gift_stars}⭐)" if gift_stars else ""
+                    gift_label = f"⭐ {gift_obj.title}{stars_str}"
+                elif hasattr(gift_obj, 'stars') and gift_obj.stars:
+                    gift_label = f"⭐ {gift_obj.stars}-Star Gift"
+
