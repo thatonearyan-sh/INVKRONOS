@@ -5132,3 +5132,24 @@ async def feat_gifts(client, accent):
                 elif hasattr(gift_obj, 'stars') and gift_obj.stars:
                     gift_label = f"⭐ {gift_obj.stars}-Star Gift"
 
+            # Personal message
+            personal_msg = ""
+            msg_obj = getattr(g, 'message', None)
+            if msg_obj:
+                if hasattr(msg_obj, 'text') and msg_obj.text:
+                    personal_msg = trunc(msg_obj.text.replace("\n", " "), 35)
+                elif isinstance(msg_obj, str):
+                    personal_msg = trunc(msg_obj.replace("\n", " "), 35)
+
+            # Visibility & Pin status
+            is_pinned = getattr(g, 'pinned_to_top', False)
+            if is_shown:
+                vis = col("👁  SHOWN", Fore.GREEN)
+            else:
+                vis = col("🙈 HIDDEN", Fore.RED)
+            if is_pinned:
+                vis += "  " + col("📌 PINNED TO TOP", Fore.MAGENTA + Style.BRIGHT)
+
+            gift_items.append({
+                "idx": i,
+                "label": gift_label,
