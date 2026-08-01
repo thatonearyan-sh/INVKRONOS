@@ -5153,3 +5153,24 @@ async def feat_gifts(client, accent):
             gift_items.append({
                 "idx": i,
                 "label": gift_label,
+                "from": from_name,
+                "date": date,
+                "vis": vis,
+                "is_shown": is_shown,
+                "is_pinned": is_pinned,
+                "is_nft": is_nft,
+                "slug": slug,
+                "msg_id": msg_id,
+                "saved_id": saved_id,
+                "personal_msg": personal_msg,
+            })
+
+        # Helper to construct InputSavedStarGift
+        def get_input_gift(item):
+            if item.get("msg_id"):
+                return InputSavedStarGiftUser(msg_id=item["msg_id"])
+            if item.get("slug"):
+                return InputSavedStarGiftSlug(slug=item["slug"])
+            return None
+
+        # Print all gifts
