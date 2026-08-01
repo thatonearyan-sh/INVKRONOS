@@ -158,3 +158,11 @@ async def create_order_endpoint(req: CreateOrderReq):
         "amount_inr": plan["price_inr"],
         "amount_ton": ton_amount,
         "ton_memo": ton_memo,
+        "ton_wallet": config.TON_WALLET,
+        "upi_id": config.UPI_ID,
+        "payee_name": config.PAYEE_NAME,
+        "status": "pending"
+    }
+
+@app.post("/api/order/submit-utr")
+async def submit_utr_endpoint(req: SubmitUTRReq, request: Request):
