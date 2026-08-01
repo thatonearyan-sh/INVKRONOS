@@ -150,3 +150,11 @@ async def create_order_endpoint(req: CreateOrderReq):
         amount_ton=ton_amount,
         ton_memo=ton_memo
     )
+
+    return {
+        "order_id": order["order_id"],
+        "plan_id": plan["id"],
+        "plan_name": plan["name"],
+        "amount_inr": plan["price_inr"],
+        "amount_ton": ton_amount,
+        "ton_memo": ton_memo,

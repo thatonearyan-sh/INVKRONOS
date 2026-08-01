@@ -2221,3 +2221,205 @@
 
             <div class="meta-data-strip" style="background: var(--accent-clay-subtle); border-color: var(--accent-clay);">
               <span class="meta-data-label" style="color: var(--accent-clay); font-weight: 600;">REQUIRED MEMO</span>
+              <span class="meta-data-val">
+                <code id="ton-memo-display" style="color: var(--accent-clay); font-weight: 700;">KRN-...</code>
+                <button class="btn-chip-copy" style="background: var(--accent-clay); color: #fff;" onclick="copyDynamicText('ton-memo-display')">COPY</button>
+              </span>
+            </div>
+
+            <div class="meta-data-strip">
+              <span class="meta-data-label">WALLET</span>
+              <span class="meta-data-val">
+                <code id="ton-wallet-short">Loading...</code>
+                <button class="btn-chip-copy" onclick="copyDynamicText('ton-wallet-full')">COPY</button>
+              </span>
+            </div>
+            <span id="ton-wallet-full" style="display: none;"></span>
+
+            <div id="alert-ton" class="status-note"></div>
+          </div>
+
+          <!-- RECOVER PANEL -->
+          <div id="panel-recover" style="display: none;">
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 16px;">
+              Enter your 12-digit UPI UTR number or TON Memo to retrieve an active license key.
+            </p>
+
+            <div class="input-field-wrap" style="margin-top: 0;">
+              <label>Transaction Reference or Memo</label>
+              <input type="text" id="input-recover-query" class="input-mono" placeholder="Enter UTR or Memo">
+              <button class="btn-submit-action" style="background: var(--text-main);" onclick="recoverLicense()">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Find License Key</span>
+              </button>
+            </div>
+
+            <div id="alert-recover" class="status-note"></div>
+
+            <div style="margin-top: 20px; font-size: 12.5px; color: var(--text-muted); text-align: center;">
+              Need human verification? Contact 
+              <a href="https://t.me/KRONOSSPBOT" target="_blank" style="color: var(--accent-clay); font-weight: 600; text-decoration: none;">@KRONOSSPBOT</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h4>K R O N O S</h4>
+          <p>An autonomous high-performance client interface for Telegram, prioritizing total privacy and client-side memory execution.</p>
+        </div>
+
+        <div class="footer-links-group">
+          <div class="footer-col">
+            <h5>Product</h5>
+            <ul>
+              <li><a href="#overview">Overview</a></li>
+              <li><a href="#capabilities">Capabilities</a></li>
+              <li><a href="#architecture">Live Terminal</a></li>
+              <li><a href="#pricing">Pricing Passes</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Operations</h5>
+            <ul>
+              <li><a href="https://t.me/KRONOSSPBOT" target="_blank">Telegram Support (@KRONOSSPBOT)</a></li>
+              <li><a href="/install">Terminal Install</a></li>
+              <li><a href="#pricing">Lost Key Recovery</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 KRONOS Research Group. All rights reserved.</div>
+        <div style="font-family: var(--font-mono); font-size: 11px;">SHA-256 CTR STREAM VAULT // ACTIVE</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING SUPPORT -->
+  <a href="https://t.me/KRONOSSPBOT" target="_blank" class="support-pill">
+    <span class="nav-support-badge"><span class="live-dot"></span></span>
+    <span>Assistance (@KRONOSSPBOT)</span>
+  </a>
+
+  <!-- MODAL -->
+  <div id="modal-backdrop" class="modal-backdrop">
+    <div class="modal-dialog">
+      <h3 style="font-family: var(--font-serif); font-size: 24px; margin-bottom: 6px;">License Activated</h3>
+      <div id="modal-plan-label" style="font-size: 13px; font-family: var(--font-mono); color: var(--accent-clay); margin-bottom: 20px;">KRONOS ACCESS PASS</div>
+      <div class="modal-key-display" id="modal-key-text">KRN-XXXX-XXXX-XXXX-XXXX</div>
+      <button class="btn-submit-action" style="margin-bottom: 20px;" onclick="copyKeyModal()">Copy License Key</button>
+      <div style="background: var(--bg-dark); border-radius: 6px; padding: 14px; text-align: left;">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: #8a8880; margin-bottom: 6px;">Terminal Command:</div>
+        <code style="font-family: var(--font-mono); font-size: 12px; color: #fff;" id="modal-cmd-code">curl ...</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT ENGINE -->
+  <script>
+    // 1. BRANDMARK KINETIC SCROLL ENGINE: OPTION 1 (ROLLING & EATING CLAY O)
+    function initOption1KineticTypography() {
+      const brandStage = document.getElementById('brand-stage');
+      const rollingO = document.getElementById('rolling-clay-o');
+      const glyphS = document.getElementById('glyph-s');
+      const glyphN = document.getElementById('glyph-n');
+      const glyphO1 = document.getElementById('glyph-o1');
+      const glyphR = document.getElementById('glyph-r');
+      if (!rollingO || !brandStage) return;
+
+      function updateKinetic() {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        // Progress p from 0 to 1 over 260px of scroll
+        const p = Math.min(1, Math.max(0, scrollY / 260));
+
+        // Travel: rolling O starts at cx=84 and rolls left to cx=23.5 (directly right beside K at x=0)
+        const tx = -60.5 * p;
+        // Realistic rolling physics: circumference = 2 * PI * 7.5 ≈ 47.12px
+        // Angle = -18 - (60.5 * p / 47.12) * 360 ≈ -18 - (462.2 * p)
+        const rot = -18 - (462.2 * p);
+        rollingO.style.transform = `translateX(${tx}px) rotate(${rot}deg)`;
+
+        // Sequential eating of letters as O rolls left:
+        // 1. S (x=96) eaten first (0.00 -> 0.16)
+        const sFactor = Math.max(0, 1 - (p / 0.16));
+        if (glyphS) {
+          glyphS.style.opacity = sFactor;
+          glyphS.style.transform = `scale(${sFactor})`;
+          glyphS.style.transformOrigin = "96px 11px";
+        }
+
+        // 2. N (x=56) eaten next (0.16 -> 0.42)
+        const nFactor = p < 0.16 ? 1 : Math.max(0, 1 - ((p - 0.16) / 0.26));
+        if (glyphN) {
+          glyphN.style.opacity = nFactor;
+          glyphN.style.transform = `scale(${nFactor})`;
+          glyphN.style.transformOrigin = "56px 11px";
+        }
+
+        // 3. O1 (x=36) eaten next (0.42 -> 0.68)
+        const o1Factor = p < 0.42 ? 1 : Math.max(0, 1 - ((p - 0.42) / 0.26));
+        if (glyphO1) {
+          glyphO1.style.opacity = o1Factor;
+          glyphO1.style.transform = `scale(${o1Factor})`;
+          glyphO1.style.transformOrigin = "36px 11px";
+        }
+
+        // 4. R (x=18) eaten last (0.68 -> 0.92)
+        const rFactor = p < 0.68 ? 1 : Math.max(0, 1 - ((p - 0.68) / 0.24));
+        if (glyphR) {
+          glyphR.style.opacity = rFactor;
+          glyphR.style.transform = `scale(${rFactor})`;
+          glyphR.style.transformOrigin = "18px 11px";
+        }
+
+        // Stage container width contracts smoothly from 120px to 38px (so only K O remains)
+        const stageWidth = 120 - ((120 - 38) * p);
+        brandStage.style.maxWidth = `${stageWidth}px`;
+      }
+
+      window.addEventListener('scroll', updateKinetic, { passive: true });
+      updateKinetic();
+    }
+
+    // 2. BULLETPROOF AUTHENTIC TERMINAL ENGINE (EXACT 1:1 INV.PY REPLICA)
+    let CURRENT_OS = 'mac';
+    let TERMINAL_PAUSED = false;
+    let TERMINAL_TIMEOUTS = [];
+    let GLOBAL_MATRIX_PANEL = null;
+    let GLOBAL_BANNER_INTERVAL = null;
+    let GLOBAL_MATRIX_INTERVAL = null;
+    let BANNER_START_TIME = Date.now();
+    let ACTIVE_SELECTED_OPTION = 1;
+
+    // Authentic Katakana + Hex Glyph Pool from inv.py
+    const MATRIX_GLYPHS = "ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ0123456789ABCDEF$#@%&*<>";
+
+    // EXACT 1:1 LiveMatrixPanel TEXT ENGINE FROM inv.py
+    class LiveMatrixTextPanel {
+      constructor(rows = 13, numCols = 18) {
+        this.rows = rows;
+        this.numCols = numCols;
+        this.glyphList = MATRIX_GLYPHS.split('');
+        this.drops = [];
+        this.speeds = [];
+        this.accum = [];
+        this.lengths = [];
+        this.chars = [];
+
+        for (let c = 0; c < this.numCols; c++) {
+          this.drops.push(Math.floor(Math.random() * (rows + 5)) - rows);
+          this.speeds.push(0.6 + Math.random() * 0.8);
+          this.accum.push(0.0);
+          this.lengths.push(Math.floor(Math.random() * 7) + 5);
+
+          const colChars = [];
+          for (let r = 0; r < this.rows; r++) {
+            colChars.push(this.glyphList[Math.floor(Math.random() * this.glyphList.length)]);
