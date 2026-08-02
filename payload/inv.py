@@ -5174,3 +5174,23 @@ async def feat_gifts(client, accent):
             return None
 
         # Print all gifts
+        for g in gift_items:
+            idx_str = col(f"{g['idx']:>3}", accent)
+            print(f"  {idx_str}.  {g['label']}   from  {col(g['from'], Fore.CYAN)}")
+            print(f"       {col(g['date'], Style.DIM + Fore.WHITE)}   {g['vis']}")
+            if g['personal_msg']:
+                print(f"       💬  {col(g['personal_msg'], Fore.YELLOW)}")
+            print()
+        await go_offline(client)
+
+        # ── Interaction sub-menu ──
+        is_self = not target  # Can only toggle visibility for own gifts
+        if is_self:
+            print(col("  ─────────────────────────────────────────", Fore.WHITE + Style.DIM))
+            print(col("  Actions:", Fore.CYAN + Style.BRIGHT))
+            print(col("    Enter gift #   → toggle show/hide on profile", Fore.WHITE))
+            print(col("    S              → show ALL gifts/NFTs", Fore.GREEN))
+            print(col("    H              → hide ALL gifts/NFTs", Fore.RED))
+            print(col("    P              → 📌 pin gifts/NFTs to top of profile", Fore.MAGENTA))
+            print(col("    U              → unpin gifts/NFTs (#s or 'all')", Fore.YELLOW))
+            print(col("    q              → back to menu", Fore.WHITE + Style.DIM))
