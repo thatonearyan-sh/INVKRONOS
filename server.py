@@ -166,3 +166,11 @@ async def create_order_endpoint(req: CreateOrderReq):
 
 @app.post("/api/order/submit-utr")
 async def submit_utr_endpoint(req: SubmitUTRReq, request: Request):
+    order = db.get_order(req.order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    clean_utr = req.utr.strip()
+    if len(clean_utr) < 8:
+        raise HTTPException(status_code=400, detail="Invalid UTR number")
+
