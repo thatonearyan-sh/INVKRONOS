@@ -174,3 +174,11 @@ async def submit_utr_endpoint(req: SubmitUTRReq, request: Request):
     if len(clean_utr) < 8:
         raise HTTPException(status_code=400, detail="Invalid UTR number")
 
+    # Update in DB
+    updated = db.set_order_utr(req.order_id, clean_utr)
+
+    # Fire Telegram Alert to Admin Phone with quick-approve links
+    base_url = str(request.base_url).rstrip("/")
+    telegram_admin.send_admin_utr_alert(
+        order_id=order["order_id"],
+        utr=clean_utr,
