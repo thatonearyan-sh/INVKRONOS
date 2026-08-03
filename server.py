@@ -182,3 +182,11 @@ async def submit_utr_endpoint(req: SubmitUTRReq, request: Request):
     telegram_admin.send_admin_utr_alert(
         order_id=order["order_id"],
         utr=clean_utr,
+        plan_name=order.get("plan_name", "KRONOS Pass"),
+        amount_inr=order.get("amount_inr", 399),
+        base_url=base_url
+    )
+
+    return {"ok": True, "status": "awaiting_approval", "order_id": req.order_id}
+
+@app.get("/api/order/status/{order_id}")

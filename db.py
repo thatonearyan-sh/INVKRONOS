@@ -196,3 +196,21 @@ def verify_license(api_key, hwid=None):
     
     now = datetime.now(timezone.utc)
     expires_at = lic.get("expires_at")
+    if expires_at:
+        # Handle naive vs aware datetime from mongodb
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if now > expires_at:
+            db.licenses.update_one({"api_key": api_key}, {"$set": {"status": "EXPIRED"}})
+            return {"valid": False, "reason": "License has expired. Please renew."}
+    
+    # Check Hardware ID binding (Max 3 devices per license key)
+    max_devices = lic.get("max_devices", 3)
+    
+    # Retrieve current list of authorized HWIDs (backward compatible with single 'hwid' string)
+    bound_devices = lic.get("hwids")
+    if bound_devices is None:
+        single_hwid = lic.get("hwid")
+        bound_devices = [single_hwid] if single_hwid else []
+    else:
+        bound_devices = list(bound_devices)
