@@ -190,3 +190,11 @@ async def submit_utr_endpoint(req: SubmitUTRReq, request: Request):
     return {"ok": True, "status": "awaiting_approval", "order_id": req.order_id}
 
 @app.get("/api/order/status/{order_id}")
+async def get_order_status(order_id: str):
+    order = db.get_order(order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    # If order is pending and payment_method is ton, check on-chain right now!
+    if order.get("status") == "pending" and order.get("payment_method") == "ton":
+        order = ton_watcher.check_order_ton_payment(order)
