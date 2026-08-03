@@ -5194,3 +5194,24 @@ async def feat_gifts(client, accent):
             print(col("    P              → 📌 pin gifts/NFTs to top of profile", Fore.MAGENTA))
             print(col("    U              → unpin gifts/NFTs (#s or 'all')", Fore.YELLOW))
             print(col("    q              → back to menu", Fore.WHITE + Style.DIM))
+
+            while True:
+                raw = prompt("Gift # / S / H / P / U / q").strip().lower()
+                if raw == "q" or raw == "":
+                    break
+
+                if raw == "s":
+                    # Show ALL
+                    confirm = prompt("Show ALL gifts on your profile? (y/N)")
+                    if confirm.lower() != "y":
+                        warn("Cancelled."); continue
+                    count = 0
+                    for g in gift_items:
+                        if not g['is_shown']:
+                            inp = get_input_gift(g)
+                            if inp:
+                                try:
+                                    await client(SaveStarGiftRequest(
+                                        stargift=inp,
+                                        unsave=False,
+                                    ))
