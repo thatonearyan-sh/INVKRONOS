@@ -5215,3 +5215,24 @@ async def feat_gifts(client, accent):
                                         stargift=inp,
                                         unsave=False,
                                     ))
+                                    count += 1
+                                except Exception as e:
+                                    error(f"  Gift #{g['idx']} failed: {e}")
+                    await go_offline(client)
+                    success(f"Toggled {count} item(s) → SHOWN on profile")
+                    press_enter()
+                    break
+
+                elif raw == "h":
+                    # Hide ALL
+                    confirm = prompt("Hide ALL gifts from your profile? (y/N)")
+                    if confirm.lower() != "y":
+                        warn("Cancelled."); continue
+                    count = 0
+                    for g in gift_items:
+                        if g['is_shown']:
+                            inp = get_input_gift(g)
+                            if inp:
+                                try:
+                                    await client(SaveStarGiftRequest(
+                                        stargift=inp,
