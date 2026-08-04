@@ -206,3 +206,11 @@ async def get_order_status(order_id: str):
         "plan_name": order.get("plan_name")
     }
 
+@app.get("/api/admin/quick-approve", response_class=HTMLResponse)
+async def admin_quick_approve_page(order_id: str, token: str):
+    if not telegram_admin.verify_approval_token(order_id, token):
+        raise HTTPException(status_code=403, detail="Invalid or expired approval token.")
+    
+    order = db.get_order(order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found.")
