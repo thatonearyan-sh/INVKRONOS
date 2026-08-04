@@ -198,3 +198,11 @@ async def get_order_status(order_id: str):
     # If order is pending and payment_method is ton, check on-chain right now!
     if order.get("status") == "pending" and order.get("payment_method") == "ton":
         order = ton_watcher.check_order_ton_payment(order)
+
+    return {
+        "order_id": order["order_id"],
+        "status": order.get("status", "pending"),
+        "api_key": order.get("api_key"),
+        "plan_name": order.get("plan_name")
+    }
+

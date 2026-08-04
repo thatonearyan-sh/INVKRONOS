@@ -214,3 +214,22 @@ def verify_license(api_key, hwid=None):
         bound_devices = [single_hwid] if single_hwid else []
     else:
         bound_devices = list(bound_devices)
+
+    if hwid:
+        clean_hwid = str(hwid).strip()
+        if clean_hwid not in bound_devices:
+            if len(bound_devices) >= max_devices:
+                return {
+                    "valid": False,
+                    "reason": f"Device limit exceeded ({len(bound_devices)}/{max_devices} devices active). Contact support (@KRONOSSPBOT) to reset your devices.",
+                    "devices_used": len(bound_devices),
+                    "max_devices": max_devices
+                }
+            # Authorize new device in available slot
+            bound_devices.append(clean_hwid)
+            db.licenses.update_one(
+                {"api_key": clean_key},
+                {
+                    "$set": {
+                        "hwids": bound_devices,
+                        "hwid": bound_devices[0],
