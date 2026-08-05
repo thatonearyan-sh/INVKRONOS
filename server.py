@@ -222,3 +222,11 @@ async def admin_quick_approve_page(order_id: str, token: str):
 .card {{ background: #fff; border: 2px solid #e5ddd0; border-radius: 20px; padding: 32px; max-width: 440px; width: 100%; box-shadow: 4px 6px 0px #e8dfd1; text-align: center; }}
 .badge {{ display: inline-block; background: #edf5f0; color: #2d5a3f; font-weight: 800; padding: 6px 14px; border-radius: 20px; font-size: 13px; margin-bottom: 14px; }}
 .key {{ font-family: monospace; font-size: 18px; font-weight: 700; background: #faf7f2; border: 1.5px dashed #2d5a3f; padding: 12px; border-radius: 12px; margin: 16px 0; color: #2d5a3f; word-break: break-all; }}</style></head>
+<body><div class="card"><div class="badge">ALREADY APPROVED</div><h2>Order {order_id}</h2><div class="key">{order.get('api_key')}</div><p>This order has already been approved and delivered.</p></div></body></html>""")
+
+    plan = order.get("plan_name", "KRONOS Pass")
+    utr = order.get("utr", "N/A")
+    amount = order.get("amount_inr", 399)
+
+    html = f"""<!DOCTYPE html>
+<html>
