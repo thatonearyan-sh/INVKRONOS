@@ -5236,3 +5236,24 @@ async def feat_gifts(client, accent):
                                 try:
                                     await client(SaveStarGiftRequest(
                                         stargift=inp,
+                                        unsave=True,
+                                    ))
+                                    count += 1
+                                except Exception as e:
+                                    error(f"  Gift #{g['idx']} failed: {e}")
+                    await go_offline(client)
+                    success(f"Toggled {count} item(s) → HIDDEN from profile")
+                    press_enter()
+                    break
+
+                elif raw == "p":
+                    # Pin gifts/NFTs to top of profile
+                    print()
+                    print(col("  Currently pinned to top:", Fore.MAGENTA + Style.BRIGHT))
+                    pinned_count = sum(1 for g in gift_items if g['is_pinned'])
+                    if pinned_count:
+                        for g in gift_items:
+                            if g['is_pinned']:
+                                print(col(f"    #{g['idx']}  {g['label']}  from {g['from']}", Fore.MAGENTA))
+                    else:
+                        print(col("    (none)", Style.DIM))
