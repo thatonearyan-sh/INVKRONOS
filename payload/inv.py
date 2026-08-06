@@ -5257,3 +5257,24 @@ async def feat_gifts(client, accent):
                                 print(col(f"    #{g['idx']}  {g['label']}  from {g['from']}", Fore.MAGENTA))
                     else:
                         print(col("    (none)", Style.DIM))
+                    print()
+                    nums = prompt("Enter gift/NFT #s to pin to top  (comma-separated, e.g. 0,2,5)")
+                    if not nums:
+                        warn("Cancelled."); continue
+                    try:
+                        pin_indices = set(int(x.strip()) for x in nums.split(","))
+                        pin_gifts = []
+                        # Build list of items to pin (preserving existing pinned items plus new ones)
+                        all_to_pin_indices = set(g['idx'] for g in gift_items if g['is_pinned']).union(pin_indices)
+                        for idx in sorted(all_to_pin_indices):
+                            if 0 <= idx < len(gift_items):
+                                g = gift_items[idx]
+                                inp = get_input_gift(g)
+                                if inp:
+                                    pin_gifts.append(inp)
+                                else:
+                                    warn(f"Item #{idx} has no valid ID/slug — skipped.")
+                            else:
+                                warn(f"#{idx} out of range — skipped.")
+                        if not pin_gifts:
+                            error("No valid items to pin!"); continue
