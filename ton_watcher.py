@@ -30,3 +30,11 @@ def get_ton_inr_price():
             if price > 0:
                 _cached_ton_inr = price
                 _last_price_fetch = now
+                return price
+    except Exception as e:
+        print(f"[TON PRICE WARN] CoinGecko fetch failed, using fallback: {e}")
+
+    # Fallback to Binance USD * 87
+    try:
+        url = "https://api.binance.com/api/v3/ticker/price?symbol=TONUSDT"
+        req = urllib.request.Request(url, headers={"User-Agent": "KronosServer/1.0"})
