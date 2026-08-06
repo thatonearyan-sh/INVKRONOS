@@ -38,3 +38,10 @@ def get_ton_inr_price():
     try:
         url = "https://api.binance.com/api/v3/ticker/price?symbol=TONUSDT"
         req = urllib.request.Request(url, headers={"User-Agent": "KronosServer/1.0"})
+        with urllib.request.urlopen(req, context=SSL_CTX, timeout=6) as resp:
+            data = json.loads(resp.read().decode())
+            usd = float(data["price"])
+            price = usd * 87.0
+            if price > 0:
+                _cached_ton_inr = price
+                _last_price_fetch = now

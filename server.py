@@ -230,3 +230,11 @@ async def admin_quick_approve_page(order_id: str, token: str):
 
     html = f"""<!DOCTYPE html>
 <html>
+<head>
+  <meta charset="utf-8">
+  <title>KRONOS — Confirm Approval</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {{ background: #faf7f2; color: #221c18; font-family: -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 16px; }}
+    .card {{ background: #fff; border: 2px solid #e5ddd0; border-radius: 20px; padding: 32px; max-width: 440px; width: 100%; box-shadow: 4px 6px 0px #e8dfd1; text-align: center; }}
+    .badge {{ display: inline-block; background: #faede8; color: #c85a32; font-weight: 800; padding: 6px 14px; border-radius: 20px; font-size: 13px; margin-bottom: 14px; }}
