@@ -53,3 +53,10 @@ def get_ton_inr_price():
 
 def calculate_ton_amount(inr_amount):
     price = get_ton_inr_price()
+    ton_raw = inr_amount / price
+    # Round to 3 decimal places (e.g. 0.915 TON)
+    return max(0.01, round(ton_raw, 3)), price
+
+def _fetch_recent_ton_transactions():
+    try:
+        url = f"https://tonapi.io/v2/blockchain/accounts/{TON_WALLET}/transactions?limit=15"

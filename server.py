@@ -246,3 +246,11 @@ async def admin_quick_approve_page(order_id: str, token: str):
 <body>
   <div class="card">
     <div class="badge">CONFIRMATION REQUIRED</div>
+    <h2>Approve Order?</h2>
+    <p><b>Order ID:</b> {order_id}<br><b>Plan:</b> {plan}<br><b>Amount:</b> ₹{amount}<br><b>UTR:</b> <code>{utr}</code></p>
+    <form method="POST" action="/api/admin/quick-approve?order_id={order_id}&token={token}">
+      <button type="submit" class="btn">✅ Confirm &amp; Issue License Key</button>
+    </form>
+  </div>
+</body>
+</html>"""
