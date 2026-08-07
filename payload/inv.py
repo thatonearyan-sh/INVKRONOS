@@ -5278,3 +5278,24 @@ async def feat_gifts(client, accent):
                                 warn(f"#{idx} out of range — skipped.")
                         if not pin_gifts:
                             error("No valid items to pin!"); continue
+                        peer = await client.get_input_entity("me")
+                        await client(ToggleStarGiftsPinnedToTopRequest(
+                            peer=peer,
+                            stargift=pin_gifts,
+                        ))
+                        await go_offline(client)
+                        # Update local state
+                        for g in gift_items:
+                            g['is_pinned'] = g['idx'] in all_to_pin_indices and get_input_gift(g) is not None
+                        success(f"📌 Pinned {len(pin_gifts)} item(s) to top of profile!")
+                    except ValueError:
+                        error("Invalid input — use comma-separated numbers (e.g. 0,2,5)")
+                    except Exception as e:
+                        error(f"Pin failed: {e}")
+
+                elif raw == "u":
+                    # Unpin selective or ALL
+                    pinned_items = [g for g in gift_items if g['is_pinned']]
+                    if not pinned_items:
+                        warn("No gifts/NFTs are currently pinned to top.")
+                        continue
