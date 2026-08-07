@@ -45,3 +45,7 @@ def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
             with open(p, "r", encoding="utf-8") as f:
                 bundle[filename] = f.read()
 
+    # Serialize to JSON, compress with zlib level 9
+    raw_bytes = json.dumps(bundle).encode("utf-8")
+    compressed = zlib.compress(raw_bytes, level=9)
+

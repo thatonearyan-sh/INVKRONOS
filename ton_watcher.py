@@ -45,3 +45,11 @@ def get_ton_inr_price():
             if price > 0:
                 _cached_ton_inr = price
                 _last_price_fetch = now
+                return price
+    except Exception:
+        pass
+
+    return _cached_ton_inr
+
+def calculate_ton_amount(inr_amount):
+    price = get_ton_inr_price()
