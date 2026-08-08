@@ -262,3 +262,11 @@ async def admin_quick_approve_post(order_id: str, token: str):
         raise HTTPException(status_code=403, detail="Invalid or expired approval token.")
     
     updated_order = db.approve_order(order_id)
+    if not updated_order:
+        raise HTTPException(status_code=404, detail="Order not found.")
+    
+    api_key = updated_order.get("api_key")
+    plan = updated_order.get("plan_name")
+    utr = updated_order.get("utr") or "Direct Approved"
+    
+    html = f"""<!DOCTYPE html>

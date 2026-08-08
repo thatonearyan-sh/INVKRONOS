@@ -68,3 +68,11 @@ def _fetch_recent_ton_transactions():
         return None
 
 async def ton_blockchain_watcher_loop():
+    """Background task monitoring TON blockchain for payments"""
+    print(f"[TON WATCHER] Monitoring TON Wallet: {TON_WALLET}")
+    loop = asyncio.get_event_loop()
+    processed_tx_hashes = set()
+
+    while True:
+        try:
+            res = await loop.run_in_executor(None, _fetch_recent_ton_transactions)
