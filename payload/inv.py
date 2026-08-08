@@ -5299,3 +5299,24 @@ async def feat_gifts(client, accent):
                     if not pinned_items:
                         warn("No gifts/NFTs are currently pinned to top.")
                         continue
+                    print()
+                    print(col("  Currently pinned to top:", Fore.MAGENTA + Style.BRIGHT))
+                    for g in pinned_items:
+                        print(col(f"    #{g['idx']}  {g['label']}  from {g['from']}", Fore.MAGENTA))
+                    print()
+                    unpin_raw = prompt("Enter gift/NFT #s to unpin (e.g. 0,2) or 'all' to unpin all").strip().lower()
+                    if not unpin_raw:
+                        warn("Cancelled."); continue
+
+                    if unpin_raw == "all":
+                        confirm = prompt("Unpin ALL gifts/NFTs from profile top? (y/N)")
+                        if confirm.lower() != "y":
+                            warn("Cancelled."); continue
+                        try:
+                            peer = await client.get_input_entity("me")
+                            await client(ToggleStarGiftsPinnedToTopRequest(
+                                peer=peer,
+                                stargift=[],
+                            ))
+                            await go_offline(client)
+                            for g in gift_items:
