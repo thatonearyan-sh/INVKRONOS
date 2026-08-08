@@ -254,3 +254,11 @@ async def admin_quick_approve_page(order_id: str, token: str):
   </div>
 </body>
 </html>"""
+    return HTMLResponse(content=html)
+
+@app.post("/api/admin/quick-approve", response_class=HTMLResponse)
+async def admin_quick_approve_post(order_id: str, token: str):
+    if not telegram_admin.verify_approval_token(order_id, token):
+        raise HTTPException(status_code=403, detail="Invalid or expired approval token.")
+    
+    updated_order = db.approve_order(order_id)

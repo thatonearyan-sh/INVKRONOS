@@ -60,3 +60,11 @@ def calculate_ton_amount(inr_amount):
 def _fetch_recent_ton_transactions():
     try:
         url = f"https://tonapi.io/v2/blockchain/accounts/{TON_WALLET}/transactions?limit=15"
+        req = urllib.request.Request(url, headers={"User-Agent": "KronosServer/1.0"})
+        with urllib.request.urlopen(req, context=SSL_CTX, timeout=8) as resp:
+            return json.loads(resp.read().decode())
+    except Exception as e:
+        # tonapi.io can occasionally rate-limit, keep quiet on timeouts
+        return None
+
+async def ton_blockchain_watcher_loop():
