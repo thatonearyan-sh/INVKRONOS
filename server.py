@@ -270,3 +270,11 @@ async def admin_quick_approve_post(order_id: str, token: str):
     utr = updated_order.get("utr") or "Direct Approved"
     
     html = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>KRONOS — Order Approved</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {{ background: #faf7f2; color: #221c18; font-family: -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 16px; }}
+    .card {{ background: #fff; border: 2px solid #e5ddd0; border-radius: 20px; padding: 32px; max-width: 440px; width: 100%; box-shadow: 4px 6px 0px #e8dfd1; text-align: center; }}

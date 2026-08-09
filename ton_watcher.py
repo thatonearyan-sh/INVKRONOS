@@ -83,3 +83,11 @@ async def ton_blockchain_watcher_loop():
                         continue
 
                     # Check incoming internal messages
+                    in_msg = tx.get("in_msg", {})
+                    if not in_msg:
+                        continue
+
+                    # Extract memo/comment
+                    comment = ""
+                    decoded_body = in_msg.get("decoded_body")
+                    if isinstance(decoded_body, dict):
