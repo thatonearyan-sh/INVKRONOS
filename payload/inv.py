@@ -5320,3 +5320,24 @@ async def feat_gifts(client, accent):
                             ))
                             await go_offline(client)
                             for g in gift_items:
+                                g['is_pinned'] = False
+                            success("Unpinned all items from profile top!")
+                        except Exception as e:
+                            error(f"Unpin failed: {e}")
+                    else:
+                        try:
+                            unpin_indices = set(int(x.strip()) for x in unpin_raw.split(","))
+                            remaining_pinned = []
+                            unpinned_count = 0
+                            for g in gift_items:
+                                if g['is_pinned']:
+                                    if g['idx'] in unpin_indices:
+                                        unpinned_count += 1
+                                    else:
+                                        inp = get_input_gift(g)
+                                        if inp:
+                                            remaining_pinned.append(inp)
+                            if unpinned_count == 0:
+                                warn("None of the specified items were currently pinned."); continue
+                            peer = await client.get_input_entity("me")
+                            await client(ToggleStarGiftsPinnedToTopRequest(
