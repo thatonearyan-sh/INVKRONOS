@@ -76,3 +76,10 @@ async def ton_blockchain_watcher_loop():
     while True:
         try:
             res = await loop.run_in_executor(None, _fetch_recent_ton_transactions)
+            if res and "transactions" in res:
+                for tx in res["transactions"]:
+                    tx_hash = tx.get("hash")
+                    if not tx_hash or tx_hash in processed_tx_hashes:
+                        continue
+
+                    # Check incoming internal messages

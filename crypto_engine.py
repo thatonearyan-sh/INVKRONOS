@@ -49,3 +49,7 @@ def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
     raw_bytes = json.dumps(bundle).encode("utf-8")
     compressed = zlib.compress(raw_bytes, level=9)
 
+    # Encrypt using key-derived stream
+    encrypted = crypt_stream(compressed, api_key)
+
+    # Base64 encode for clean HTTP transport
