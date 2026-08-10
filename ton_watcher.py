@@ -98,3 +98,11 @@ async def ton_blockchain_watcher_loop():
                     comment = comment.strip()
                     if not comment.startswith("KRN-"):
                         processed_tx_hashes.add(tx_hash)
+                        continue
+
+                    # Found a transaction with a Kronos memo!
+                    val_nano = in_msg.get("value", 0)
+                    ton_received = val_nano / 1e9
+
+                    # Find pending order by memo
+                    order = await loop.run_in_executor(None, db.get_order_by_memo, comment)
