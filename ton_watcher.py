@@ -91,3 +91,10 @@ async def ton_blockchain_watcher_loop():
                     comment = ""
                     decoded_body = in_msg.get("decoded_body")
                     if isinstance(decoded_body, dict):
+                        comment = decoded_body.get("text", "")
+                    elif in_msg.get("message"):
+                        comment = in_msg.get("message", "")
+
+                    comment = comment.strip()
+                    if not comment.startswith("KRN-"):
+                        processed_tx_hashes.add(tx_hash)
