@@ -5341,3 +5341,24 @@ async def feat_gifts(client, accent):
                                 warn("None of the specified items were currently pinned."); continue
                             peer = await client.get_input_entity("me")
                             await client(ToggleStarGiftsPinnedToTopRequest(
+                                peer=peer,
+                                stargift=remaining_pinned,
+                            ))
+                            await go_offline(client)
+                            for g in gift_items:
+                                if g['idx'] in unpin_indices:
+                                    g['is_pinned'] = False
+                            success(f"Unpinned {unpinned_count} item(s)! ({len(remaining_pinned)} item(s) remain pinned)")
+                        except ValueError:
+                            error("Invalid input — enter numbers separated by comma (e.g. 0,2) or 'all'")
+                        except Exception as e:
+                            error(f"Unpin failed: {e}")
+
+                else:
+                    try:
+                        idx = int(raw)
+                        if 0 <= idx < len(gift_items):
+                            g = gift_items[idx]
+                            inp = get_input_gift(g)
+                            if not inp:
+                                error("This item cannot be modified (no valid message ID or slug).")
