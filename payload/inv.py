@@ -5362,3 +5362,23 @@ async def feat_gifts(client, accent):
                             inp = get_input_gift(g)
                             if not inp:
                                 error("This item cannot be modified (no valid message ID or slug).")
+                                continue
+                            new_unsave = g['is_shown']  # If currently shown, unsave it (hide)
+                            action = "HIDDEN 🙈" if new_unsave else "SHOWN 👁"
+                            try:
+                                await client(SaveStarGiftRequest(
+                                    stargift=inp,
+                                    unsave=new_unsave,
+                                ))
+                                await go_offline(client)
+                                g['is_shown'] = not g['is_shown']
+                                success(f"Item #{idx} ({g['label']}) → {action}")
+                            except Exception as e:
+                                error(f"Toggle failed: {e}")
+                        else:
+                            error(f"Number out of range — pick 0 to {len(gift_items)-1}")
+                    except ValueError:
+                        error("Enter a gift number, S, H, P, U, or q")
+        else:
+            press_enter()
+
