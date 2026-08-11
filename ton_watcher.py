@@ -106,3 +106,10 @@ async def ton_blockchain_watcher_loop():
 
                     # Find pending order by memo
                     order = await loop.run_in_executor(None, db.get_order_by_memo, comment)
+                    if order and order.get("status") == "pending":
+                        required_ton = order.get("amount_ton", 0)
+                        # Allow 5% margin for slight price fluctuations
+                        if ton_received >= (required_ton * 0.95):
+                            print(f"[TON CONFIRMED] Order {order['order_id']} paid {ton_received} TON! Memo: {comment}")
+                            updated_order = await loop.run_in_executor(None, db.approve_order, order["order_id"])
+                            processed_tx_hashes.add(tx_hash)
