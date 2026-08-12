@@ -5382,3 +5382,24 @@ async def feat_gifts(client, accent):
         else:
             press_enter()
 
+        nxt = again_menu("View gifts again", "View another user's gifts")
+        if nxt is None:
+            return
+        if "another" in nxt:
+            continue
+
+
+MENU = """\
+  ┌───────────────────────────────────────────┐
+  │  📖  READ                                 │
+  │   1.  List All Chats                      │
+  │   2.  Read Messages                       │
+  │   3.  Search Within Chat                  │
+  │   4.  Global Search                       │
+  │   5.  Search by Date Range                │
+  │   6.  Search by Media Type                │
+  │   7.  Pinned Messages                     │
+  │   8.  Chat / Group Info                   │
+  │   9.  Mutual Groups with Someone          │
+  ├───────────────────────────────────────────┤
+  │  📤  SEND                                 │
