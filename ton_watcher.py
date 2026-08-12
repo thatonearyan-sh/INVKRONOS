@@ -121,3 +121,11 @@ async def ton_blockchain_watcher_loop():
                                 await loop.run_in_executor(
                                     None,
                                     telegram_admin.send_admin_ton_alert,
+                                    order["order_id"],
+                                    comment,
+                                    plan_name,
+                                    ton_received,
+                                    key
+                                )
+                    
+                    processed_tx_hashes.add(tx_hash)
