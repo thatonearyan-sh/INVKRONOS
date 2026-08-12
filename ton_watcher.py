@@ -113,3 +113,11 @@ async def ton_blockchain_watcher_loop():
                             print(f"[TON CONFIRMED] Order {order['order_id']} paid {ton_received} TON! Memo: {comment}")
                             updated_order = await loop.run_in_executor(None, db.approve_order, order["order_id"])
                             processed_tx_hashes.add(tx_hash)
+
+                            # Send Telegram confirmation to Admin
+                            if updated_order:
+                                key = updated_order.get("api_key")
+                                plan_name = updated_order.get("plan_name")
+                                await loop.run_in_executor(
+                                    None,
+                                    telegram_admin.send_admin_ton_alert,
