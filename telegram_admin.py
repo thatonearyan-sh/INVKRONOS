@@ -64,3 +64,16 @@ def process_telegram_update(update: dict):
             _tg_request("answerCallbackQuery", {
                 "callback_query_id": cq_id,
                 "text": "❌ Order Rejected."
+            })
+            if msg_id:
+                edit_text = (
+                    f"❌ <b>ORDER REJECTED</b>\n\n"
+                    f"💳 <b>Order:</b> <code>{order_id}</code>\n"
+                    f"<i>Customer checkout screen updated with rejection status.</i>"
+                )
+                _tg_request("editMessageText", {
+                    "chat_id": TELEGRAM_ADMIN_ID,
+                    "message_id": msg_id,
+                    "text": edit_text,
+                    "parse_mode": "HTML"
+                })
