@@ -52,3 +52,15 @@ def process_telegram_update(update: dict):
                         f"🔑 <b>Generated Key:</b>\n<code>{key}</code>\n\n"
                         f"<i>The customer browser screen has automatically unlocked.</i>"
                     )
+                    _tg_request("editMessageText", {
+                        "chat_id": TELEGRAM_ADMIN_ID,
+                        "message_id": msg_id,
+                        "text": edit_text,
+                        "parse_mode": "HTML"
+                    })
+        elif data.startswith("rejc:"):
+            order_id = data.split(":", 1)[1]
+            db.reject_order(order_id, "Rejected by Admin")
+            _tg_request("answerCallbackQuery", {
+                "callback_query_id": cq_id,
+                "text": "❌ Order Rejected."
