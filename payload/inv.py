@@ -5403,3 +5403,24 @@ MENU = """\
   │   9.  Mutual Groups with Someone          │
   ├───────────────────────────────────────────┤
   │  📤  SEND                                 │
+  │  10.  Send Message                        │
+  │  11.  Reply to Message                    │
+  │  12.  Schedule Message                    │
+  │  13.  Delete Message                      │
+  │  14.  Forward Message                     │
+  ├───────────────────────────────────────────┤
+  │  📁  MEDIA / EXPORT                       │
+  │  15.  Forward Media → Another Account     │
+  │  16.  Export Chat  (TXT / JSON)           │
+  │  17.  Download Media  (single file)       │
+  │  18.  Bulk Download  (all media in chat)  │
+  ├───────────────────────────────────────────┤
+  │  🕵️   STEALTH INTEL                        │
+  │  19.  Profile Stalker                     │
+  │  20.  Online Watcher                      │
+  │  21.  Find User                           │
+  │  22.  Auto-Reply Bot                      │
+  │  23.  Bulk Send                           │
+  │  24.  Block / Unblock                     │
+  ├───────────────────────────────────────────┤
+  │  💀  EXTREME  /  DEEP INTEL               │
