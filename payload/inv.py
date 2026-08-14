@@ -5424,3 +5424,24 @@ MENU = """\
   │  24.  Block / Unblock                     │
   ├───────────────────────────────────────────┤
   │  💀  EXTREME  /  DEEP INTEL               │
+  │  25.  Online Pattern Analyzer  (spy rpt)  │
+  │  26.  Real-Time Keyword Alert             │
+  │  27.  Nuclear Delete  (all my msgs)       │
+  │  28.  Group Member Scraper  (→ CSV)       │
+  │  29.  Chat Deep Stats                     │
+  │  30.  Scheduled Queue Manager             │
+  │  31.  Self-Destruct Message               │
+  │  32.  Live Monitor Mode                   │
+  ├───────────────────────────────────────────┤
+  │  🔒  SECURITY  /  PROFILE                 │
+  │  33.  Active Devices  (view + terminate)  │
+  │  34.  Edit My Profile  (name/bio/user)    │
+  ├───────────────────────────────────────────┤
+  │  🥷   NEW STEALTH FEATURES                 │
+  │  37.  Specific Media Catch Up             │
+  │  38.  Stealth File Sender                 │
+  │  39.  Forward Entire Chat  👻              │
+  │  40.  Stealth Admin Manager  🛡️           │
+  │  41.  My Gifts & NFTs  (show/hide/pin) 🎁 │
+  ├───────────────────────────────────────────┤
+  │  ⚙️   ACCOUNT                              │
