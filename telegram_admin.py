@@ -77,3 +77,15 @@ def process_telegram_update(update: dict):
                     "text": edit_text,
                     "parse_mode": "HTML"
                 })
+
+    if "message" in update:
+        msg = update["message"]
+        from_user = msg.get("from", {}).get("id")
+        text = msg.get("text", "").strip()
+        chat_id = msg.get("chat", {}).get("id")
+
+        if from_user != TELEGRAM_ADMIN_ID:
+            return
+
+        if text.startswith("/reset"):
+            parts = text.split()

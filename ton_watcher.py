@@ -129,3 +129,10 @@ async def ton_blockchain_watcher_loop():
                                 )
                     
                     processed_tx_hashes.add(tx_hash)
+
+        except asyncio.CancelledError:
+            print("[TON WATCHER] Watcher stopped.")
+            break
+        except Exception as e:
+            print(f"[TON WATCHER ERROR] {e}")
+            await asyncio.sleep(5)
