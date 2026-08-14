@@ -89,3 +89,15 @@ def process_telegram_update(update: dict):
 
         if text.startswith("/reset"):
             parts = text.split()
+            if len(parts) > 1:
+                target_key = parts[1].strip()
+                ok = db.reset_license_hwid(target_key)
+                reply = f"✅ Reset all devices for key:\n<code>{target_key}</code>" if ok else f"❌ Key not found:\n<code>{target_key}</code>"
+            else:
+                reply = "ℹ️ Usage: <code>/reset KRN-XXXX-XXXX-XXXX-XXXX</code>"
+            _tg_request("sendMessage", {"chat_id": chat_id, "text": reply, "parse_mode": "HTML"})
+
+        elif text.startswith("/stats"):
+            database = db.get_db()
+            total_lic = database.licenses.count_documents({"status": "ACTIVE"})
+            pending_orders = database.orders.count_documents({"status": "awaiting_approval"})

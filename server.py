@@ -286,3 +286,11 @@ async def admin_quick_approve_post(order_id: str, token: str):
 </head>
 <body>
   <div class="card">
+    <div class="badge">APPROVED &amp; DELIVERED</div>
+    <h2>Order {order_id}</h2>
+    <p><b>Plan:</b> {plan}<br><b>UTR:</b> {utr}</p>
+    <div class="key">{api_key}</div>
+    <p>The customer browser screen has automatically unlocked and their key is active.</p>
+  </div>
+</body>
+</html>"""
