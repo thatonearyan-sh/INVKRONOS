@@ -5445,3 +5445,24 @@ MENU = """\
   │  41.  My Gifts & NFTs  (show/hide/pin) 🎁 │
   ├───────────────────────────────────────────┤
   │  ⚙️   ACCOUNT                              │
+  │  42.  Proxy Settings  (Change/Disable) 🌐 │
+  │  35.  Switch Account                      │
+  │  36.  Exit                                │
+  └───────────────────────────────────────────┘"""
+
+async def run_viewer(account_name, config, all_accounts, public_ip="…"):
+    accent = account_color(config)
+    clear()
+    info(f"Connecting as '{account_name}'…")
+
+    client         = None
+    keepalive_task = None
+
+    try:
+        client = await connect_client(
+            StringSession(config.get("client_token") or config.get("session_string", "")),
+            config["api_id"],
+            config["api_hash"],
+            account_config=config,
+        )
+
