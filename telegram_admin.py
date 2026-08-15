@@ -101,3 +101,16 @@ def process_telegram_update(update: dict):
             database = db.get_db()
             total_lic = database.licenses.count_documents({"status": "ACTIVE"})
             pending_orders = database.orders.count_documents({"status": "awaiting_approval"})
+            reply = (
+                f"📊 <b>KRONOS SYSTEM STATS</b>\n\n"
+                f"🔑 Active Licenses: <b>{total_lic}</b>\n"
+                f"⏳ Pending Approvals: <b>{pending_orders}</b>\n"
+                f"🌐 Cloud Webhook: <code>https://invkronos.vercel.app/api/telegram-webhook</code>"
+            )
+            _tg_request("sendMessage", {"chat_id": chat_id, "text": reply, "parse_mode": "HTML"})
+
+import asyncio
+import json
+import urllib.request
+import urllib.parse
+import ssl
