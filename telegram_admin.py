@@ -114,3 +114,15 @@ import json
 import urllib.request
 import urllib.parse
 import ssl
+import certifi
+from datetime import datetime, timezone, timedelta
+from config import TELEGRAM_BOT_TOKEN, TELEGRAM_ADMIN_ID
+import db
+
+BOT_API_URL = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}"
+SSL_CTX = ssl.create_default_context(cafile=certifi.where())
+
+def _tg_request(method, payload):
+    try:
+        url = f"{BOT_API_URL}/{method}"
+        data = json.dumps(payload).encode("utf-8")
