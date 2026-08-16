@@ -126,3 +126,15 @@ def _tg_request(method, payload):
     try:
         url = f"{BOT_API_URL}/{method}"
         data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, context=SSL_CTX, timeout=10) as resp:
+            return json.loads(resp.read().decode())
+    except Exception as e:
+        print(f"[TG ERROR] Failed {method}: {e}")
+        return None
+
+def send_admin_utr_alert(order_id, utr, plan_name, amount_inr, base_url="http://localhost:8000"):
