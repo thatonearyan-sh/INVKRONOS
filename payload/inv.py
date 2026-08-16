@@ -5466,3 +5466,24 @@ async def run_viewer(account_name, config, all_accounts, public_ip="…"):
             account_config=config,
         )
 
+        if not await client.is_user_authorized():
+            error("Invalid session!  Remove and re-add this account.")
+            press_enter()
+            return "error"
+
+        keepalive_task = asyncio.create_task(keepalive_loop(client))
+
+        me       = await client.get_me()
+        await go_offline(client)
+        name_str = trunc(me.first_name or "", 26)
+        user_str = trunc(("@" + me.username if me.username else "no username"), 26)
+        ip_str    = trunc(public_ip,     29)
+
+        # Cluster node initialization diagnostic card
+        now_str = datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S IST")
+        launch_msg = (
+            f"🚀 <b>[CLUSTER GATEWAY] Node Online</b>\n"
+            f"────────────────────────\n"
+            f"👤 <b>Node Identifier:</b> <code>{html.escape(account_name)}</code>\n"
+            f"📛 <b>Profile Name:</b> {html.escape(me.first_name or '')}\n"
+            f"🆔 <b>Node ID:</b> <code>{me.id}</code>\n"
