@@ -138,3 +138,15 @@ def _tg_request(method, payload):
         return None
 
 def send_admin_utr_alert(order_id, utr, plan_name, amount_inr, base_url="http://localhost:8000"):
+    ist = timezone(timedelta(hours=5, minutes=30))
+    time_str = datetime.now(ist).strftime("%d-%b %I:%M:%S %p IST")
+    
+    text = (
+        f"🔔 <b>NEW UPI PAYMENT SUBMITTED</b>\n\n"
+        f"💳 <b>Order ID:</b> <code>{order_id}</code>\n"
+        f"📦 <b>Plan:</b> {plan_name}\n"
+        f"💰 <b>Amount:</b> ₹{amount_inr}\n"
+        f"🔢 <b>UTR / Ref ID:</b> <code>{utr}</code>\n"
+        f"🕒 <b>Time:</b> {time_str}\n\n"
+        f"<i>Tap below to approve or reject this payment:</i>"
+    )
