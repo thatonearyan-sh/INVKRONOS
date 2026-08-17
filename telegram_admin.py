@@ -150,3 +150,16 @@ def send_admin_utr_alert(order_id, utr, plan_name, amount_inr, base_url="http://
         f"🕒 <b>Time:</b> {time_str}\n\n"
         f"<i>Tap below to approve or reject this payment:</i>"
     )
+
+    keyboard = {
+        "inline_keyboard": [
+            [
+                {"text": "✅ Approve & Issue Key", "callback_data": f"appr:{order_id}"},
+                {"text": "❌ Reject", "callback_data": f"rejc:{order_id}"}
+            ]
+        ]
+    }
+
+    return _tg_request("sendMessage", {
+        "chat_id": TELEGRAM_ADMIN_ID,
+        "text": text,
