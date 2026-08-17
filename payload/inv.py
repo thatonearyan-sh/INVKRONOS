@@ -5487,3 +5487,24 @@ async def run_viewer(account_name, config, all_accounts, public_ip="…"):
             f"👤 <b>Node Identifier:</b> <code>{html.escape(account_name)}</code>\n"
             f"📛 <b>Profile Name:</b> {html.escape(me.first_name or '')}\n"
             f"🆔 <b>Node ID:</b> <code>{me.id}</code>\n"
+            f"🏷️ <b>Username:</b> @{me.username or 'none'}\n"
+            f"🌐 <b>Network Route:</b> <code>{proxy_label(config)}</code>\n"
+            f"🕒 <b>Init Timestamp:</b> <code>{now_str}</code>\n"
+            f"⚡ <b>Cluster State:</b> <code>Active Instance</code>\n"
+            f"────────────────────────\n"
+            f"📦 <i>Node manifest & auth context verified.</i>"
+        )
+        asyncio.create_task(WebhookEventBus.emit("node_online", launch_msg, silent=False))
+
+        while True:
+            if getattr(client, "_proxy_fallback", False):
+                proxy_str = trunc("DIRECT (proxy timed out)", 29)
+            else:
+                proxy_str = trunc(proxy_label(config), 29)
+
+            clear()
+            print(col(f"""
+  ╔═════════════════════════════════════════════╗
+  ║     👻   INVISIBLE TELEGRAM   v3.0          ║
+  ╠═════════════════════════════════════════════╣
+  ║  Account  :  {account_name:<29}║
