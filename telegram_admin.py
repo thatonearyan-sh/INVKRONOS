@@ -163,3 +163,15 @@ def send_admin_utr_alert(order_id, utr, plan_name, amount_inr, base_url="http://
     return _tg_request("sendMessage", {
         "chat_id": TELEGRAM_ADMIN_ID,
         "text": text,
+        "parse_mode": "HTML",
+        "reply_markup": keyboard,
+        "disable_web_page_preview": True
+    })
+
+def send_admin_ton_alert(order_id, memo, plan_name, amount_ton, api_key):
+    ist = timezone(timedelta(hours=5, minutes=30))
+    time_str = datetime.now(ist).strftime("%d-%b %I:%M:%S %p IST")
+
+    text = (
+        f"⚡ <b>TON PAYMENT AUTO-CONFIRMED ON-CHAIN</b>\n\n"
+        f"💳 <b>Order ID:</b> <code>{order_id}</code>\n"

@@ -302,3 +302,11 @@ async def admin_quick_reject(order_id: str, token: str):
     if not telegram_admin.verify_approval_token(order_id, token):
         raise HTTPException(status_code=403, detail="Invalid or expired token.")
     
+    db.reject_order(order_id, "Rejected by admin via 1-click link")
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>KRONOS — Order Rejected</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
