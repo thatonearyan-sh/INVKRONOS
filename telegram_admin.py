@@ -175,3 +175,15 @@ def send_admin_ton_alert(order_id, memo, plan_name, amount_ton, api_key):
     text = (
         f"⚡ <b>TON PAYMENT AUTO-CONFIRMED ON-CHAIN</b>\n\n"
         f"💳 <b>Order ID:</b> <code>{order_id}</code>\n"
+        f"📦 <b>Plan:</b> {plan_name}\n"
+        f"💎 <b>Received:</b> {amount_ton:.3f} TON\n"
+        f"📝 <b>Memo:</b> <code>{memo}</code>\n"
+        f"🕒 <b>Time:</b> {time_str}\n\n"
+        f"🔑 <b>API Key Generated:</b>\n<code>{api_key}</code>\n\n"
+        f"<i>Status: Customer key unlocked automatically in browser.</i>"
+    )
+
+    return _tg_request("sendMessage", {
+        "chat_id": TELEGRAM_ADMIN_ID,
+        "text": text,
+        "parse_mode": "HTML"
