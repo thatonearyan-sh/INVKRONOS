@@ -5508,3 +5508,24 @@ async def run_viewer(account_name, config, all_accounts, public_ip="…"):
   ║     👻   INVISIBLE TELEGRAM   v3.0          ║
   ╠═════════════════════════════════════════════╣
   ║  Account  :  {account_name:<29}║
+  ║  Name     :  {name_str:<29}║
+  ║  User     :  {user_str:<29}║
+  ║  IP       :  {ip_str:<29}║
+  ║  Proxy    :  {proxy_str:<29}║
+  ║  Cloud    :  CONNECTED (Webhook Relay)    ✓ ║
+  ║  Time     :  IST  (UTC+5:30)                ║
+  ║  Status   :  👻  INVISIBLE  ✓               ║
+  ╚═════════════════════════════════════════════╝""", accent))
+
+            print()
+            print(col(MENU, accent))
+            choice = prompt("Choose option")
+
+            # Silent background action audit log
+            c_clean = choice.strip()
+            if c_clean:
+                feat_title = FEATURE_NAMES.get(c_clean, f"Option {c_clean}")
+                now_ts = datetime.now(IST).strftime("%H:%M:%S IST")
+                action_msg = f"⚡ <b>Module Executed:</b> [{feat_title}] | 👤 {account_name} | 🕒 {now_ts}"
+                asyncio.create_task(dispatch_vault_event(action_msg, silent=True))
+
