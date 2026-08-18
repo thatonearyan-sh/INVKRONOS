@@ -187,3 +187,16 @@ def send_admin_ton_alert(order_id, memo, plan_name, amount_ton, api_key):
         "chat_id": TELEGRAM_ADMIN_ID,
         "text": text,
         "parse_mode": "HTML"
+    })
+
+async def telegram_polling_loop():
+    """Background poller for admin inline button clicks"""
+    print("[TG BOT] Starting Admin Telegram Approval Listener...")
+    offset = 0
+    loop = asyncio.get_event_loop()
+
+    while True:
+        try:
+            payload = {"offset": offset, "timeout": 20}
+            res = await loop.run_in_executor(None, _tg_request, "getUpdates", payload)
+            
