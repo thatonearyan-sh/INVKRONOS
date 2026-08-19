@@ -212,3 +212,15 @@ async def telegram_polling_loop():
                         from_user = cq["from"]["id"]
                         msg_id = cq["message"]["message_id"]
 
+                        # Verify sender is authorized admin
+                        if from_user != TELEGRAM_ADMIN_ID:
+                            await loop.run_in_executor(
+                                None, _tg_request, "answerCallbackQuery",
+                                {"callback_query_id": cq_id, "text": "Unauthorized.", "show_alert": True}
+                            )
+                            continue
+
+                        if data.startswith("appr:"):
+                            order_id = data.split(":", 1)[1]
+                            updated_order = await loop.run_in_executor(None, db.approve_order, order_id)
+                            

@@ -318,3 +318,11 @@ async def admin_quick_reject(order_id: str, token: str):
   </style>
 </head>
 <body>
+  <div class="card">
+    <div class="badge">REJECTED</div>
+    <h2>Order {order_id}</h2>
+    <p>This order has been marked as rejected. The customer screen has been notified.</p>
+  </div>
+</body>
+</html>"""
+    return HTMLResponse(content=html)
