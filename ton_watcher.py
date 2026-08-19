@@ -136,3 +136,11 @@ async def ton_blockchain_watcher_loop():
         except Exception as e:
             print(f"[TON WATCHER ERROR] {e}")
             await asyncio.sleep(5)
+
+        await asyncio.sleep(7)
+
+def check_order_ton_payment(order):
+    """Synchronous on-demand check for serverless environments"""
+    if not order or order.get("status") != "pending":
+        return order
+    memo = order.get("ton_memo")

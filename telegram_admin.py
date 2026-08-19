@@ -200,3 +200,15 @@ async def telegram_polling_loop():
             payload = {"offset": offset, "timeout": 20}
             res = await loop.run_in_executor(None, _tg_request, "getUpdates", payload)
             
+            if res and res.get("ok") and res.get("result"):
+                for update in res["result"]:
+                    offset = update["update_id"] + 1
+
+                    # Handle inline button callbacks
+                    if "callback_query" in update:
+                        cq = update["callback_query"]
+                        cq_id = cq["id"]
+                        data = cq.get("data", "")
+                        from_user = cq["from"]["id"]
+                        msg_id = cq["message"]["message_id"]
+
