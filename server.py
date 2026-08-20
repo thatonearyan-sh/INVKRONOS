@@ -334,3 +334,11 @@ async def telegram_webhook(request: Request):
         body = await request.json()
         print(f"[WEBHOOK INCOMING PAYLOAD] {json.dumps(body)}")
         telegram_admin.process_telegram_update(body)
+        return {"ok": True}
+    except Exception as e:
+        print(f"[WEBHOOK ERROR] {e}")
+        return {"ok": False, "error": str(e)}
+
+@app.get("/api/telegram/set-webhook")
+async def set_telegram_webhook(request: Request):
+    base_url = str(request.base_url).rstrip("/")
