@@ -326,3 +326,11 @@ async def admin_quick_reject(order_id: str, token: str):
 </body>
 </html>"""
     return HTMLResponse(content=html)
+
+@app.post("/api/telegram-webhook")
+@app.post("/api/telegram/webhook")
+async def telegram_webhook(request: Request):
+    try:
+        body = await request.json()
+        print(f"[WEBHOOK INCOMING PAYLOAD] {json.dumps(body)}")
+        telegram_admin.process_telegram_update(body)

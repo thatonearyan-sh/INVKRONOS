@@ -224,3 +224,15 @@ async def telegram_polling_loop():
                             order_id = data.split(":", 1)[1]
                             updated_order = await loop.run_in_executor(None, db.approve_order, order_id)
                             
+                            if updated_order:
+                                key = updated_order.get("api_key")
+                                plan = updated_order.get("plan_name")
+                                utr = updated_order.get("utr")
+                                
+                                # Acknowledge callback
+                                await loop.run_in_executor(
+                                    None, _tg_request, "answerCallbackQuery",
+                                    {"callback_query_id": cq_id, "text": "✅ Order Approved! Key Created."}
+                                )
+
+                                # Edit admin message
