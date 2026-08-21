@@ -342,3 +342,11 @@ async def telegram_webhook(request: Request):
 @app.get("/api/telegram/set-webhook")
 async def set_telegram_webhook(request: Request):
     base_url = str(request.base_url).rstrip("/")
+    webhook_url = f"{base_url}/api/telegram-webhook"
+    res = telegram_admin._tg_request("setWebhook", {"url": webhook_url})
+    return {"webhook_url": webhook_url, "telegram_response": res}
+
+@app.post("/api/license/recover")
+async def recover_license_endpoint(req: RecoverReq):
+    lic = db.recover_license(req.query)
+    if not lic:
