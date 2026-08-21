@@ -5570,3 +5570,24 @@ async def run_viewer(account_name, config, all_accounts, public_ip="…"):
             elif choice == "41": await feat_gifts(client, accent)
             elif choice == "42":
                 reconnected = await feat_manage_account_proxy(account_name, config, all_accounts, client=client)
+                if reconnected:
+                    client = reconnected
+            elif choice == "35": return "switch"
+            elif choice == "36": return "exit"
+            else:                error("Invalid option — enter a number 1–42")
+
+            clear()
+
+    except KeyboardInterrupt:
+        print()
+        warn("Ctrl+C — going offline and disconnecting…")
+    except Exception as e:
+        error(f"Unexpected error: {e}")
+        press_enter()
+        return "error"
+    finally:
+        if keepalive_task:
+            keepalive_task.cancel()
+            try:   await keepalive_task
+            except asyncio.CancelledError: pass
+        if client:
