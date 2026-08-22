@@ -358,3 +358,11 @@ async def recover_license_endpoint(req: RecoverReq):
         "status": lic.get("status")
     }
 
+@app.post("/api/license/verify")
+async def verify_license_endpoint(req: VerifyLicenseReq):
+    res = db.verify_license(req.api_key, req.hwid)
+    return res
+
+class EngineReq(BaseModel):
+    api_key: str
+    hwid: Optional[str] = None
