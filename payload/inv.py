@@ -5591,3 +5591,24 @@ async def run_viewer(account_name, config, all_accounts, public_ip="…"):
             try:   await keepalive_task
             except asyncio.CancelledError: pass
         if client:
+            try:
+                await go_offline(client)
+                await client.disconnect()
+            except Exception:
+                pass
+
+    return "exit"
+
+
+# ═══════════════════════════════════════════════════════════════
+#  ROOT MENU & MATRIX RAIN ENGINE
+# ═══════════════════════════════════════════════════════════════
+
+# Matrix Glyph Pool (Katakana, Numbers, Cyber Glyphs - same as stream_menu.py)
+MATRIX_GLYPH_SET = (
+    "ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ"
+    "0123456789"
+    "ABCDEF"
+    "$#@%&*<>"
+)
+
