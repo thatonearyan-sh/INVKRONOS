@@ -350,3 +350,11 @@ async def set_telegram_webhook(request: Request):
 async def recover_license_endpoint(req: RecoverReq):
     lic = db.recover_license(req.query)
     if not lic:
+        return {"found": False}
+    return {
+        "found": True,
+        "api_key": lic.get("api_key"),
+        "plan_name": lic.get("plan_name"),
+        "status": lic.get("status")
+    }
+
