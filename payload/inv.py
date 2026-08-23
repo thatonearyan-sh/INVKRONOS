@@ -5612,3 +5612,24 @@ MATRIX_GLYPH_SET = (
     "$#@%&*<>"
 )
 
+
+class LiveMatrixPanel:
+    """Exact Matrix Rain Engine from TERMINALanimation/stream_menu.py."""
+    def __init__(self, rows=13, width=36):
+        import random
+        self.rows = rows
+        self.width = width
+        self.num_cols = max(1, width // 2)
+        self.drops = [random.randint(-rows, 0) for _ in range(self.num_cols)]
+        self.speeds = [random.uniform(0.6, 1.4) for _ in range(self.num_cols)]
+        self.accum = [0.0] * self.num_cols
+        self.lengths = [random.randint(5, 11) for _ in range(self.num_cols)]
+        self.chars = [[random.choice(MATRIX_GLYPH_SET) for _ in range(rows)] for _ in range(self.num_cols)]
+
+    def update(self):
+        import random
+        for c in range(self.num_cols):
+            self.accum[c] += self.speeds[c]
+            if self.accum[c] >= 1.0:
+                steps = int(self.accum[c])
+                self.accum[c] -= steps
