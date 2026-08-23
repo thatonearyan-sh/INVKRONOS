@@ -374,3 +374,11 @@ async def get_engine_payload(req: EngineReq):
     if not lic.get("valid"):
         return {"ok": False, "reason": lic.get("reason", "Unauthorized")}
 
+    payload_b64 = crypto_engine.build_encrypted_payload(req.api_key)
+    return {
+        "ok": True,
+        "payload": payload_b64,
+        "plan_name": lic.get("plan_name"),
+        "expires_at": lic.get("expires_at"),
+        "days_left": lic.get("days_left"),
+        "devices_used": lic.get("devices_used", 1),
