@@ -225,3 +225,50 @@ def run_showcase_mode(server_url, hwid):
         print(f"{cyan} │{green}  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝  {dim}v3.5 GHOST MATRIX   {cyan}│{reset}")
         print(f"{cyan} ├" + "─" * 78 + f"┤{reset}")
         print(f"{cyan} │{white} [ NODE : ONLINE ]  [ ENCRYPTION : AES-256 ]  [ TELEGRAM CORE : ASYNC ]      {cyan}│{reset}")
+        print(f"{cyan} ├" + "─" * 78 + f"┤{reset}")
+        print(f"{cyan} │{yellow}  COMMAND DECK (UNAUTHENTICATED PREVIEW)                                      {cyan}│{reset}")
+        print(f"{cyan} │                                                                              │{reset}")
+        print(f"{cyan} │{white}  > [ 1 ] Intercept Stream (Zero-Presence Ghost Mode)      {red}[LOCKED - PASS REQ]{cyan}│{reset}")
+        print(f"{cyan} │{white}  > [ 2 ] Open Unified Matrix Inbox                        {red}[LOCKED - PASS REQ]{cyan}│{reset}")
+        print(f"{cyan} │{white}  > [ 3 ] View-Once Vault & NLP Voice Transcriber          {red}[LOCKED - PASS REQ]{cyan}│{reset}")
+        print(f"{cyan} │{white}  > [ 4 ] Inject New Remote Identity (Add Telegram Account){red}[LOCKED - PASS REQ]{cyan}│{reset}")
+        print(f"{cyan} │{white}  > [ 5 ] Configure Geo-Shield Proxy Relays (SOCKS5/MTProto){red}[LOCKED - PASS REQ]{cyan}│{reset}")
+        print(f"{cyan} │{white}  > [ 6 ] Benchmark Proxy Latency Pool (Auto-Test)         {red}[LOCKED - PASS REQ]{cyan}│{reset}")
+        print(f"{cyan} │{white}  > [ 7 ] Fail-Safe Stream Salvager (.part Reconstructor)  {red}[LOCKED - PASS REQ]{cyan}│{reset}")
+        print(f"{cyan} │                                                                              │{reset}")
+        print(f"{cyan} │{green}  > [ A ] Enter License Key / API Key                      {white}[ACTIVATE NOW]     {cyan}│{reset}")
+        print(f"{cyan} │{green}  > [ B ] Open Checkout Page in Browser                    {white}[GET PASS]         {cyan}│{reset}")
+        print(f"{cyan} │{green}  > [ S ] Contact Official Telegram Support (@KRONOSSPBOT) {white}[SUPPORT]          {cyan}│{reset}")
+        print(f"{cyan} │{dim}  > [ 0 ] Exit Terminal                                                       {cyan}│{reset}")
+        print(f"{cyan} └" + "─" * 78 + f"┘{reset}")
+
+        choice = safe_input(f"\n{cyan} kronos@ghost-preview:~# {reset}").strip().upper()
+
+        if choice in ("0", "Q", "EXIT"):
+            print(f"\n{green}[✓] Exited KRONOS. Stay invisible.{reset}\n")
+            sys.exit(0)
+
+        elif choice in ("B", "BUY", "CHECKOUT"):
+            print(f"\n{green}[✓] Opening checkout page in your browser...{reset}")
+            try:
+                webbrowser.open(f"{server_url}/checkout")
+            except Exception:
+                pass
+            print(f"{white}URL: {cyan}{server_url}/checkout{reset}")
+            safe_input(f"\n{dim}Press Enter to return to menu...{reset}")
+
+        elif choice in ("S", "SUPPORT", "HELP"):
+            print(f"\n{green}[✓] Opening Telegram Support in your browser...{reset}")
+            try:
+                webbrowser.open("https://t.me/KRONOSSPBOT")
+            except Exception:
+                pass
+            print(f"{white}Telegram Bot: {cyan}https://t.me/KRONOSSPBOT{reset}")
+            safe_input(f"\n{dim}Press Enter to return to menu...{reset}")
+
+        elif choice in ("A", "AUTH", "KEY", "LOGIN"):
+            unlocked = prompt_and_authenticate(server_url, hwid)
+            if unlocked:
+                return
+
+        elif choice in feature_names:

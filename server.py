@@ -366,3 +366,11 @@ async def verify_license_endpoint(req: VerifyLicenseReq):
 class EngineReq(BaseModel):
     api_key: str
     hwid: Optional[str] = None
+
+@app.post("/api/core/engine")
+async def get_engine_payload(req: EngineReq):
+    """Verifies license and streams encrypted engine payload into client RAM"""
+    lic = db.verify_license(req.api_key, req.hwid)
+    if not lic.get("valid"):
+        return {"ok": False, "reason": lic.get("reason", "Unauthorized")}
+
