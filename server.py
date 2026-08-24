@@ -390,3 +390,11 @@ class ResetHWIDReq(BaseModel):
     admin_token: str
 
 @app.post("/api/admin/reset-hwid")
+async def reset_hwid_endpoint(req: ResetHWIDReq):
+    valid_tokens = [t for t in [config.TELEGRAM_BOT_TOKEN, config.SECRET_APPROVAL_KEY] if t]
+    if not valid_tokens or req.admin_token not in valid_tokens:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    ok = db.reset_license_hwid(req.api_key)
+    return {"ok": ok, "api_key": req.api_key}
+
+class RevokeKeyReq(BaseModel):
