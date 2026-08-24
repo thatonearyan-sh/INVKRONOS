@@ -382,3 +382,11 @@ async def get_engine_payload(req: EngineReq):
         "expires_at": lic.get("expires_at"),
         "days_left": lic.get("days_left"),
         "devices_used": lic.get("devices_used", 1),
+        "max_devices": lic.get("max_devices", 3)
+    }
+
+class ResetHWIDReq(BaseModel):
+    api_key: str
+    admin_token: str
+
+@app.post("/api/admin/reset-hwid")
