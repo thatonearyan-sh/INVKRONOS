@@ -5633,3 +5633,24 @@ class LiveMatrixPanel:
             if self.accum[c] >= 1.0:
                 steps = int(self.accum[c])
                 self.accum[c] -= steps
+                self.drops[c] += steps
+                # Mutate random glyphs
+                for r in range(self.rows):
+                    if random.random() < 0.1:
+                        self.chars[c][r] = random.choice(MATRIX_GLYPH_SET)
+
+            if self.drops[c] - self.lengths[c] > self.rows:
+                self.drops[c] = random.randint(-4, 0)
+                self.lengths[c] = random.randint(5, 11)
+                self.speeds[c] = random.uniform(0.6, 1.4)
+
+    def render_rows(self):
+        import re
+        lines = []
+        for r in range(self.rows):
+            line_chars = []
+            for c in range(self.num_cols):
+                head_y = self.drops[c]
+                dist = head_y - r
+                glyph = self.chars[c][r]
+
