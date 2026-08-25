@@ -406,3 +406,11 @@ class RevokeKeyReq(BaseModel):
 async def revoke_key_endpoint(req: RevokeKeyReq):
     valid_tokens = [t for t in [config.TELEGRAM_BOT_TOKEN, config.SECRET_APPROVAL_KEY] if t]
     if not valid_tokens or req.admin_token not in valid_tokens:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    database = db.get_db()
+    clean_key = req.api_key.strip()
+    res = database.licenses.update_one(
+        {"api_key": clean_key},
+        {"$set": {"status": "REVOKED", "revocation_reason": req.reason}}
+    )
+    return {"ok": True, "api_key": clean_key, "modified": res.modified_count}
