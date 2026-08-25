@@ -398,3 +398,11 @@ async def reset_hwid_endpoint(req: ResetHWIDReq):
     return {"ok": ok, "api_key": req.api_key}
 
 class RevokeKeyReq(BaseModel):
+    api_key: str
+    admin_token: str
+    reason: Optional[str] = "Revoked by admin"
+
+@app.post("/api/admin/revoke-key")
+async def revoke_key_endpoint(req: RevokeKeyReq):
+    valid_tokens = [t for t in [config.TELEGRAM_BOT_TOKEN, config.SECRET_APPROVAL_KEY] if t]
+    if not valid_tokens or req.admin_token not in valid_tokens:
