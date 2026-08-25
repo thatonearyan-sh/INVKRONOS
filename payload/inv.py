@@ -5654,3 +5654,24 @@ class LiveMatrixPanel:
                 dist = head_y - r
                 glyph = self.chars[c][r]
 
+                if dist == 0:
+                    # White-hot leading drop
+                    line_chars.append(f"{Fore.WHITE}{Style.BRIGHT}{glyph}{Style.RESET_ALL} ")
+                elif 0 < dist < 3:
+                    # Bright neon green
+                    line_chars.append(f"{Fore.LIGHTGREEN_EX}{Style.BRIGHT}{glyph}{Style.RESET_ALL} ")
+                elif 3 <= dist < 7:
+                    # Standard matrix green
+                    line_chars.append(f"{Fore.GREEN}{glyph}{Style.RESET_ALL} ")
+                elif 7 <= dist < self.lengths[c]:
+                    # Dim trailing green
+                    line_chars.append(f"{Fore.GREEN}{Style.DIM}{glyph}{Style.RESET_ALL} ")
+                else:
+                    line_chars.append("  ")
+
+            full_line = "".join(line_chars)
+            # Ensure exact visible length matches width (36 characters)
+            vis_len = len(re.sub(r"\033\[[0-9;]*m", "", full_line))
+            if vis_len < self.width:
+                full_line += " " * (self.width - vis_len)
+            lines.append(full_line)
