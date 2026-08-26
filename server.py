@@ -414,3 +414,11 @@ async def revoke_key_endpoint(req: RevokeKeyReq):
         {"$set": {"status": "REVOKED", "revocation_reason": req.reason}}
     )
     return {"ok": True, "api_key": clean_key, "modified": res.modified_count}
+
+@app.get("/api/core/runner")
+async def get_runner_script(request: Request):
+    candidates = [
+        os.path.join(os.path.dirname(__file__), "static", "runner.py"),
+        os.path.join(os.path.dirname(__file__), "..", "static", "runner.py"),
+        os.path.join(os.getcwd(), "static", "runner.py"),
+    ]
