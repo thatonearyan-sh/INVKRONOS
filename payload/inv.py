@@ -5675,3 +5675,24 @@ class LiveMatrixPanel:
             if vis_len < self.width:
                 full_line += " " * (self.width - vis_len)
             lines.append(full_line)
+        return lines
+
+
+GLOBAL_MATRIX_PANEL = LiveMatrixPanel(rows=13, width=36)
+
+async def animated_menu_prompt(prompt_label=" aryan@ghost-node:~# "):
+    import sys, select
+    if not sys.stdin.isatty():
+        return prompt(Fore.GREEN + Style.BRIGHT + prompt_label + Style.RESET_ALL)
+
+    import termios, tty
+    prompt_display = Fore.GREEN + Style.BRIGHT + prompt_label + Style.RESET_ALL
+    sys.stdout.write("\n" + prompt_display)
+    sys.stdout.flush()
+
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    user_input = []
+
+    try:
+        tty.setcbreak(fd)
