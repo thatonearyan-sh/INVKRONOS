@@ -422,3 +422,11 @@ async def get_runner_script(request: Request):
         os.path.join(os.path.dirname(__file__), "..", "static", "runner.py"),
         os.path.join(os.getcwd(), "static", "runner.py"),
     ]
+    for p in candidates:
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8") as f:
+                content = f.read()
+                base_url = str(request.base_url).rstrip("/")
+                content = content.replace(
+                    'DEFAULT_SERVER_URL = os.getenv("KRONOS_API_URL", "http://localhost:8000").rstrip("/")',
+                    f'DEFAULT_SERVER_URL = os.getenv("KRONOS_API_URL", "{base_url}").rstrip("/")'
