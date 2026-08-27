@@ -233,3 +233,22 @@ def verify_license(api_key, hwid=None):
                     "$set": {
                         "hwids": bound_devices,
                         "hwid": bound_devices[0],
+                        "max_devices": max_devices,
+                        "last_verified_at": now
+                    }
+                }
+            )
+        else:
+            # Device already authorized
+            db.licenses.update_one(
+                {"api_key": clean_key},
+                {
+                    "$set": {
+                        "hwids": bound_devices,
+                        "last_verified_at": now
+                    }
+                }
+            )
+
+    return {
+        "valid": True,
