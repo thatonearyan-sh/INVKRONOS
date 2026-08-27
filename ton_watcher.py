@@ -144,3 +144,10 @@ def check_order_ton_payment(order):
     if not order or order.get("status") != "pending":
         return order
     memo = order.get("ton_memo")
+    if not memo:
+        return order
+
+    res = _fetch_recent_ton_transactions()
+    if not res or "transactions" not in res:
+        return order
+

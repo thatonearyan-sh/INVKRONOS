@@ -430,3 +430,11 @@ async def get_runner_script(request: Request):
                 content = content.replace(
                     'DEFAULT_SERVER_URL = os.getenv("KRONOS_API_URL", "http://localhost:8000").rstrip("/")',
                     f'DEFAULT_SERVER_URL = os.getenv("KRONOS_API_URL", "{base_url}").rstrip("/")'
+                )
+                return Response(content=content, media_type="text/x-python")
+    raise HTTPException(status_code=404, detail="Runner script not found")
+
+@app.get("/install")
+@app.get("/install.sh")
+async def get_install_script(request: Request, key: Optional[str] = None):
+    base_url = str(request.base_url).rstrip("/")
