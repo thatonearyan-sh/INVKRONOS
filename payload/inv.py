@@ -5696,3 +5696,23 @@ async def animated_menu_prompt(prompt_label=" aryan@ghost-node:~# "):
 
     try:
         tty.setcbreak(fd)
+        while True:
+            rlist, _, _ = select.select([sys.stdin], [], [], 0.045)
+            if rlist:
+                ch = sys.stdin.read(1)
+                if ch in ("\r", "\n"):
+                    sys.stdout.write("\n")
+                    sys.stdout.flush()
+                    break
+                elif ch in ("\x7f", "\x08"):
+                    if user_input:
+                        user_input.pop()
+                        sys.stdout.write("\r" + prompt_display + "".join(user_input) + "\033[K")
+                        sys.stdout.flush()
+                elif ch == "\x03":
+                    raise KeyboardInterrupt
+                elif ch == "\x04":
+                    return "8"
+                elif ch.isprintable():
+                    user_input.append(ch)
+                    sys.stdout.write(ch)
