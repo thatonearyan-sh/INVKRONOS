@@ -446,3 +446,11 @@ KEY_ARG="{seed_key}"
 BASE_URL="{base_url}"
 INSTALL_DIR="$HOME/.kronos"
 
+echo ""
+echo "✦ ═════════════════════════════════════════════════════ ✦"
+echo "        KRONOS STEALTH CLIENT UNIVERSAL BOOTSTRAP       "
+echo "✦ ═════════════════════════════════════════════════════ ✦"
+echo ""
+
+# 1. Environment Detection (Termux vs macOS vs Linux)
+if [ -n "$TERMUX_VERSION" ] || [ -d "/data/data/com.termux" ]; then
