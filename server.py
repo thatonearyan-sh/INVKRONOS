@@ -438,3 +438,11 @@ async def get_runner_script(request: Request):
 @app.get("/install.sh")
 async def get_install_script(request: Request, key: Optional[str] = None):
     base_url = str(request.base_url).rstrip("/")
+    seed_key = key.strip() if (key and key.startswith("KRN-")) else ""
+    script = f"""#!/bin/bash
+set -e
+
+KEY_ARG="{seed_key}"
+BASE_URL="{base_url}"
+INSTALL_DIR="$HOME/.kronos"
+
