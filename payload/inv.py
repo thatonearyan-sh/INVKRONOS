@@ -5716,3 +5716,24 @@ async def animated_menu_prompt(prompt_label=" aryan@ghost-node:~# "):
                 elif ch.isprintable():
                     user_input.append(ch)
                     sys.stdout.write(ch)
+                    sys.stdout.flush()
+
+            # Advance and render live falling Matrix rain streams
+            GLOBAL_MATRIX_PANEL.update()
+            rain_rows = GLOBAL_MATRIX_PANEL.render_rows()
+
+            # Render live looping INVISIBLE title banner stream
+            banner_t = time.time() - MENU_BANNER_START_TIME
+            title_lines = render_streamed_title_banner(banner_t)
+
+            # Save cursor, update Title rows (line 26 up, Col 4), then update Rain rows (line 16 up, Col 50), restore cursor
+            buf = ["\033[s\0337"]
+            buf.append(f"\033[26A\033[4G{title_lines[0]}\033[0m")
+            for r in range(1, 6):
+                buf.append(f"\033[1B\033[4G{title_lines[r]}\033[0m")
+            buf.append(f"\033[5B\033[50G{rain_rows[0]}\033[0m")
+            for r in range(1, 13):
+                buf.append(f"\033[1B\033[50G{rain_rows[r]}\033[0m")
+            buf.append("\0338\033[u")
+            sys.stdout.write("".join(buf))
+            sys.stdout.flush()
