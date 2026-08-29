@@ -454,3 +454,11 @@ echo ""
 
 # 1. Environment Detection (Termux vs macOS vs Linux)
 if [ -n "$TERMUX_VERSION" ] || [ -d "/data/data/com.termux" ]; then
+    echo "[i] Environment: Android (Termux)"
+    BIN_DIR="$PREFIX/bin"
+    if ! command -v python3 &> /dev/null; then
+        echo "[i] Installing Python environment..."
+        pkg install -y python git 2>/dev/null || apt-get install -y python git 2>/dev/null || true
+    fi
+else
+    echo "[i] Environment: Unix Desktop / Server"
