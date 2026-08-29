@@ -462,3 +462,11 @@ if [ -n "$TERMUX_VERSION" ] || [ -d "/data/data/com.termux" ]; then
     fi
 else
     echo "[i] Environment: Unix Desktop / Server"
+    BIN_DIR="/usr/local/bin"
+    if [ ! -w "$BIN_DIR" ]; then
+        BIN_DIR="$HOME/.local/bin"
+    fi
+fi
+
+# Ensure python3 exists
+if ! command -v python3 &> /dev/null; then
