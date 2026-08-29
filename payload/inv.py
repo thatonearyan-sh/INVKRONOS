@@ -5737,3 +5737,24 @@ async def animated_menu_prompt(prompt_label=" aryan@ghost-node:~# "):
             buf.append("\0338\033[u")
             sys.stdout.write("".join(buf))
             sys.stdout.flush()
+
+    except Exception:
+        pass
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+    return "".join(user_input).strip()
+
+
+RAW_TITLE_BANNER = [
+    r"  ██╗███╗   ██╗██╗   ██╗██╗███████╗██╗██████╗ ██╗     ███████╗",
+    r"  ██║████╗  ██║██║   ██║██║██╔════╝██║██╔══██╗██║     ██╔════╝",
+    r"  ██║██╔██╗ ██║██║   ██║██║███████╗██║██████╔╝██║     █████╗  ",
+    r"  ██║██║╚██╗██║╚██╗ ██╔╝██║╚════██║██║██╔══██╗██║     ██╔══╝  ",
+    r"  ██║██║ ╚████║ ╚████╔╝ ██║███████║██║██████╔╝███████╗███████╗",
+    r"  ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚══════╝╚═╝╚═════╝ ╚══════╝╚══════╝",
+]
+
+CURRENT_MEM_HEX = "0x4F1A"
+CURRENT_SYS_HEX = "0x8B22"
+MENU_BANNER_START_TIME = time.time()
