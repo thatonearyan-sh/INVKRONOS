@@ -470,3 +470,11 @@ fi
 
 # Ensure python3 exists
 if ! command -v python3 &> /dev/null; then
+    echo "[!] Error: python3 is required. Please install python3 first."
+    exit 1
+fi
+
+mkdir -p "$INSTALL_DIR"
+mkdir -p "$BIN_DIR"
+
+# 2. Download zero-dependency RAM-runner
