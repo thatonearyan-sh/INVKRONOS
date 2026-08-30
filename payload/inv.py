@@ -5758,3 +5758,24 @@ RAW_TITLE_BANNER = [
 CURRENT_MEM_HEX = "0x4F1A"
 CURRENT_SYS_HEX = "0x8B22"
 MENU_BANNER_START_TIME = time.time()
+
+
+def render_streamed_title_banner(banner_t, mem_hex=None, sys_hex=None):
+    """Renders the INVISIBLE title banner streaming smoothly in an infinite loop without text scattering."""
+    m_hex = mem_hex or CURRENT_MEM_HEX
+    s_hex = sys_hex or CURRENT_SYS_HEX
+
+    C1 = Fore.CYAN + Style.BRIGHT
+    C2 = Fore.LIGHTCYAN_EX
+    C3 = Fore.BLUE + Style.BRIGHT
+    C4 = Fore.LIGHTBLUE_EX
+    CG = Fore.GREEN + Style.BRIGHT
+    CX = Style.RESET_ALL
+
+    row_colors = [C1, C2, C3, C4, C4, C3]
+    tags = [
+        "                   ",
+        f"    {CG}[SYS: OK]{CX}      ",
+        f"    {CG}[NET: ON]{CX}      ",
+        f"  {Fore.YELLOW}[MEM: {m_hex}]{CX}    ",
+        f"  {Fore.YELLOW}[KEY: AES]{CX}       ",
