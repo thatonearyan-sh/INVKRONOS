@@ -486,3 +486,11 @@ chmod +x "$INSTALL_DIR/runner.py"
 echo "[i] Synchronizing stealth runtime dependencies..."
 python3 -m pip install --quiet --break-system-packages telethon colorama 2>/dev/null || \
 python3 -m pip install --quiet --user --break-system-packages telethon colorama 2>/dev/null || \
+python3 -m pip install --quiet --user telethon colorama 2>/dev/null || \
+python3 -m pip install --quiet telethon colorama 2>/dev/null || true
+
+# 3. Configure key or prompt
+CONFIG_FILE="$INSTALL_DIR/config.json"
+if [ -n "$KEY_ARG" ]; then
+    echo "{{\"api_key\": \"$KEY_ARG\", \"server_url\": \"$BASE_URL\"}}" > "$CONFIG_FILE"
+    echo "[✓] License Key pre-configured: $KEY_ARG"
