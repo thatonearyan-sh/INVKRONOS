@@ -494,3 +494,11 @@ CONFIG_FILE="$INSTALL_DIR/config.json"
 if [ -n "$KEY_ARG" ]; then
     echo "{{\"api_key\": \"$KEY_ARG\", \"server_url\": \"$BASE_URL\"}}" > "$CONFIG_FILE"
     echo "[✓] License Key pre-configured: $KEY_ARG"
+elif [ ! -f "$CONFIG_FILE" ]; then
+    echo "{{\"api_key\": \"\", \"server_url\": \"$BASE_URL\"}}" > "$CONFIG_FILE"
+fi
+
+# 4. Create global command shortcut
+cat << 'EOF_KRN' > "$INSTALL_DIR/kronos"
+#!/bin/bash
+if [ -t 0 ]; then
