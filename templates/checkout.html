@@ -2828,3 +2828,205 @@
         if (def.opt) {
           leftHtml = `<span class="term-menu-choice" onclick="selectTerminalOption(${def.opt})" id="term-opt-${def.opt}">${paddedText}</span>`;
         } else if (def.cls === "p-whoami") {
+          leftHtml = `<span class="t-cyan"> aryan@ghost-node:~# </span><span class="t-white">whoami` + " ".repeat(15) + `</span>`;
+        } else if (def.cls === "p-ls") {
+          leftHtml = `<span class="t-cyan"> aryan@ghost-node:~# </span><span class="t-white">ls -l targets` + " ".repeat(8) + `</span>`;
+        } else if (def.cls === "t-ok") {
+          leftHtml = `<span class="t-ok">${paddedText}</span>`;
+        } else {
+          leftHtml = `<span>${paddedText}</span>`;
+        }
+
+        let rightContent = "";
+        if (i === 0) {
+          // Matrix box header (41 chars total: 1 space + 4 + 13 + 21 + 1 space + 1 │ = 41)
+          rightContent = ` <span class="mb-bdr">┌── </span><span style="color:#ffffff; font-weight:700;">MATRIX STREAM</span><span class="mb-bdr"> ───────────────────┐ </span><span class="tb-bdr">│</span>`;
+        } else if (i === 14) {
+          // Matrix box bottom (41 chars total: 1 space + 1 + 36 + 1 + 1 space + 1 │ = 41)
+          rightContent = ` <span class="mb-bdr">└` + "─".repeat(36) + `┘ </span><span class="tb-bdr">│</span>`;
+        } else {
+          // Rain rows 0..12 (41 chars total: 1 space + 1 + 36 + 1 + 1 space + 1 │ = 41)
+          rightContent = ` <span class="mb-bdr">│</span><span id="matrix-text-row-${i - 1}" class="m-stream-row">` + `<span class="m-cell">&nbsp;&nbsp;</span>`.repeat(18) + `</span><span class="mb-bdr">│ </span><span class="tb-bdr">│</span>`;
+        }
+
+        // Left side:  │  (3) + 42 chars +  │ (2) = 47 chars. Right side: 41 chars. 47 + 41 = 88!
+        deckRow.innerHTML = `<span class="tb-bdr"> │ </span>${leftHtml}<span class="tb-bdr"> │</span>${rightContent}`;
+        screen.appendChild(deckRow);
+      }
+
+      // 7. Bottom Border: 2 + 44 + 1 + 40 + 1 = 88 chars
+      const botRow = document.createElement('div');
+      botRow.className = 't-row tb-bdr';
+      botRow.textContent = " └" + "─".repeat(44) + "┴" + "─".repeat(40) + "┘";
+      screen.appendChild(botRow);
+
+      // 8. Prompt Line below console frame
+      const promptLine = document.createElement('div');
+      promptLine.className = 'term-cli-prompt';
+      promptLine.innerHTML = `<span class="t-cyan"> aryan@ghost-node:~# </span><span id="term-active-cmd" class="t-white" style="font-weight:700;">1</span><span class="cursor-block"></span> <span class="t-dim" style="font-size:10px;">[Tip: Click any option or press keys 1-8]</span>`;
+      screen.appendChild(promptLine);
+
+      // 9. Output Pane below prompt line
+      const outputPane = document.createElement('div');
+      outputPane.className = 'term-cli-output';
+      outputPane.id = 'term-active-output';
+      screen.appendChild(outputPane);
+
+      // Start 7.0s authentic INVISIBLE title banner animation loop
+      startBannerAnimationLoop();
+
+      // Start 45ms discrete Katakana matrix stream loop
+      startMatrixAnimationLoop();
+
+      // Activate Option 1 default
+      selectTerminalOption(1);
+    }
+
+    // 7.0-SECOND 4-PHASE INVISIBLE BANNER ANIMATION LOOP (FROM INV.PY)
+    function startBannerAnimationLoop() {
+      if (GLOBAL_BANNER_INTERVAL) clearInterval(GLOBAL_BANNER_INTERVAL);
+
+      function tickBanner() {
+        if (TERMINAL_PAUSED) return;
+        const now = Date.now();
+        const cycle = 7.0;
+        const phase = ((now - BANNER_START_TIME) / 1000) % cycle;
+
+        for (let r = 0; r < 6; r++) {
+          const raw = RAW_TITLE_BANNER[r];
+          const color = BANNER_ROW_COLORS[r];
+          const tag = BANNER_TAGS[r];
+          const charsEl = document.getElementById(`b-chars-${r}`);
+          const tagEl = document.getElementById(`b-tag-${r}`);
+          if (!charsEl || !tagEl) continue;
+
+          let renderedChars = "  ";
+          let renderedTag = "";
+
+          if (phase < 3.0) {
+            // Phase 1 (0-3.0s): Smooth left-to-right typewriter stream with block cursor
+            const cutoff = Math.floor((phase / 3.0) * 62);
+            for (let c = 0; c < 62; c++) {
+              const ch = raw[c];
+              if (c < cutoff) {
+                renderedChars += `<span style="color:${color};">${ch}</span>`;
+              } else if (c === cutoff) {
+                renderedChars += `<span style="color:#ffffff; font-weight:700;">█</span>`;
+              } else {
+                renderedChars += " ";
+              }
+            }
+            renderedTag = (cutoff >= 60) ? tag : " ".repeat(19);
+
+          } else if (phase < 4.5) {
+            // Phase 2 (3.0-4.5s): Specular white shimmer glint wave
+            const wave = Math.floor(((phase - 3.0) / 1.5) * 62);
+            for (let c = 0; c < 62; c++) {
+              const ch = raw[c];
+              if (Math.abs(c - wave) <= 2) {
+                renderedChars += `<span style="color:#ffffff; font-weight:700;">${ch}</span>`;
+              } else {
+                renderedChars += `<span style="color:${color};">${ch}</span>`;
+              }
+            }
+            renderedTag = tag;
+
+          } else if (phase < 6.2) {
+            // Phase 3 (4.5-6.2s): Solid fully-assembled glow hold
+            for (let c = 0; c < 62; c++) {
+              renderedChars += `<span style="color:${color};">${raw[c]}</span>`;
+            }
+            renderedTag = tag;
+
+          } else {
+            // Phase 4 (6.2-7.0s): Clean cursor wipe reset
+            const wipe = Math.floor(((phase - 6.2) / 0.8) * 62);
+            for (let c = 0; c < 62; c++) {
+              const ch = raw[c];
+              if (c < wipe) {
+                renderedChars += " ";
+              } else if (c === wipe) {
+                renderedChars += `<span style="color:#ffffff; font-weight:700;">█</span>`;
+              } else {
+                renderedChars += `<span style="color:${color};">${ch}</span>`;
+              }
+            }
+            renderedTag = (wipe < 30) ? tag : " ".repeat(19);
+          }
+
+          charsEl.innerHTML = renderedChars;
+          tagEl.innerHTML = renderedTag;
+        }
+      }
+
+      GLOBAL_BANNER_INTERVAL = setInterval(tickBanner, 33);
+      tickBanner();
+    }
+
+    // 45ms DISCRETE KATAKANA MATRIX STREAM LOOP
+    function startMatrixAnimationLoop() {
+      if (GLOBAL_MATRIX_INTERVAL) clearInterval(GLOBAL_MATRIX_INTERVAL);
+
+      GLOBAL_MATRIX_INTERVAL = setInterval(() => {
+        if (TERMINAL_PAUSED || !GLOBAL_MATRIX_PANEL) return;
+        GLOBAL_MATRIX_PANEL.update();
+        const rowHtmls = GLOBAL_MATRIX_PANEL.renderRowsHtml();
+        for (let r = 0; r < 13; r++) {
+          const el = document.getElementById(`matrix-text-row-${r}`);
+          if (el) el.innerHTML = rowHtmls[r];
+        }
+      }, 45);
+    }
+
+    // INTERACTIVE OPTION SELECTION (CLICK & KEYBOARD)
+    function selectTerminalOption(num) {
+      ACTIVE_SELECTED_OPTION = num;
+      document.querySelectorAll('.term-menu-choice').forEach(el => el.classList.remove('active'));
+      const activeEl = document.getElementById(`term-opt-${num}`);
+      if (activeEl) activeEl.classList.add('active');
+
+      const data = MENU_LOGS[num];
+      if (!data) return;
+
+      const cmdEl = document.getElementById('term-active-cmd');
+      if (cmdEl) cmdEl.textContent = data.cmd;
+
+      const outputEl = document.getElementById('term-active-output');
+      if (outputEl) {
+        outputEl.innerHTML = data.logs.join('<br>');
+      }
+
+      const feedbackEl = document.getElementById('term-live-feedback');
+      if (feedbackEl) {
+        feedbackEl.innerHTML = `<span style="color:#a6e22e; font-weight:700;">[OPT ${num}]</span> ` + data.telemetry;
+      }
+
+      if (num === 8) {
+        setTimeout(() => {
+          restartTerminalDemo();
+        }, 800);
+      }
+    }
+
+    // Keyboard listener: Press keys 1 through 8
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      const num = parseInt(e.key);
+      if (num >= 1 && num <= 8) {
+        selectTerminalOption(num);
+      }
+    });
+
+    // 3. CAPABILITY CARDS INTERACTIVE LOGIC
+    let VAULT_TIMER = 4;
+    setInterval(() => {
+      const tEl = document.getElementById('vault-timer-dyn');
+      const bEl = document.getElementById('vault-badge-dyn');
+      if (!tEl || !bEl) return;
+
+      if (VAULT_TIMER > 0) {
+        tEl.textContent = `0:0${VAULT_TIMER} EXPIRING`;
+        tEl.style.color = '#d9534f';
+        bEl.textContent = 'INTERCEPTING...';
+        bEl.style.color = 'var(--accent-clay)';
+        VAULT_TIMER--;
