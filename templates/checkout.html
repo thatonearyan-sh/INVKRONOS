@@ -3030,3 +3030,205 @@
         bEl.textContent = 'INTERCEPTING...';
         bEl.style.color = 'var(--accent-clay)';
         VAULT_TIMER--;
+      } else {
+        tEl.textContent = '0:00 EXPIRED';
+        tEl.style.color = '#8a8880';
+        bEl.textContent = 'SAVED 4K RAW ✓';
+        bEl.style.color = 'var(--accent-olive)';
+        VAULT_TIMER = 4;
+      }
+    }, 1200);
+
+    function setCapChip(el) {
+      document.querySelectorAll('.id-chip-card').forEach(c => {
+        c.style.background = '#fff';
+        c.style.color = 'var(--text-muted)';
+      });
+      el.style.background = 'var(--text-main)';
+      el.style.color = '#fff';
+    }
+
+    // 4. CHECKOUT & ORDER API
+    let CURRENT_PLAN = '1m';
+    let CURRENT_METHOD = 'upi';
+    let CURRENT_ORDER_ID = null;
+    let CURRENT_TON_MEMO = '';
+    let CURRENT_TON_WALLET = '';
+    let CURRENT_POLLER = null;
+
+    function selectPlan(planId) {
+      CURRENT_PLAN = planId;
+      document.querySelectorAll('.plan-row').forEach(el => el.classList.remove('active'));
+      const row = document.getElementById(`plan-${planId}`);
+      if (row) row.classList.add('active');
+      createOrder();
+    }
+
+    function switchMethod(method) {
+      CURRENT_METHOD = method;
+      document.querySelectorAll('.checkout-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('panel-upi').style.display = 'none';
+      document.getElementById('panel-ton').style.display = 'none';
+      document.getElementById('panel-recover').style.display = 'none';
+
+      document.getElementById(`tab-btn-${method}`).classList.add('active');
+      document.getElementById(`panel-${method}`).style.display = 'block';
+
+      if (method !== 'recover') createOrder();
+    }
+
+    async function createOrder() {
+      try {
+        const res = await fetch('/api/order/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan_id: CURRENT_PLAN, payment_method: CURRENT_METHOD })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Order creation failed');
+
+        CURRENT_ORDER_ID = data.order_id;
+        CURRENT_TON_MEMO = data.ton_memo || '';
+        CURRENT_TON_WALLET = data.ton_wallet || '';
+
+        document.getElementById('display-order-id').textContent = data.order_id;
+        document.getElementById('upi-price-label').textContent = data.amount_inr;
+        document.getElementById('display-vpa').textContent = data.upi_id;
+        document.getElementById('ton-memo-display').textContent = data.ton_memo;
+        document.getElementById('ton-wallet-full').textContent = data.ton_wallet;
+        
+        if (data.ton_wallet && data.ton_wallet.length > 14) {
+          document.getElementById('ton-wallet-short').textContent = data.ton_wallet.slice(0, 7) + '...' + data.ton_wallet.slice(-6);
+        }
+
+        if (data.amount_ton) {
+          document.getElementById('ton-rate-display').textContent = `${data.amount_ton} TON (₹${data.amount_inr})`;
+        }
+
+        const upiUri = `upi://pay?pa=${encodeURIComponent(data.upi_id)}&pn=${encodeURIComponent(data.payee_name || 'KRONOS')}&am=${data.amount_inr}&cu=INR&tn=${encodeURIComponent(data.order_id)}`;
+        document.getElementById('btn-upi-direct').href = upiUri;
+        document.getElementById('img-upi-qr').src = `/api/qr?data=${encodeURIComponent(upiUri)}`;
+
+        if (data.ton_wallet) {
+          const nanoTon = Math.round((data.amount_ton || 0) * 1e9);
+          const tonUri = `ton://transfer/${data.ton_wallet}?amount=${nanoTon}&text=${encodeURIComponent(data.ton_memo)}`;
+          document.getElementById('btn-ton-direct').href = tonUri;
+          document.getElementById('img-ton-qr').src = `/api/qr?data=${encodeURIComponent(tonUri)}`;
+        }
+
+        const alertUpi = document.getElementById('alert-upi');
+        if (alertUpi) {
+          alertUpi.className = 'status-note';
+          alertUpi.style.display = 'none';
+          alertUpi.innerHTML = '';
+        }
+        const btnUtr = document.getElementById('btn-submit-utr');
+        if (btnUtr) {
+          btnUtr.disabled = false;
+          btnUtr.classList.remove('submitting', 'success-state');
+          btnUtr.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="btn-submit-utr-text">Verify &amp; Activate License</span>`;
+        }
+        const counter = document.getElementById('utr-counter');
+        const inputUtr = document.getElementById('input-utr');
+        if (inputUtr && counter) {
+          const digits = inputUtr.value.replace(/\D/g, '').slice(0, 12);
+          counter.textContent = digits.length === 12 ? '12 / 12 digits (Ready ✓)' : `${digits.length} / 12 digits`;
+          if (digits.length === 12) counter.classList.add('ready'); else counter.classList.remove('ready');
+        }
+        lastSubmittedUTR = null;
+
+        if (CURRENT_METHOD === 'ton') startOrderPolling();
+      } catch (err) {
+        console.error('Order creation error:', err);
+      }
+    }
+
+    let lastSubmittedUTR = null;
+    let utrAutoSubmitTimer = null;
+
+    function initUTRInputListener() {
+      const input = document.getElementById('input-utr');
+      if (!input) return;
+
+      input.addEventListener('input', function(e) {
+        // Sanitize to numeric only, maximum 12 digits
+        const raw = this.value;
+        const digits = raw.replace(/\D/g, '').slice(0, 12);
+        if (raw !== digits) {
+          this.value = digits;
+        }
+
+        const counter = document.getElementById('utr-counter');
+        if (counter) {
+          if (digits.length === 12) {
+            counter.classList.add('ready');
+            counter.textContent = '12 / 12 digits (Ready ✓)';
+          } else {
+            counter.classList.remove('ready');
+            counter.textContent = `${digits.length} / 12 digits`;
+          }
+        }
+
+        // Automatic instant submission on entering 12 digits!
+        if (utrAutoSubmitTimer) clearTimeout(utrAutoSubmitTimer);
+        if (digits.length === 12) {
+          utrAutoSubmitTimer = setTimeout(() => {
+            submitUTR(true);
+          }, 350);
+        }
+      });
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (utrAutoSubmitTimer) clearTimeout(utrAutoSubmitTimer);
+          submitUTR(false);
+        }
+      });
+    }
+
+    async function submitUTR(isAuto = false) {
+      const input = document.getElementById('input-utr');
+      const btn = document.getElementById('btn-submit-utr') || document.querySelector('.input-field-wrap .btn-submit-action');
+      const alertBox = document.getElementById('alert-upi');
+      
+      const utr = (input ? input.value : '').replace(/\D/g, '').trim();
+
+      if (!utr || utr.length < 8) {
+        if (alertBox) {
+          alertBox.className = 'status-note rejected';
+          alertBox.style.display = 'block';
+          alertBox.innerHTML = '<strong>Invalid UTR:</strong> Please enter the 12-digit transaction reference from your UPI payment receipt.';
+        }
+        if (input) input.focus();
+        return;
+      }
+
+      // Avoid redundant duplicate submission if already awaiting approval for this UTR
+      if (lastSubmittedUTR === utr && btn && btn.classList.contains('success-state')) {
+        return;
+      }
+
+      // 1. Instant loading feedback on the button
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add('submitting');
+        btn.classList.remove('success-state');
+        btn.innerHTML = `<span class="btn-spinner"></span><span>Verifying &amp; Registering UTR...</span>`;
+      }
+
+      // 2. High-visibility animated confirmation card
+      if (alertBox) {
+        alertBox.className = 'status-note';
+        alertBox.style.display = 'block';
+        alertBox.innerHTML = `
+          <div class="confirmation-card">
+            <div class="confirmation-card-header">
+              <span class="pulse-dot"></span>
+              <span>Payment Reference Registered</span>
+            </div>
+            <div class="confirmation-card-body">
+              Submitted UTR: <code>${utr}</code><br>
+              <div class="confirmation-live-status">
+                <span class="btn-spinner" style="border-color: rgba(35,84,56,0.25); border-top-color: #235438; width: 13px; height: 13px;"></span>
+                <span>Verification dispatched to Telegram admin. Checking live every 2s...</span>

@@ -510,3 +510,11 @@ else
 fi
 EOF_KRN
 chmod +x "$INSTALL_DIR/kronos"
+
+if [ -w "$BIN_DIR" ]; then
+    ln -sf "$INSTALL_DIR/kronos" "$BIN_DIR/kronos"
+    echo "[✓] Shortcut created: '$BIN_DIR/kronos'"
+else
+    echo "[i] Run via: python3 $INSTALL_DIR/runner.py"
+fi
+
