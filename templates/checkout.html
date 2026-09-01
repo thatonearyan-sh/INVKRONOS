@@ -2625,3 +2625,206 @@
 
       const macChrome = document.getElementById('chrome-mac-bar');
       const winChrome = document.getElementById('chrome-win-bar');
+      const termuxChrome = document.getElementById('chrome-termux-bar');
+
+      if (macChrome) macChrome.style.display = 'none';
+      if (winChrome) winChrome.style.display = 'none';
+      if (termuxChrome) termuxChrome.style.display = 'none';
+
+      if (os === 'mac') {
+        if (macChrome) macChrome.style.display = 'flex';
+        document.getElementById('mac-title-dyn').textContent = 'aryan@macbook-pro:~ (zsh) — 80×24';
+      } else if (os === 'win') {
+        if (winChrome) winChrome.style.display = 'flex';
+      } else if (os === 'linux') {
+        if (macChrome) macChrome.style.display = 'flex';
+        document.getElementById('mac-title-dyn').textContent = 'aryan@arch-linux:~/kronos (bash)';
+      } else if (os === 'android') {
+        if (termuxChrome) termuxChrome.style.display = 'flex';
+      }
+
+      restartTerminalDemo();
+    }
+
+    function getPromptPrefix() {
+      if (CURRENT_OS === 'mac') return '<span class="t-ok">aryan@macbook-pro ~ % </span>';
+      if (CURRENT_OS === 'win') return '<span class="t-cyan">PS C:\\Users\\Aryan&gt; </span>';
+      if (CURRENT_OS === 'linux') return '<span class="t-ok">aryan@arch-linux:~$ </span>';
+      if (CURRENT_OS === 'android') return '<span class="t-cyan">~ $ </span>';
+      return '$ ';
+    }
+
+    function getInstallCommand() {
+      const host = window.location.origin;
+      if (CURRENT_OS === 'win') return `irm "${host}/install.ps1" | iex`;
+      return `curl -sSL "${host}/install" | bash`;
+    }
+
+    function copyActiveCommand() {
+      const cmd = getInstallCommand();
+      navigator.clipboard.writeText(cmd);
+      const label = document.getElementById('copy-btn-text');
+      label.textContent = 'Copied!';
+      setTimeout(() => { label.textContent = 'Copy Command'; }, 2000);
+    }
+
+    function togglePauseTerminal() {
+      TERMINAL_PAUSED = !TERMINAL_PAUSED;
+      document.getElementById('pause-label').textContent = TERMINAL_PAUSED ? 'Resume' : 'Pause';
+    }
+
+    function restartTerminalDemo() {
+      clearAllTermTimeouts();
+      const screen = document.getElementById('terminal-screen');
+      screen.innerHTML = '';
+      runTerminalSequence();
+    }
+
+    function jumpToInteractiveDeck() {
+      clearAllTermTimeouts();
+      renderInteractiveTerminalDeck();
+      selectTerminalOption(1);
+    }
+
+    function runTerminalSequence() {
+      const screen = document.getElementById('terminal-screen');
+      const cmd = getInstallCommand();
+      const prompt = getPromptPrefix();
+
+      const headerDiv = document.createElement('div');
+      headerDiv.className = 't-row t-dim';
+      headerDiv.style.marginBottom = '6px';
+
+      if (CURRENT_OS === 'mac') {
+        headerDiv.innerHTML = 'Last login: Fri Sep 11 14:48:10 on ttys004';
+      } else if (CURRENT_OS === 'win') {
+        headerDiv.innerHTML = 'Windows PowerShell 7.4.4 — Copyright (C) Microsoft Corporation.';
+      } else if (CURRENT_OS === 'linux') {
+        headerDiv.innerHTML = 'Linux arch-node 6.10.8-arch1-1 #1 SMP PREEMPT_DYNAMIC x86_64';
+      } else if (CURRENT_OS === 'android') {
+        headerDiv.innerHTML = 'Welcome to Termux! Working directory: /data/data/com.termux/files/home';
+      }
+      screen.appendChild(headerDiv);
+
+      const pLine = document.createElement('div');
+      pLine.className = 't-row';
+      pLine.innerHTML = `${prompt}<span id="type-target" class="t-white"></span><span class="cursor-block"></span>`;
+      screen.appendChild(pLine);
+
+      let idx = 0;
+      function typeChar() {
+        if (idx <= cmd.length) {
+          const tgt = document.getElementById('type-target');
+          if (tgt) tgt.textContent = cmd.slice(0, idx);
+          idx++;
+          const jitter = Math.floor(Math.random() * 16) + 12;
+          queueTermAction(typeChar, jitter);
+        } else {
+          queueTermAction(runBootstrapOutput, 180);
+        }
+      }
+      queueTermAction(typeChar, 200);
+    }
+
+    function runBootstrapOutput() {
+      const screen = document.getElementById('terminal-screen');
+      const cursor = screen.querySelector('.cursor-block');
+      if (cursor) cursor.remove();
+
+      const lines = [
+        "<span class='t-cyan'>[i]</span> Environment detected: " + (CURRENT_OS === 'win' ? 'Windows 11 (PowerShell 7.4)' : (CURRENT_OS === 'android' ? 'Android / Termux aarch64' : 'Unix / macOS Darwin arm64')),
+        "<span class='t-cyan'>[i]</span> Fetching universal zero-dependency client runner...",
+        "<span class='t-ok'>[✓]</span> Shortcut created: 'kronos' in binary path",
+        "<span class='t-ok'>[✓]</span> Ephemeral memory sandbox allocated (12.4 MB)",
+        "<span class='t-ok'>[✓]</span> Launching KRONOS Stealth Console..."
+      ];
+
+      let lIdx = 0;
+      function printNextLog() {
+        if (lIdx < lines.length) {
+          const div = document.createElement('div');
+          div.className = 't-row';
+          div.innerHTML = lines[lIdx];
+          screen.appendChild(div);
+          lIdx++;
+          queueTermAction(printNextLog, 100);
+        } else {
+          queueTermAction(renderInteractiveTerminalDeck, 240);
+        }
+      }
+      printNextLog();
+    }
+
+    // RENDER THE AUTHENTIC 88-CHARACTER MONOSPACE TERMINAL GRID
+    function renderInteractiveTerminalDeck() {
+      clearAllTermTimeouts();
+      const screen = document.getElementById('terminal-screen');
+      screen.innerHTML = '';
+
+      BANNER_START_TIME = Date.now();
+      GLOBAL_MATRIX_PANEL = new LiveMatrixTextPanel(13, 18);
+
+      // 1. Top border: exactly 88 chars (1 space + 1 ┌ + 85 dashes + 1 ┐)
+      const topRow = document.createElement('div');
+      topRow.className = 't-row tb-bdr';
+      topRow.textContent = " ┌" + "─".repeat(85) + "┐";
+      screen.appendChild(topRow);
+
+      // 2. Banner Rows (Rows 0 to 5)
+      for (let r = 0; r < 6; r++) {
+        const bRow = document.createElement('div');
+        bRow.className = 't-row';
+        bRow.id = `term-banner-row-${r}`;
+        bRow.innerHTML = `<span class="tb-bdr"> │ </span><span id="b-chars-${r}"></span><span id="b-tag-${r}"></span><span class="tb-bdr"> │</span>`;
+        screen.appendChild(bRow);
+      }
+
+      // 3. Middle Border: exactly 88 chars
+      const midRow = document.createElement('div');
+      midRow.className = 't-row tb-bdr';
+      midRow.textContent = " ├" + "─".repeat(85) + "┤";
+      screen.appendChild(midRow);
+
+      // 4. IP & Proxy Row: exactly 88 chars (4 + 23 + 10 + 46 + 5 = 88)
+      const ipRow = document.createElement('div');
+      ipRow.className = 't-row';
+      ipRow.innerHTML = `<span class="tb-bdr"> │  </span><span class="t-white">[ IP : 185.220.101.42 ]</span><span>` + " ".repeat(10) + `</span><span class="t-white">[ PROXY : off  (real IP visible to Telegram) ]</span><span class="tb-bdr">    │</span>`;
+      screen.appendChild(ipRow);
+
+      // 5. Split Header: exactly 88 chars (2 + 44 + 1 + 40 + 1 = 88)
+      const splitRow = document.createElement('div');
+      splitRow.className = 't-row tb-bdr';
+      splitRow.textContent = " ├" + "─".repeat(44) + "┬" + "─".repeat(40) + "┤";
+      screen.appendChild(splitRow);
+
+      // 6. Split Deck (15 rows: i=0 to 14)
+      // Every left column text is strictly padded to 42 characters!
+      const rawMenuDefinitions = [
+        { text: " [+] secure connection established...", cls: "t-ok" },
+        { text: " [+] verifying cryptographic signatures...", cls: "t-ok" },
+        { text: " [+] ghost protocol initialized.", cls: "t-ok" },
+        { text: "", cls: "" },
+        { text: " aryan@ghost-node:~# whoami", cls: "p-whoami" },
+        { text: " root", cls: "t-ok" },
+        { text: " aryan@ghost-node:~# ls -l targets", cls: "p-ls" },
+        { text: " > [ 1 ] intercept stream (1 active)", opt: 1 },
+        { text: " > [ 2 ] open unified inbox", opt: 2 },
+        { text: " > [ 3 ] inject new payload (add account)", opt: 3 },
+        { text: " > [ 4 ] purge connection (remove acct)", opt: 4 },
+        { text: " > [ 5 ] list remote targets", opt: 5 },
+        { text: " > [ 6 ] configure tunnel routing", opt: 6 },
+        { text: " > [ 7 ] benchmark proxy pool (auto-test)", opt: 7 },
+        { text: " > [ 8 ] exit", opt: 8 }
+      ];
+
+      for (let i = 0; i < 15; i++) {
+        const deckRow = document.createElement('div');
+        deckRow.className = 't-row';
+
+        const def = rawMenuDefinitions[i];
+        const paddedText = def.text.padEnd(42, " ");
+        let leftHtml = "";
+
+        if (def.opt) {
+          leftHtml = `<span class="term-menu-choice" onclick="selectTerminalOption(${def.opt})" id="term-opt-${def.opt}">${paddedText}</span>`;
+        } else if (def.cls === "p-whoami") {
