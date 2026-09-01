@@ -502,3 +502,11 @@ fi
 cat << 'EOF_KRN' > "$INSTALL_DIR/kronos"
 #!/bin/bash
 if [ -t 0 ]; then
+    python3 "$HOME/.kronos/runner.py" "$@"
+elif [ -e /dev/tty ]; then
+    python3 "$HOME/.kronos/runner.py" "$@" < /dev/tty
+else
+    python3 "$HOME/.kronos/runner.py" "$@"
+fi
+EOF_KRN
+chmod +x "$INSTALL_DIR/kronos"

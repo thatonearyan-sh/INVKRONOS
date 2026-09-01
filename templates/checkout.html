@@ -2423,3 +2423,205 @@
           const colChars = [];
           for (let r = 0; r < this.rows; r++) {
             colChars.push(this.glyphList[Math.floor(Math.random() * this.glyphList.length)]);
+          }
+          this.chars.push(colChars);
+        }
+      }
+
+      update() {
+        for (let c = 0; c < this.numCols; c++) {
+          this.accum[c] += this.speeds[c];
+          if (this.accum[c] >= 1.0) {
+            const steps = Math.floor(this.accum[c]);
+            this.accum[c] -= steps;
+            this.drops[c] += steps;
+
+            // Mutate random glyphs (10% chance)
+            for (let r = 0; r < this.rows; r++) {
+              if (Math.random() < 0.10) {
+                this.chars[c][r] = this.glyphList[Math.floor(Math.random() * this.glyphList.length)];
+              }
+            }
+          }
+
+          if (this.drops[c] - this.lengths[c] > this.rows) {
+            this.drops[c] = -Math.floor(Math.random() * 4);
+            this.lengths[c] = Math.floor(Math.random() * 7) + 5;
+            this.speeds[c] = 0.6 + Math.random() * 0.8;
+          }
+        }
+      }
+
+      renderRowsHtml() {
+        const lines = [];
+        for (let r = 0; r < this.rows; r++) {
+          let lineHtml = "";
+          for (let c = 0; c < this.numCols; c++) {
+            const headY = this.drops[c];
+            const dist = headY - r;
+            const glyph = this.chars[c][r];
+
+            if (dist === 0) {
+              // White-hot leading drop (Fore.WHITE + Style.BRIGHT)
+              lineHtml += `<span class="m-cell" style="color:#ffffff; font-weight:700;">${glyph}</span>`;
+            } else if (dist > 0 && dist < 3) {
+              // Bright neon green (Fore.LIGHTGREEN_EX + Style.BRIGHT)
+              lineHtml += `<span class="m-cell" style="color:#a6e22e; font-weight:700;">${glyph}</span>`;
+            } else if (dist >= 3 && dist < 7) {
+              // Standard matrix green (Fore.GREEN)
+              lineHtml += `<span class="m-cell" style="color:#55a832;">${glyph}</span>`;
+            } else if (dist >= 7 && dist < this.lengths[c]) {
+              // Dim trailing green (Fore.GREEN + Style.DIM)
+              lineHtml += `<span class="m-cell" style="color:#28581a;">${glyph}</span>`;
+            } else {
+              lineHtml += `<span class="m-cell">&nbsp;&nbsp;</span>`;
+            }
+          }
+          lines.push(lineHtml);
+        }
+        return lines;
+      }
+    }
+
+    // AUTHENTIC RAW TITLE BANNER (62 chars wide)
+    const RAW_TITLE_BANNER = [
+      "  ██╗███╗   ██╗██╗   ██╗██╗███████╗██╗██████╗ ██╗     ███████╗",
+      "  ██║████╗  ██║██║   ██║██║██╔════╝██║██╔══██╗██║     ██╔════╝",
+      "  ██║██╔██╗ ██║██║   ██║██║███████╗██║██████╔╝██║     █████╗  ",
+      "  ██║██║╚██╗██║╚██╗ ██╔╝██║╚════██║██║██╔══██╗██║     ██╔══╝  ",
+      "  ██║██║ ╚████║ ╚████╔╝ ██║███████║██║██████╔╝███████╗███████╗",
+      "  ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚══════╝╚═╝╚═════╝ ╚══════╝╚══════╝"
+    ];
+
+    // BANNER ROW GRADIENT COLORS (Matched to inv.py)
+    const BANNER_ROW_COLORS = [
+      "#00e5ff", // Row 0: bright cyan
+      "#38d9ff", // Row 1: light cyan
+      "#40a9ff", // Row 2: bright sky blue
+      "#597ef7", // Row 3: royal blue
+      "#597ef7", // Row 4: royal blue
+      "#40a9ff"  // Row 5: bright sky blue
+    ];
+
+    // TAGS (19 chars wide each)
+    const BANNER_TAGS = [
+      "                   ",
+      "    <span class='t-ok'>[SYS: OK]</span>      ",
+      "    <span class='t-ok'>[NET: ON]</span>      ",
+      "  <span class='t-gold'>[MEM: 0x4F1A]</span>    ",
+      "  <span class='t-gold'>[KEY: AES]</span>       ",
+      "  <span class='t-gold'>[ID : 0x8B22]</span>    "
+    ];
+
+    // AUTHENTIC EXECUTION LOGS FOR OPTIONS [1] THROUGH [8]
+    const MENU_LOGS = {
+      1: {
+        cmd: "1",
+        label: "Intercept Stream (1 Active)",
+        logs: [
+          "<span style='color:#4a9fb0;'>[GHOST RECEPTOR]</span> Hooking into MTProto transport stream...",
+          "<span style='color:#9aa567;'>[SUCCESS]</span> Blue-tick confirmations SUPPRESSED // Online indicator masked",
+          "<span style='color:#ffffff;'>[ACTIVE TARGET]</span> Session 0x8B22: +91 98110 44211 [Latency: 28ms] // 3 media chunks captured"
+        ],
+        telemetry: "[GHOST RECEPTOR] Intercepting private chat // Blue ticks suppressed // Delivered state only ✓"
+      },
+      2: {
+        cmd: "2",
+        label: "Open Unified Inbox (0 Unseen)",
+        logs: [
+          "<span style='color:#4a9fb0;'>[UNIFIED INBOX]</span> Aggregating 3 client instances across isolated memory threads...",
+          "<span style='color:#9aa567;'>[ISOLATION]</span> Zero cross-profile socket leakage // Local RAM sandbox verified",
+          "<span style='color:#ffffff;'>[STATUS]</span> 0 unread alerts // Context buffer synchronized with zero cloud footprints"
+        ],
+        telemetry: "[UNIFIED INBOX] Aggregating 3 isolated accounts: Personal, Stealth, Operative // Zero cross-metadata leakage ✓"
+      },
+      3: {
+        cmd: "3",
+        label: "Inject New Payload (Add Account)",
+        logs: [
+          "<span style='color:#d4a34b;'>[PAYLOAD INJECTOR]</span> Spawning isolated phone authentication session...",
+          "<span style='color:#4a9fb0;'>[HANDSHAKE]</span> Send SMS / QR handshake initiated on loopback IPC",
+          "<span style='color:#9aa567;'>[SUCCESS]</span> Ephemeral memory key generated: AES-256-GCM (Zero disk footprint)"
+        ],
+        telemetry: "[PAYLOAD INJECTOR] Ephemeral memory key generated // Zero disk footprint ✓"
+      },
+      4: {
+        cmd: "4",
+        label: "Purge Connection (Remove Account)",
+        logs: [
+          "<span style='color:#d4a34b;'>[MEMORY PURGE]</span> Targeting session memory blocks for address 0x8B22...",
+          "<span style='color:#9aa567;'>[PURGED]</span> Crypto keys zeroized from RAM // IPC sockets unlinked",
+          "<span style='color:#ffffff;'>[VERIFIED]</span> 0 residual logs or telemetry artifacts left on local filesystem"
+        ],
+        telemetry: "[MEMORY PURGE] Session cleanly unmounted from RAM // 0 residual traces ✓"
+      },
+      5: {
+        cmd: "5",
+        label: "List Remote Targets",
+        logs: [
+          "<span style='color:#4a9fb0;'>[TARGET REGISTRY]</span> 4 active monitored channels mapped in sandbox:",
+          "<span style='color:#9aa567;'>  [01]</span> @alpha_intel_feed (Direct Relay, 24ms)",
+          "<span style='color:#9aa567;'>  [02]</span> +44 7700 900123 (Stealth Mode, 0 receipts)",
+          "<span style='color:#ffffff;'>[STATUS]</span> All target sockets healthy // Relay mesh maintaining keep-alive"
+        ],
+        telemetry: "[TARGET REGISTRY] 4 active monitored channels mapped in sandbox ✓"
+      },
+      6: {
+        cmd: "6",
+        label: "Configure Tunnel Routing",
+        logs: [
+          "<span style='color:#d4a34b;'>[GEO-SHIELD]</span> Campus & ISP deep packet inspection filter bypassed",
+          "<span style='color:#4a9fb0;'>[TUNNEL ACTIVE]</span> Route: Local Node -> Zurich Relay [31ms] -> Telegram MTProto",
+          "<span style='color:#9aa567;'>[SECURE]</span> DNS leak protection: ENABLED (DoH Cloudflare zero-log)"
+        ],
+        telemetry: "[GEO-SHIELD] Routed via Zurich Relay [31ms latency] // DNS leak protection active ✓"
+      },
+      7: {
+        cmd: "7",
+        label: "Benchmark Proxy Pool (Auto-Test)",
+        logs: [
+          "<span style='color:#d4a34b;'>[BENCHMARK]</span> Pinging 14 distributed SOCKS5/MTProto relays in parallel...",
+          "<span style='color:#9aa567;'>[RESULTS]</span> 14/14 relays operational // 0.0% packet loss // Pool healthy",
+          "<span style='color:#ffffff;'>[OPTIMAL]</span> Selected fastest node: de-fra-02.kronos.is [19ms latency]"
+        ],
+        telemetry: "[PROXY BENCHMARK] 14/14 Global Relays Verified: 100% Operational // 0 Packet Loss ✓"
+      },
+      8: {
+        cmd: "8",
+        label: "Exit / Replay Boot Sequence",
+        logs: [
+          "<span style='color:#4a9fb0;'>[RESTART]</span> Flushing ephemeral memory sandbox...",
+          "<span style='color:#9aa567;'>[BOOTLOADER]</span> Relaunching stealth console..."
+        ],
+        telemetry: "[RESTART] Replaying terminal boot sequence..."
+      }
+    };
+
+    function clearAllTermTimeouts() {
+      TERMINAL_TIMEOUTS.forEach(t => clearTimeout(t));
+      TERMINAL_TIMEOUTS = [];
+      if (GLOBAL_BANNER_INTERVAL) {
+        clearInterval(GLOBAL_BANNER_INTERVAL);
+        GLOBAL_BANNER_INTERVAL = null;
+      }
+      if (GLOBAL_MATRIX_INTERVAL) {
+        clearInterval(GLOBAL_MATRIX_INTERVAL);
+        GLOBAL_MATRIX_INTERVAL = null;
+      }
+    }
+
+    function queueTermAction(fn, delay) {
+      const id = setTimeout(() => {
+        if (!TERMINAL_PAUSED) fn();
+      }, delay);
+      TERMINAL_TIMEOUTS.push(id);
+    }
+
+    function setTerminalOS(os) {
+      CURRENT_OS = os;
+      document.querySelectorAll('.os-tab-pill').forEach(b => b.classList.remove('active'));
+      const pill = document.getElementById(`pill-os-${os}`);
+      if (pill) pill.classList.add('active');
+
+      const macChrome = document.getElementById('chrome-mac-bar');
+      const winChrome = document.getElementById('chrome-win-bar');
