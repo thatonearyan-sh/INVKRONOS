@@ -5800,3 +5800,24 @@ def render_streamed_title_banner(banner_t, mem_hex=None, sys_hex=None):
                     row_chars.append(f"{Fore.WHITE}{Style.BRIGHT}█{CX}")
                 else:
                     row_chars.append(" ")
+            tag_str = tags[r_idx] if cutoff >= 60 else " " * 19
+
+        elif phase < 4.5:
+            # 2. Specular white shimmer glint wave
+            wave = int(((phase - 3.0) / 1.5) * 62)
+            for c_idx, ch in enumerate(raw):
+                if abs(c_idx - wave) <= 2:
+                    row_chars.append(f"{Fore.WHITE}{Style.BRIGHT}{ch}{CX}")
+                else:
+                    row_chars.append(f"{c_code}{ch}{CX}")
+            tag_str = tags[r_idx]
+
+        elif phase < 6.2:
+            # 3. Solid fully-assembled glow hold
+            for ch in raw:
+                row_chars.append(f"{c_code}{ch}{CX}")
+            tag_str = tags[r_idx]
+
+        else:
+            # 4. Clean cursor wipe reset
+            wipe = int(((phase - 6.2) / 0.8) * 62)
