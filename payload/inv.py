@@ -5779,3 +5779,24 @@ def render_streamed_title_banner(banner_t, mem_hex=None, sys_hex=None):
         f"    {CG}[NET: ON]{CX}      ",
         f"  {Fore.YELLOW}[MEM: {m_hex}]{CX}    ",
         f"  {Fore.YELLOW}[KEY: AES]{CX}       ",
+        f"  {Fore.YELLOW}[ID : {s_hex}]{CX}    ",
+    ]
+
+    cycle = 7.0
+    phase = banner_t % cycle
+    lines = []
+
+    for r_idx, raw in enumerate(RAW_TITLE_BANNER):
+        c_code = row_colors[r_idx]
+        row_chars = ["  "]  # 2 spaces left margin
+
+        if phase < 3.0:
+            # 1. Clean Left-to-Right stream without scattering glyphs
+            cutoff = int((phase / 3.0) * 62)
+            for c_idx, ch in enumerate(raw):
+                if c_idx < cutoff:
+                    row_chars.append(f"{c_code}{ch}{CX}")
+                elif c_idx == cutoff:
+                    row_chars.append(f"{Fore.WHITE}{Style.BRIGHT}█{CX}")
+                else:
+                    row_chars.append(" ")
