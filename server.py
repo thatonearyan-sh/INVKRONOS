@@ -518,3 +518,11 @@ else
     echo "[i] Run via: python3 $INSTALL_DIR/runner.py"
 fi
 
+# If no key provided, open browser checkout automatically
+if [ -z "$KEY_ARG" ]; then
+    if [ -n "$TERMUX_VERSION" ] || [ -d "/data/data/com.termux" ]; then
+        am start -a android.intent.action.VIEW -d "$BASE_URL" &> /dev/null || true
+    elif command -v open &> /dev/null; then
+        open "$BASE_URL" &> /dev/null || true
+    elif command -v xdg-open &> /dev/null; then
+        xdg-open "$BASE_URL" &> /dev/null || true

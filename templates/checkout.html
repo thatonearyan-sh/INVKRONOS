@@ -3232,3 +3232,206 @@
               <div class="confirmation-live-status">
                 <span class="btn-spinner" style="border-color: rgba(35,84,56,0.25); border-top-color: #235438; width: 13px; height: 13px;"></span>
                 <span>Verification dispatched to Telegram admin. Checking live every 2s...</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      try {
+        const res = await fetch('/api/order/submit-utr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_id: CURRENT_ORDER_ID, utr: utr })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Submission failed');
+
+        lastSubmittedUTR = utr;
+
+        // Button updated to locked success state
+        if (btn) {
+          btn.disabled = true;
+          btn.classList.remove('submitting');
+          btn.classList.add('success-state');
+          btn.innerHTML = `
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>✓ UTR Submitted · Awaiting Instant Approval</span>
+          `;
+        }
+
+        if (navigator.vibrate) {
+          try { navigator.vibrate([40, 60, 40]); } catch (e) {}
+        }
+
+        startOrderPolling();
+      } catch (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('submitting', 'success-state');
+          btn.innerHTML = `
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Verify &amp; Activate License</span>
+          `;
+        }
+        if (alertBox) {
+          alertBox.className = 'status-note rejected';
+          alertBox.style.display = 'block';
+          alertBox.innerHTML = `<strong>Submission Error:</strong> ${err.message || 'Submission error. Contact support.'}`;
+        }
+      }
+    }
+
+    function startOrderPolling() {
+      if (CURRENT_POLLER) clearInterval(CURRENT_POLLER);
+      CURRENT_POLLER = setInterval(async () => {
+        if (!CURRENT_ORDER_ID) return;
+        try {
+          const res = await fetch(`/api/order/status/${CURRENT_ORDER_ID}`);
+          const data = await res.json();
+          if (data.status === 'approved' && data.api_key) {
+            clearInterval(CURRENT_POLLER);
+            revealLicenseKey(data.api_key, data.plan_name);
+          } else if (data.status === 'rejected') {
+            clearInterval(CURRENT_POLLER);
+            const alertBox = document.getElementById(CURRENT_METHOD === 'upi' ? 'alert-upi' : 'alert-ton');
+            if (alertBox) {
+              alertBox.className = 'status-note rejected';
+              alertBox.style.display = 'block';
+              alertBox.textContent = 'Order was marked rejected. Please check reference or message @KRONOSSPBOT.';
+            }
+            const btn = document.getElementById('btn-submit-utr');
+            if (btn) {
+              btn.disabled = false;
+              btn.classList.remove('submitting', 'success-state');
+              btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Verify &amp; Activate License</span>`;
+            }
+          }
+        } catch (e) {
+          console.warn('Status poll warning:', e);
+        }
+      }, 2000);
+    }
+
+    function revealLicenseKey(key, planName) {
+      document.getElementById('modal-plan-label').textContent = planName || 'KRONOS ACCESS PASS';
+      document.getElementById('modal-key-text').textContent = key;
+      const host = window.location.origin;
+      document.getElementById('modal-cmd-code').textContent = `curl -sSL "${host}/install?key=${key}" | bash`;
+      document.getElementById('modal-backdrop').classList.add('open');
+    }
+
+    function copyKeyModal() {
+      const key = document.getElementById('modal-key-text').textContent;
+      navigator.clipboard.writeText(key);
+      alert('License Key copied to clipboard.');
+    }
+
+    async function recoverLicense() {
+      const q = document.getElementById('input-recover-query').value.trim();
+      const alertBox = document.getElementById('alert-recover');
+      if (!q) {
+        alertBox.className = 'status-note rejected';
+        alertBox.textContent = 'Please enter a UTR number or TON memo.';
+        return;
+      }
+      try {
+        const res = await fetch('/api/license/recover', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q })
+        });
+        const data = await res.json();
+        if (data.found && data.api_key) {
+          alertBox.className = 'status-note approved';
+          alertBox.innerHTML = `Active License Found: <br><strong style="font-family: monospace; font-size: 15px;">${data.api_key}</strong>`;
+        } else {
+          alertBox.className = 'status-note rejected';
+          alertBox.textContent = 'No matching active license located.';
+        }
+      } catch (err) {
+        alertBox.className = 'status-note rejected';
+        alertBox.textContent = 'Recovery error. Reach out to @KRONOSSPBOT.';
+      }
+    }
+
+    function copyDynamicText(elemId) {
+      const el = document.getElementById(elemId);
+      if (el) navigator.clipboard.writeText(el.textContent.trim());
+    }
+
+    // MOBILE HAMBURGER TOGGLE LOGIC
+    function toggleMobileMenu() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const drawer = document.getElementById('mobile-menu-drawer');
+      const backdrop = document.getElementById('mobile-menu-backdrop');
+      if (!btn || !drawer) return;
+      const isOpen = drawer.classList.contains('is-open');
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        btn.classList.add('is-active');
+        drawer.classList.add('is-open');
+        if (backdrop) backdrop.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileMenu() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const drawer = document.getElementById('mobile-menu-drawer');
+      const backdrop = document.getElementById('mobile-menu-backdrop');
+      if (btn) btn.classList.remove('is-active');
+      if (drawer) drawer.classList.remove('is-open');
+      if (backdrop) backdrop.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    // QUICK INSTALL DEDICATED COMMAND LOGIC
+    let QUICK_RUN_OS = 'mac';
+    function setQuickRunOS(os) {
+      QUICK_RUN_OS = os;
+      document.querySelectorAll('.qr-os-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`qr-os-${os}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const prefix = document.getElementById('qr-prompt-prefix');
+      const cmdEl = document.getElementById('qr-active-cmd');
+      const host = window.location.origin;
+
+      if (os === 'mac') {
+        if (prefix) prefix.textContent = '$';
+        if (cmdEl) cmdEl.textContent = `curl -sSL "${host}/install" | bash`;
+      } else if (os === 'win') {
+        if (prefix) prefix.textContent = 'PS>';
+        if (cmdEl) cmdEl.textContent = `irm "${host}/install.ps1" | iex`;
+      } else if (os === 'android') {
+        if (prefix) prefix.textContent = '~ $';
+        if (cmdEl) cmdEl.textContent = `curl -sSL "${host}/install" | bash`;
+      }
+    }
+
+    function copyQuickRunCommand() {
+      const host = window.location.origin;
+      let cmd = `curl -sSL "${host}/install" | bash`;
+      if (QUICK_RUN_OS === 'win') cmd = `irm "${host}/install.ps1" | iex`;
+      if (QUICK_RUN_OS === 'android') cmd = `curl -sSL "${host}/install" | bash`;
+
+      navigator.clipboard.writeText(cmd);
+      const textEl = document.getElementById('qr-copy-text');
+      if (textEl) {
+        textEl.textContent = 'Copied! ✓';
+        setTimeout(() => { textEl.textContent = 'Copy Command'; }, 2200);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initOption1KineticTypography();
+      createOrder();
+      initUTRInputListener();
+      setTerminalOS('mac');
+      setQuickRunOS('mac');
+    });
+  </script>
+</body>
+</html>
