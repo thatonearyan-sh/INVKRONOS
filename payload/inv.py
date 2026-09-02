@@ -5842,3 +5842,24 @@ def draw_main_menu(public_ip, proxy_str, accounts):
     CURRENT_SYS_HEX = f"0x{random.randint(0x1000, 0xFFFF):04X}"
     MENU_BANNER_START_TIME = time.time()
 
+    title = render_streamed_title_banner(0.0)
+
+    if accounts:
+        menu = [
+            f"{Fore.GREEN} [+] secure connection established...",
+            " [+] verifying cryptographic signatures...",
+            " [+] ghost protocol initialized.",
+            "",
+            f"{Fore.CYAN} aryan@ghost-node:~# whoami",
+            f"{Fore.GREEN} root",
+            f"{Fore.CYAN} aryan@ghost-node:~# ls -l targets",
+            f"{Fore.GREEN} > [ 1 ] intercept stream ({len(accounts)} active)",
+            " > [ 2 ] open unified inbox",
+            " > [ 3 ] inject new payload (add account)",
+            " > [ 4 ] purge connection (remove account)",
+            " > [ 5 ] list remote targets",
+            " > [ 6 ] configure tunnel routing",
+            " > [ 7 ] benchmark proxy pool (auto-test)",
+            " > [ 8 ] exit"
+        ]
+    else:
