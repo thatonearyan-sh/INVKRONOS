@@ -5821,3 +5821,24 @@ def render_streamed_title_banner(banner_t, mem_hex=None, sys_hex=None):
         else:
             # 4. Clean cursor wipe reset
             wipe = int(((phase - 6.2) / 0.8) * 62)
+            for c_idx, ch in enumerate(raw):
+                if c_idx < wipe:
+                    row_chars.append(" ")
+                elif c_idx == wipe:
+                    row_chars.append(f"{Fore.WHITE}{Style.BRIGHT}█{CX}")
+                else:
+                    row_chars.append(f"{c_code}{ch}{CX}")
+            tag_str = tags[r_idx] if wipe < 30 else " " * 19
+
+        lines.append("".join(row_chars) + tag_str)
+    return lines
+
+
+def draw_main_menu(public_ip, proxy_str, accounts):
+    global CURRENT_MEM_HEX, CURRENT_SYS_HEX, MENU_BANNER_START_TIME
+    import random
+
+    CURRENT_MEM_HEX = f"0x{random.randint(0x1000, 0xFFFF):04X}"
+    CURRENT_SYS_HEX = f"0x{random.randint(0x1000, 0xFFFF):04X}"
+    MENU_BANNER_START_TIME = time.time()
+
