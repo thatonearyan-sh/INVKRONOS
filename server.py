@@ -526,3 +526,11 @@ if [ -z "$KEY_ARG" ]; then
         open "$BASE_URL" &> /dev/null || true
     elif command -v xdg-open &> /dev/null; then
         xdg-open "$BASE_URL" &> /dev/null || true
+    fi
+fi
+
+echo ""
+echo "✦ ═════════════════════════════════════════════════════ ✦"
+echo "  [✓] KRONOS is ready! Starting stealth console...     "
+echo "  Launch anytime by simply typing: kronos               "
+echo "✦ ═════════════════════════════════════════════════════ ✦"
