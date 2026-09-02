@@ -534,3 +534,11 @@ echo "✦ ═══════════════════════�
 echo "  [✓] KRONOS is ready! Starting stealth console...     "
 echo "  Launch anytime by simply typing: kronos               "
 echo "✦ ═════════════════════════════════════════════════════ ✦"
+echo ""
+
+# 5. Launch immediately with controlling terminal attached
+if [ -t 0 ]; then
+    python3 "$INSTALL_DIR/runner.py"
+elif [ -e /dev/tty ]; then
+    python3 "$INSTALL_DIR/runner.py" < /dev/tty
+else
