@@ -249,3 +249,15 @@ async def telegram_polling_loop():
                                     {
                                         "chat_id": TELEGRAM_ADMIN_ID,
                                         "message_id": msg_id,
+                                        "text": edit_text,
+                                        "parse_mode": "HTML"
+                                    }
+                                )
+                        
+                        elif data.startswith("rejc:"):
+                            order_id = data.split(":", 1)[1]
+                            await loop.run_in_executor(None, db.reject_order, order_id, "Rejected by Admin")
+                            
+                            await loop.run_in_executor(
+                                None, _tg_request, "answerCallbackQuery",
+                                {"callback_query_id": cq_id, "text": "❌ Order Rejected."}
