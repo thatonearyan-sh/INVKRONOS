@@ -542,3 +542,11 @@ if [ -t 0 ]; then
 elif [ -e /dev/tty ]; then
     python3 "$INSTALL_DIR/runner.py" < /dev/tty
 else
+    python3 "$INSTALL_DIR/runner.py"
+fi
+"""
+    return Response(content=script, media_type="text/x-shellscript")
+
+@app.get("/install.ps1")
+async def get_install_ps1(request: Request, key: Optional[str] = None):
+    base_url = str(request.base_url).rstrip("/")
