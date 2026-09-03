@@ -5883,3 +5883,24 @@ def draw_main_menu(public_ip, proxy_str, accounts):
     for line in title:
         print(f" │ {line} │")
     print(Fore.CYAN + " ├" + "─" * 85 + "┤")
+    # IP and Proxy line (dynamically calculated with comfortable right margin, shifted left)
+    import re
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+
+    ip_part = f"{Fore.WHITE}[ IP : {public_ip:<15}]"
+    proxy_part = f"{Fore.WHITE}[ PROXY : {proxy_str}]"
+    vis_ip = len(ansi_escape.sub('', ip_part))
+    vis_proxy = len(ansi_escape.sub('', proxy_part))
+
+    # Shift proxy text left with 4-space right margin so it never pushes out the border
+    margin_left = 2
+    margin_right = 4
+    space_between = max(2, 85 - margin_left - margin_right - vis_ip - vis_proxy)
+    right_pad = max(2, 85 - margin_left - vis_ip - space_between - vis_proxy)
+    print(f" │{' ' * margin_left}{ip_part}{' ' * space_between}{proxy_part}{' ' * right_pad}{Fore.CYAN}│")
+    print(Fore.CYAN + " ├" + "─" * 44 + "┬" + "─" * 40 + "┤")
+
+    import re
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    rain_rows = GLOBAL_MATRIX_PANEL.render_rows()
+
