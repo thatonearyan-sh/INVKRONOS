@@ -236,3 +236,16 @@ async def telegram_polling_loop():
                                 )
 
                                 # Edit admin message
+                                edit_text = (
+                                    f"✅ <b>ORDER APPROVED & DELIVERED</b>\n\n"
+                                    f"💳 <b>Order:</b> <code>{order_id}</code>\n"
+                                    f"📦 <b>Plan:</b> {plan}\n"
+                                    f"🔢 <b>UTR:</b> <code>{utr}</code>\n\n"
+                                    f"🔑 <b>Generated Key:</b>\n<code>{key}</code>\n\n"
+                                    f"<i>The customer's browser screen has automatically unlocked.</i>"
+                                )
+                                await loop.run_in_executor(
+                                    None, _tg_request, "editMessageText",
+                                    {
+                                        "chat_id": TELEGRAM_ADMIN_ID,
+                                        "message_id": msg_id,
