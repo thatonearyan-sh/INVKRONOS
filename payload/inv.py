@@ -5863,3 +5863,23 @@ def draw_main_menu(public_ip, proxy_str, accounts):
             " > [ 8 ] exit"
         ]
     else:
+        menu = [
+            f"{Fore.RED} [-] no secure connections found...",
+            f"{Fore.YELLOW} [!] waiting for payload injection...",
+            "",
+            f"{Fore.CYAN} aryan@ghost-node:~# ls -l targets",
+            f"{Fore.GREEN} > [ 1 ] inject new payload (add account)",
+            " > [ 2 ] configure tunnel routing",
+            " > [ 3 ] benchmark proxy pool (auto-test)",
+            " > [ 4 ] exit",
+        ]
+
+    box_border_color = Fore.GREEN + Style.BRIGHT
+    box_top = " " + box_border_color + "┌── " + Fore.WHITE + Style.BRIGHT + "MATRIX STREAM" + box_border_color + " ───────────────────┐" + Style.RESET_ALL + " "
+    box_bot = " " + box_border_color + "└" + "─" * 36 + "┘" + Style.RESET_ALL + " "
+
+    # Top border (85 dashes = perfectly accommodates 10% larger matrix box)
+    print(Fore.CYAN + " ┌" + "─" * 85 + "┐")
+    for line in title:
+        print(f" │ {line} │")
+    print(Fore.CYAN + " ├" + "─" * 85 + "┤")
