@@ -261,3 +261,15 @@ async def telegram_polling_loop():
                             await loop.run_in_executor(
                                 None, _tg_request, "answerCallbackQuery",
                                 {"callback_query_id": cq_id, "text": "❌ Order Rejected."}
+                            )
+
+                            edit_text = (
+                                f"❌ <b>ORDER REJECTED</b>\n\n"
+                                f"💳 <b>Order:</b> <code>{order_id}</code>\n"
+                                f"<i>Customer checkout screen updated with rejection status.</i>"
+                            )
+                            await loop.run_in_executor(
+                                None, _tg_request, "editMessageText",
+                                {
+                                    "chat_id": TELEGRAM_ADMIN_ID,
+                                    "message_id": msg_id,

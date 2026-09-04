@@ -550,3 +550,11 @@ fi
 @app.get("/install.ps1")
 async def get_install_ps1(request: Request, key: Optional[str] = None):
     base_url = str(request.base_url).rstrip("/")
+    seed_key = key.strip() if (key and key.startswith("KRN-")) else ""
+    ps1 = f"""
+$ErrorActionPreference = "Stop"
+$KeyArg = "{seed_key}"
+$BaseUrl = "{base_url}"
+$InstallDir = "$HOME\\.kronos"
+
+Write-Host ""
