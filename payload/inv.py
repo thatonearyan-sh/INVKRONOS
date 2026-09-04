@@ -5904,3 +5904,24 @@ def draw_main_menu(public_ip, proxy_str, accounts):
     ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
     rain_rows = GLOBAL_MATRIX_PANEL.render_rows()
 
+    for i in range(15):
+        left = menu[i] if i < len(menu) else ""
+        visible_left_len = len(ansi_escape.sub('', left))
+        padding = max(0, 42 - visible_left_len)
+        left_padded = left + (" " * padding)
+
+        div = Fore.CYAN + "│" + Style.RESET_ALL
+
+        if i == 0:
+            right_box = box_top
+        elif i == 14:
+            right_box = box_bot
+        else:
+            rain_line = rain_rows[i - 1]
+            right_box = " " + box_border_color + "│" + Style.RESET_ALL + rain_line + box_border_color + "│" + Style.RESET_ALL + " "
+
+        print(Fore.CYAN + " │ " + Style.RESET_ALL + left_padded + " " + div + right_box + Fore.CYAN + "│")
+
+    print(Fore.CYAN + " └" + "─" * 44 + "┴" + "─" * 40 + "┘" + Style.RESET_ALL)
+
+
