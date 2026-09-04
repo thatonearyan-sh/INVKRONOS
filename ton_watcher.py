@@ -151,3 +151,11 @@ def check_order_ton_payment(order):
     if not res or "transactions" not in res:
         return order
 
+    for tx in res["transactions"]:
+        in_msg = tx.get("in_msg", {})
+        if not in_msg:
+            continue
+        comment = ""
+        decoded_body = in_msg.get("decoded_body")
+        if isinstance(decoded_body, dict):
+            comment = decoded_body.get("text", "")
