@@ -166,3 +166,11 @@ def check_order_ton_payment(order):
             val_nano = in_msg.get("value", 0)
             ton_received = val_nano / 1e9
             required_ton = order.get("amount_ton", 0)
+            if ton_received >= (required_ton * 0.95):
+                print(f"[TON CONFIRMED ON-DEMAND] Order {order['order_id']} paid {ton_received} TON!")
+                updated_order = db.approve_order(order["order_id"])
+                if updated_order:
+                    try:
+                        telegram_admin.send_admin_ton_alert(
+                            order["order_id"],
+                            memo,
