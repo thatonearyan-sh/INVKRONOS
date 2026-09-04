@@ -159,3 +159,10 @@ def check_order_ton_payment(order):
         decoded_body = in_msg.get("decoded_body")
         if isinstance(decoded_body, dict):
             comment = decoded_body.get("text", "")
+        elif in_msg.get("message"):
+            comment = in_msg.get("message", "")
+        comment = comment.strip()
+        if comment == memo:
+            val_nano = in_msg.get("value", 0)
+            ton_received = val_nano / 1e9
+            required_ton = order.get("amount_ton", 0)

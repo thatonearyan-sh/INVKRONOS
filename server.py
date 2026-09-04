@@ -558,3 +558,11 @@ $BaseUrl = "{base_url}"
 $InstallDir = "$HOME\\.kronos"
 
 Write-Host ""
+Write-Host "✦ ═════════════════════════════════════════════════════ ✦" -ForegroundColor Cyan
+Write-Host "       KRONOS STEALTH CLIENT WINDOWS BOOTSTRAP         " -ForegroundColor Yellow
+Write-Host "✦ ═════════════════════════════════════════════════════ ✦" -ForegroundColor Cyan
+Write-Host ""
+
+if (-not (Test-Path $InstallDir)) {{
+    New-Item -ItemType Directory -Path $InstallDir | Out-Null
+}}
