@@ -289,3 +289,22 @@ def recover_license(query):
         "$or": [
             {"utr": clean_q},
             {"ton_memo": clean_q},
+            {"order_id": clean_q}
+        ],
+        "status": "approved"
+    })
+    if order and order.get("api_key"):
+        if order.get("api_key") in REVOKED_KEYS:
+            return None
+        lic = db.licenses.find_one({"api_key": order["api_key"]})
+        if lic:
+            if lic.get("api_key") in REVOKED_KEYS or lic.get("status") in ["REVOKED", "DISABLED"]:
+                return None
+            lic.pop("_id", None)
+            return lic
+        return {
+            "api_key": order["api_key"],
+            "plan_name": order.get("plan_name"),
+            "status": "ACTIVE"
+        }
+    return None

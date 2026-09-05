@@ -566,3 +566,11 @@ Write-Host ""
 if (-not (Test-Path $InstallDir)) {{
     New-Item -ItemType Directory -Path $InstallDir | Out-Null
 }}
+
+Write-Host "[i] Downloading universal runner..." -ForegroundColor Gray
+Invoke-WebRequest -Uri "$BaseUrl/api/core/runner" -OutFile "$InstallDir\\runner.py"
+
+$ConfigFile = "$InstallDir\\config.json"
+if ($KeyArg -ne "") {{
+    "{{\"api_key\": \"$KeyArg\", \"server_url\": \"$BaseUrl\"}}" | Out-File -Encoding utf8 $ConfigFile
+    Write-Host "[✓] License Key pre-configured: $KeyArg" -ForegroundColor Green
