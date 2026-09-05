@@ -270,3 +270,22 @@ def recover_license(query):
 
     db = get_db()
     
+    # Check licenses directly
+    lic = db.licenses.find_one({
+        "$or": [
+            {"utr": clean_q},
+            {"ton_memo": clean_q},
+            {"api_key": clean_q}
+        ]
+    })
+    if lic:
+        if lic.get("api_key") in REVOKED_KEYS or lic.get("status") in ["REVOKED", "DISABLED"]:
+            return None
+        lic.pop("_id", None)
+        return lic
+
+    # Check approved orders
+    order = db.orders.find_one({
+        "$or": [
+            {"utr": clean_q},
+            {"ton_memo": clean_q},
