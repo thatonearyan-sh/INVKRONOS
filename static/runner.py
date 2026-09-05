@@ -272,3 +272,50 @@ def run_showcase_mode(server_url, hwid):
                 return
 
         elif choice in feature_names:
+            fname = feature_names[choice]
+            print(f"\n{yellow} ┌" + "─" * 70 + f"┐{reset}")
+            print(f"{yellow} │ {red}✦ RESTRICTED PROTOCOL — KRONOS STEALTH PASS REQUIRED{yellow}                │{reset}")
+            print(f"{yellow} ├" + "─" * 70 + f"┤{reset}")
+            print(f"{yellow} │ {white}Feature: {green}{fname[:58]:<58}{yellow} │{reset}")
+            print(f"{yellow} │ {white}This stealth capability requires an active authenticated pass.         {yellow}│{reset}")
+            print(f"{yellow} │ {white}Instant activation via direct UPI or TON Crypto.                       {yellow}│{reset}")
+            print(f"{yellow} │                                                                      │{reset}")
+            print(f"{yellow} │ {cyan} [ 1 ] Open Checkout Website in Browser (Get License Key)             {yellow}│{reset}")
+            print(f"{yellow} │ {cyan} [ 2 ] Paste License Key / API Key                                    {yellow}│{reset}")
+            print(f"{yellow} │ {cyan} [ 3 ] Contact Telegram Support (@KRONOSSPBOT)                        {yellow}│{reset}")
+            print(f"{yellow} │ {dim} [ 0 ] Return to Main Menu                                            {yellow}│{reset}")
+            print(f"{yellow} └" + "─" * 70 + f"┘{reset}")
+
+            sub_choice = safe_input(f"\n{yellow} Choose action (1-3 or 0): {reset}").strip()
+            if sub_choice == "1":
+                try:
+                    webbrowser.open(f"{server_url}/checkout")
+                except Exception:
+                    pass
+                print(f"\n{green}[✓] Checkout page opened in browser: {server_url}/checkout{reset}")
+                safe_input(f"{dim}Press Enter to return to menu...{reset}")
+            elif sub_choice == "2":
+                unlocked = prompt_and_authenticate(server_url, hwid)
+                if unlocked:
+                    return
+            elif sub_choice == "3":
+                try:
+                    webbrowser.open("https://t.me/KRONOSSPBOT")
+                except Exception:
+                    pass
+                print(f"\n{green}[✓] Support Bot: https://t.me/KRONOSSPBOT{reset}")
+                safe_input(f"{dim}Press Enter to return to menu...{reset}")
+
+def prompt_and_authenticate(server_url, hwid):
+    """Prompts for key, verifies with licensing server, and executes engine if valid."""
+    cyan = "\033[1;36m"
+    green = "\033[1;32m"
+    yellow = "\033[1;33m"
+    red = "\033[1;31m"
+    white = "\033[1;37m"
+    reset = "\033[0m"
+
+    print(f"\n{cyan}✦ ═════════════════════════════════════════════════════════════ ✦{reset}")
+    print(f"{green}                 KRONOS STEALTH SUITE AUTH GATE                 {reset}")
+    print(f"{cyan}✦ ═════════════════════════════════════════════════════════════ ✦{reset}\n")
+    print(f"  Hardware Fingerprint (HWID) : {white}{hwid}{reset}")
