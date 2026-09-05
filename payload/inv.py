@@ -5946,3 +5946,24 @@ async def main():
                 print()
                 for i, n in enumerate(names):
                     acc_proxy = proxy_label(accounts[n])
+                    print(col(f"  {i:>3}.  {n:<12} [{acc_proxy}]", account_color(accounts[n])))
+                print(col(f"  {len(names):>3}.  ➕  Add new account", Fore.YELLOW))
+                print(col("    P.  🌐  Manage / Change / Disable Proxy for an account", Fore.CYAN + Style.BRIGHT))
+                
+                sel_acc = prompt("Choose account (number or P)").strip()
+                if sel_acc.lower() == "p":
+                    p_idx = prompt(f"Select account number to manage proxy (0-{len(names)-1})").strip()
+                    if p_idx.isdigit() and 0 <= int(p_idx) < len(names):
+                        target_name = names[int(p_idx)]
+                        await feat_manage_account_proxy(target_name, accounts[target_name], accounts)
+                    else:
+                        error("Invalid account selection!"); press_enter()
+                    continue
+                try:
+                    idx = int(sel_acc)
+                    if idx == len(names):
+                        await add_account(); press_enter(); continue
+                    acc_name = names[idx]
+                    status   = await run_viewer(acc_name, accounts[acc_name], accounts, public_ip)
+                    if status == "exit":
+                        break
