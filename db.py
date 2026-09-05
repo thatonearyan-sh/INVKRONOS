@@ -252,3 +252,21 @@ def verify_license(api_key, hwid=None):
 
     return {
         "valid": True,
+        "status": "ACTIVE",
+        "plan_name": lic.get("plan_name"),
+        "expires_at": expires_at.isoformat() if expires_at else None,
+        "days_left": (expires_at - now).days if expires_at else 0,
+        "devices_used": len(bound_devices),
+        "max_devices": max_devices
+    }
+
+def recover_license(query):
+    """Search by UTR or TON memo/address"""
+    if not query:
+        return None
+    clean_q = str(query).strip()
+    if clean_q.upper() in REVOKED_KEYS:
+        return None
+
+    db = get_db()
+    
