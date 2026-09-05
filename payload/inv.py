@@ -5925,3 +5925,24 @@ def draw_main_menu(public_ip, proxy_str, accounts):
     print(Fore.CYAN + " └" + "─" * 44 + "┴" + "─" * 40 + "┘" + Style.RESET_ALL)
 
 
+async def main():
+    info("Fetching IP…")
+    public_ip = await get_public_ip()
+    init_accounts = load_accounts()
+    if init_accounts:
+        asyncio.create_task(sync_client_cluster_registry(init_accounts, public_ip))
+
+    while True:
+        clear()
+        accounts  = load_accounts()
+        proxy_str = trunc(proxy_label(), 29)
+        draw_main_menu(public_ip, proxy_str, accounts)
+
+        if accounts:
+            choice = await animated_menu_prompt(" aryan@ghost-node:~# ")
+
+            if choice == "1":
+                names = list(accounts.keys())
+                print()
+                for i, n in enumerate(names):
+                    acc_proxy = proxy_label(accounts[n])
