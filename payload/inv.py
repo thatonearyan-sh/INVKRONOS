@@ -5967,3 +5967,24 @@ async def main():
                     status   = await run_viewer(acc_name, accounts[acc_name], accounts, public_ip)
                     if status == "exit":
                         break
+                except (ValueError, IndexError):
+                    error("Invalid selection!"); press_enter()
+
+            elif choice == "2":
+                await unified_inbox(accounts)
+
+            elif choice == "3":
+                await add_account(); press_enter()
+
+            elif choice == "4":
+                remove_account(); press_enter()
+
+            elif choice == "5":
+                clear()
+                header("SAVED ACCOUNTS")
+                print()
+                for i, n in enumerate(accounts.keys()):
+                    print(col(f"  {i:>3}.  {n}", account_color(accounts[n])))
+                press_enter()
+
+            elif choice == "6":
