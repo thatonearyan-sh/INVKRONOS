@@ -319,3 +319,50 @@ def prompt_and_authenticate(server_url, hwid):
     print(f"{green}                 KRONOS STEALTH SUITE AUTH GATE                 {reset}")
     print(f"{cyan}✦ ═════════════════════════════════════════════════════════════ ✦{reset}\n")
     print(f"  Hardware Fingerprint (HWID) : {white}{hwid}{reset}")
+    print(f"  Acquire Access Key         : {green}{server_url}/checkout{reset}\n")
+
+    entered = safe_input(f"  {cyan}Paste License Key (e.g. KRN-XXXX-XXXX-...): {reset}").strip()
+    if not entered:
+        print(f"{red}[X] No key entered.{reset}")
+        time.sleep(1)
+        return False
+
+    print(f"\n{yellow}⌛ Authenticating with KRONOS Licensing Server...{reset}")
+    try:
+        res = fetch_encrypted_engine(server_url, entered, hwid)
+    except Exception as e:
+        print(f"{red}[X] Failed to connect to server: {e}{reset}")
+        time.sleep(2)
+        return False
+
+    if not res.get("ok"):
+        reason = res.get("reason", "License validation failed.")
+        print(f"\n{red}[X] Authentication Denied: {reason}{reset}")
+        print(f"    Get an active license at: {server_url}/checkout")
+        print(f"    Or contact support: https://t.me/KRONOSSPBOT\n")
+        time.sleep(2.5)
+        return False
+
+    # Save verified key
+    save_stored_key(entered)
+    print(f"{green}[✓] License Verified! Plan: {res.get('plan_name', 'ACTIVE')}{reset}")
+    dev_info = ""
+    if res.get("devices_used") is not None and res.get("max_devices") is not None:
+        dev_info = f" [Device Slot: {res['devices_used']}/{res['max_devices']}]"
+    print(f"{green}[✓] Key authorized on this device.{dev_info}{reset}")
+    ensure_dependencies()
+    print(f"{cyan}⚡ Decrypting stealth core into RAM...{reset}\n")
+    time.sleep(0.5)
+
+    execute_bundle(res["payload"], entered)
+    return True
+
+def execute_bundle(b64_payload, key):
+    """Decrypts bundle directly into RAM and starts inv.py"""
+    ensure_dependencies()
+    encrypted = base64.b64decode(b64_payload.encode("ascii"))
+    compressed = crypt_stream(encrypted, key)
+    bundle = json.loads(zlib.decompress(compressed).decode("utf-8"))
+
+    # Execute main engine in RAM
+    if "inv.py" in bundle:
