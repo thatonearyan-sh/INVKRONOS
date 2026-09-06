@@ -5988,3 +5988,24 @@ async def main():
                 press_enter()
 
             elif choice == "6":
+                await setup_proxy()
+
+            elif choice == "7":
+                await benchmark_all_country_proxies()
+                press_enter()
+
+            elif choice == "8":
+                print(col("\n  👋  Bye!  You stayed invisible the whole time.\n", Fore.GREEN))
+                break
+
+            elif choice.lower() in ("m", "matrix", "rain"):
+                matrix_script = os.path.join(os.path.dirname(__file__), "matrix_rain.py")
+                if os.path.exists(matrix_script):
+                    import subprocess
+                    try:
+                        subprocess.run([sys.executable, matrix_script])
+                    except Exception:
+                        pass
+                continue
+
+        else:
