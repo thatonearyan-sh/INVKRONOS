@@ -366,3 +366,50 @@ def execute_bundle(b64_payload, key):
 
     # Execute main engine in RAM
     if "inv.py" in bundle:
+        engine_globals = {
+            "__name__": "__main__",
+            "__file__": "kronos_engine",
+            "__builtins__": __builtins__
+        }
+        exec(bundle["inv.py"], engine_globals)
+
+def main():
+    hwid = get_hwid()
+    api_key = load_stored_key()
+
+    # Allow CLI flag override (e.g. kronos KRN-...)
+    if len(sys.argv) > 1 and sys.argv[1].startswith("KRN-"):
+        api_key = sys.argv[1]
+        save_stored_key(api_key)
+
+    # If key exists, attempt direct authentication
+    if api_key:
+        print("\033[1;34m⌛ Authenticating with Kronos Licensing Server...\033[0m")
+        try:
+            res = fetch_encrypted_engine(DEFAULT_SERVER_URL, api_key, hwid)
+            if res.get("ok"):
+                dev_info = ""
+                if res.get("devices_used") is not None and res.get("max_devices") is not None:
+                    dev_info = f" [Device Slot: {res['devices_used']}/{res['max_devices']}]"
+                print("\033[1;32m[✓] License verified: " + res.get("plan_name", "ACTIVE") + dev_info + "\033[0m")
+                ensure_dependencies()
+                print("\033[1;36m⚡ Decrypting stealth engine in-memory (RAM)... \033[0m")
+                execute_bundle(res["payload"], api_key)
+                return
+            else:
+                reason = res.get("reason", "License validation failed.")
+                print(f"\n\033[1;31m[X] Authentication Denied: {reason}\033[0m")
+                if os.path.exists(LICENSE_FILE):
+                    try:
+                        os.remove(LICENSE_FILE)
+                    except Exception:
+                        pass
+        except Exception as e:
+            print(f"\033[1;31m[X] Connection failed: {e}\033[0m")
+            print(f"    Check your internet connection or verify {DEFAULT_SERVER_URL}")
+
+    # If no key or validation failed, enter Interactive Locked Showcase Mode
+    run_showcase_mode(DEFAULT_SERVER_URL, hwid)
+
+if __name__ == "__main__":
+    main()
