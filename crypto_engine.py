@@ -53,3 +53,7 @@ def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
     encrypted = crypt_stream(compressed, api_key)
 
     # Base64 encode for clean HTTP transport
+    return base64.b64encode(encrypted).decode("ascii")
+
+def decrypt_payload(b64_payload: str, api_key: str) -> dict:
+    """Client-side: decrypts and decompresses payload in RAM"""

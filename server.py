@@ -574,3 +574,11 @@ $ConfigFile = "$InstallDir\\config.json"
 if ($KeyArg -ne "") {{
     "{{\"api_key\": \"$KeyArg\", \"server_url\": \"$BaseUrl\"}}" | Out-File -Encoding utf8 $ConfigFile
     Write-Host "[✓] License Key pre-configured: $KeyArg" -ForegroundColor Green
+}} elseif (-not (Test-Path $ConfigFile)) {{
+    "{{\"api_key\": \"\", \"server_url\": \"$BaseUrl\"}}" | Out-File -Encoding utf8 $ConfigFile
+}}
+
+# Detect Python executable
+$PyCmd = "python"
+if (-not (Get-Command "python" -ErrorAction SilentlyContinue)) {{
+    if (Get-Command "py" -ErrorAction SilentlyContinue) {{
