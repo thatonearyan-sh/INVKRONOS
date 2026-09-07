@@ -590,3 +590,11 @@ if (-not (Get-Command "python" -ErrorAction SilentlyContinue)) {{
         exit 1
     }}
 }}
+
+# Create batch shortcut in user path
+$BatContent = "@echo off`r`n$PyCmd `"$InstallDir\\runner.py`" %*"
+Set-Content -Path "$InstallDir\\kronos.cmd" -Value $BatContent
+
+# Add to User PATH if not already present
+try {{
+    $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")

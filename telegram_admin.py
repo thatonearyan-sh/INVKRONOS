@@ -273,3 +273,16 @@ async def telegram_polling_loop():
                                 {
                                     "chat_id": TELEGRAM_ADMIN_ID,
                                     "message_id": msg_id,
+                                    "text": edit_text,
+                                    "parse_mode": "HTML"
+                                }
+                            )
+
+        except asyncio.CancelledError:
+            print("[TG BOT] Listener stopped.")
+            break
+        except Exception as e:
+            print(f"[TG BOT ERROR] {e}")
+            await asyncio.sleep(3)
+
+        await asyncio.sleep(0.5)
