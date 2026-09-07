@@ -57,3 +57,7 @@ def build_encrypted_payload(api_key: str, client_dir: str = None) -> str:
 
 def decrypt_payload(b64_payload: str, api_key: str) -> dict:
     """Client-side: decrypts and decompresses payload in RAM"""
+    encrypted = base64.b64decode(b64_payload.encode("ascii"))
+    compressed = crypt_stream(encrypted, api_key)
+    raw_bytes = zlib.decompress(compressed)
+    return json.loads(raw_bytes.decode("utf-8"))

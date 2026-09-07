@@ -582,3 +582,11 @@ if ($KeyArg -ne "") {{
 $PyCmd = "python"
 if (-not (Get-Command "python" -ErrorAction SilentlyContinue)) {{
     if (Get-Command "py" -ErrorAction SilentlyContinue) {{
+        $PyCmd = "py"
+    }} elseif (Get-Command "python3" -ErrorAction SilentlyContinue) {{
+        $PyCmd = "python3"
+    }} else {{
+        Write-Host "[!] Error: Python not found. Please install Python from https://www.python.org/downloads/ (check 'Add python.exe to PATH')" -ForegroundColor Red
+        exit 1
+    }}
+}}
