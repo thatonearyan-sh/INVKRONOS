@@ -174,3 +174,11 @@ def check_order_ton_payment(order):
                         telegram_admin.send_admin_ton_alert(
                             order["order_id"],
                             memo,
+                            updated_order.get("plan_name"),
+                            ton_received,
+                            updated_order.get("api_key")
+                        )
+                    except Exception as e:
+                        print(f"[TG ALERT WARN] {e}")
+                return updated_order
+    return order
