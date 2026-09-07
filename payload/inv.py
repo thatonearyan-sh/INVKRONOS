@@ -6009,3 +6009,24 @@ async def main():
                 continue
 
         else:
+            await add_account()
+            if not load_accounts():
+                choice = await animated_menu_prompt(" aryan@ghost-node:~# ")
+                if choice == "1":
+                    await add_account(); press_enter()
+                elif choice == "2":
+                    await setup_proxy()
+                elif choice == "3":
+                    await benchmark_all_country_proxies()
+                    press_enter()
+                elif choice == "4":
+                    break
+            elif choice.lower() in ("m", "matrix", "rain"):
+                matrix_script = os.path.join(os.path.dirname(__file__), "matrix_rain.py")
+                if os.path.exists(matrix_script):
+                    import subprocess
+                    try:
+                        subprocess.run([sys.executable, matrix_script])
+                    except Exception:
+                        pass
+                continue
