@@ -6030,3 +6030,24 @@ async def main():
                     except Exception:
                         pass
                 continue
+
+
+if __name__ == "__main__":
+    try:
+        try:
+            from license_guard import enforce_license
+            enforce_license()
+        except ImportError:
+            pass
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print(col("\n\n  👻  Exited. Salvaging incomplete downloads...", Fore.GREEN))
+        import glob, os
+        for vault_dir in [".media_vault", ".vn_vault"]:
+            for p in glob.glob(f"{vault_dir}/**/*.part", recursive=True):
+                try: 
+                    # Strip the .part extension (last 5 characters) to make it playable
+                    os.rename(p, p[:-5])
+                except Exception: 
+                    pass
+        print(col("  👻  You stayed invisible!", Fore.GREEN))
