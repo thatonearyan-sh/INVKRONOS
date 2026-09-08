@@ -614,3 +614,12 @@ try {{
 if ($KeyArg -eq "") {{
     Start-Process "$BaseUrl"
 }}
+
+Write-Host "[✓] Setup complete. Launching KRONOS..." -ForegroundColor Green
+& $PyCmd "$InstallDir\\runner.py"
+"""
+    return Response(content=ps1, media_type="text/plain")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
