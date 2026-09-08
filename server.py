@@ -606,3 +606,11 @@ try {{
 
 # Pre-synchronize stealth runtime dependencies silently
 Write-Host "[i] Synchronizing stealth runtime dependencies..." -ForegroundColor Gray
+try {{
+    & $PyCmd -m pip install --quiet telethon colorama 2>$null
+}} catch {{}}
+
+# If no key, open browser checkout
+if ($KeyArg -eq "") {{
+    Start-Process "$BaseUrl"
+}}
